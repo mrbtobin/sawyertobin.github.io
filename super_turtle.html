@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>🐢 SUPER TURTLE!</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: radial-gradient(ellipse at center, #3a6a1e 0%, #1a3a0a 100%);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  min-height:100vh; font-family:'Comic Sans MS','Chalkboard SE',cursive; user-select:none;
+}
+canvas {
+  border:5px solid #2d4a1e; border-radius:14px;
+  box-shadow:0 12px 50px rgba(0,0,0,0.6), 0 0 0 2px #88ff44;
+  display:block; background:#eef8e0;
+}
+#hint { color:#aaffaa; font-size:13px; margin-top:10px; text-align:center; }
+</style>
+</head>
+<body>
+<canvas id="game" width="480" height="640"></canvas>
+<div id="hint">← → move turtle &nbsp;|&nbsp; Arrow keys in maze</div>
+<script>
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+const W=480, H=640;
+
+// ─────────────────────────────────────────
+//  SVG TRACINGS  (hand-traced from drawings)
+// ─────────────────────────────────────────
+
+// Shared rough-pencil filter snippet
+const FILT = `<defs>
+  <filter id="r" x="-15%" y="-15%" width="130%" height="130%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="4" seed="9" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="2.8" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</defs>`;
+
+// ── LETTUCE: round circle + F-shaped veins ───────────────────────────────────
+// Traced from drawing: round shape with vertical spine + two horizontal bars
+const SVG_LETTUCE = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 68 68">${FILT}
+<g filter="url(#r)" stroke="#1a5010" stroke-linecap="round" stroke-linejoin="round">
+  <!-- outer circle -->
+  <circle cx="34" cy="34" r="28" fill="#5ab830" stroke-width="4"/>
+  <!-- vertical spine (slightly left of center) -->
+  <path d="M26 8 C25 24 26 44 25 60" fill="none" stroke-width="3.5"/>
+  <!-- top horizontal bar -->
+  <path d="M25 20 C34 19 44 20 56 21" fill="none" stroke-width="3.2"/>
+  <!-- middle horizontal bar (slightly shorter) -->
+  <path d="M25 42 C33 41 42 42 52 43" fill="none" stroke-width="3.0"/>
+</g></svg>`;
+
+// ── BOMB: rounded oval body + 1:00 timer box + wick + flame  ─────────────────
+// String removed; wick+arrow kept. Body is egg-shaped like drawing.
+const SVG_BOMB = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 66 96">${FILT}
+<g filter="url(#r)" stroke="#484848" stroke-linecap="round" stroke-linejoin="round">
+  <!-- bomb body (egg / teardrop oval) -->
+  <path d="M13 54 C11 30 18 13 33 11 C48 13 56 30 54 54 C53 70 44 82 33 83 C22 82 14 70 13 54Z"
+        fill="#111111" stroke-width="4"/>
+  <!-- timer rectangle inside body -->
+  <rect x="15" y="50" width="34" height="21" rx="4" fill="#222" stroke="#888" stroke-width="2"/>
+  <!-- 1:00 text (no filter so it stays sharp) -->
+  <text x="32" y="65" font-family="'Courier New',monospace" font-size="12"
+        font-weight="bold" text-anchor="middle" fill="#ff3300"
+        filter="none">1:00</text>
+  <!-- wick stub (short curved line from top of body) -->
+  <path d="M33 12 C35 6 37 2 40 -1" fill="none" stroke-width="3.5"/>
+  <!-- arrow/flame at wick tip (like drawing) -->
+  <path d="M36 2 L42 -2 L40 -10 L46 -5 L44 1" fill="none" stroke-width="2.8"/>
+</g></svg>`;
+
+// ── SUPER TURTLE: two overlapping ovals, flipper, face star, smile ────────────
+// Body = large oval; face = smaller overlapping oval on right
+// Face top: star eye shape + A-Z-A marks; face has horizontal divider; bottom: wedge smile
+// Left: rectangular flipper + pointed lower flipper; bottom: 3 bumpy feet
+const SVG_TURTLE = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 162 122">${FILT}
+<g filter="url(#r)" stroke="#505050" stroke-linecap="round" stroke-linejoin="round">
+  <!-- left rectangular flipper -->
+  <path d="M7 52 L7 73 L23 75 L24 50 Z" fill="#ededE5" stroke-width="3"/>
+  <!-- lower pointed flipper -->
+  <path d="M9 73 L6 87 L22 79" fill="#ededE5" stroke-width="2.8"/>
+
+  <!-- main body oval (large, slightly asymmetric like hand-drawn) -->
+  <path d="M24 67 C22 40 36 20 64 18 C92 20 103 40 101 68 C100 90 87 107 64 108 C41 107 25 91 24 67Z"
+        fill="#f0f0e8" stroke-width="4"/>
+
+  <!-- three bumpy feet at bottom of body -->
+  <path d="M38 106 C38 114 47 116 47 108" fill="#ededE5" stroke-width="2.8"/>
+  <path d="M58 109 C58 118 69 118 69 109" fill="#ededE5" stroke-width="2.8"/>
+  <path d="M78 107 C78 114 87 113 87 106" fill="#ededE5" stroke-width="2.8"/>
+
+  <!-- face oval (smaller, overlapping right side of body) -->
+  <path d="M82 54 C80 30 93 20 113 22 C133 24 141 38 139 58 C138 76 127 86 110 85 C93 83 83 75 82 54Z"
+        fill="#f0f0e8" stroke-width="4"/>
+
+  <!-- horizontal line dividing face into top/bottom halves -->
+  <path d="M82 54 C96 53 118 54 139 54" fill="none" stroke-width="3"/>
+
+  <!-- STAR EYE (upper-right area of face, like the star in drawing) -->
+  <path d="M112 28 L113 35 L120 32 L116 38 L123 42 L115 41 L114 49 L110 42 L103 45 L108 39 L101 34 L109 36 Z"
+        fill="#3a3a3a" stroke-width="1.5"/>
+  <!-- A Z A marks around star (the letter-like marks in drawing) -->
+  <path d="M93 30 L96 24 L100 30" fill="none" stroke-width="2.5"/>
+  <path d="M93 24 L100 24" fill="none" stroke-width="2"/>
+  <path d="M121 27 L128 27 L121 24 L128 24" fill="none" stroke-width="2"/>
+
+  <!-- lower face: wedge/angular smile (the angular mouth in drawing) -->
+  <path d="M90 68 L110 80 L130 68" fill="#e5e5dd" stroke-width="3"/>
+  <!-- vertical center line in lower face -->
+  <path d="M110 55 L110 80" fill="none" stroke-width="2.2"/>
+</g></svg>`;
+
+// ── DEAD TURTLE (blep!): same body + XX eyes + tongue stick + blep text ──────
+// Distinctive: XX instead of star, horizontal stick going right with curl at end
+// "blep!" handwritten text upper-right
+const SVG_DEAD = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 162 130">${FILT}
+<g filter="url(#r)" stroke="#505050" stroke-linecap="round" stroke-linejoin="round">
+  <!-- left rectangular flipper -->
+  <path d="M7 54 L7 74 L23 76 L24 52 Z" fill="#ededE5" stroke-width="3"/>
+  <!-- lower flipper -->
+  <path d="M9 74 L6 88 L22 80" fill="#ededE5" stroke-width="2.8"/>
+
+  <!-- main body oval -->
+  <path d="M24 68 C22 41 36 21 64 19 C92 21 103 41 101 69 C100 91 87 108 64 109 C41 108 25 92 24 68Z"
+        fill="#f0f0e8" stroke-width="4"/>
+
+  <!-- three bumpy feet -->
+  <path d="M38 107 C38 115 47 117 47 109" fill="#ededE5" stroke-width="2.8"/>
+  <path d="M58 110 C58 119 69 119 69 110" fill="#ededE5" stroke-width="2.8"/>
+  <path d="M78 108 C78 115 87 114 87 107" fill="#ededE5" stroke-width="2.8"/>
+
+  <!-- face oval -->
+  <path d="M82 55 C80 31 93 21 113 23 C133 25 141 39 139 59 C138 77 127 87 110 86 C93 84 83 76 82 55Z"
+        fill="#f0f0e8" stroke-width="4"/>
+
+  <!-- horizontal divider -->
+  <path d="M82 55 C96 54 118 55 139 55" fill="none" stroke-width="3"/>
+
+  <!-- XX eyes (drawn like two X's in the upper face) -->
+  <path d="M96 38 L106 48 M106 38 L96 48" fill="none" stroke-width="3.2"/>
+  <path d="M116 36 L126 47 M126 36 L116 47" fill="none" stroke-width="3.2"/>
+
+  <!-- tongue/stick: horizontal bar going right, then a loop (the blep stick from drawing) -->
+  <path d="M100 67 L142 67" fill="none" stroke-width="3.8"/>
+  <path d="M142 67 C148 62 152 70 144 72 C138 73 136 67 142 67" fill="none" stroke-width="2.5"/>
+
+  <!-- "blep!" handwritten text (no displacement filter so it's legible) -->
+  <text x="115" y="22" font-family="'Comic Sans MS',cursive" font-size="15"
+        font-weight="bold" fill="#484848" filter="none">blep!</text>
+</g></svg>`;
+
+// ─────────────────────────────────────────
+//  PRE-LOAD SVG IMAGES
+// ─────────────────────────────────────────
+const IMGS = {};
+let imgsReady = 0;
+function loadSVG(name, svgStr) {
+  const img = new Image();
+  img.onload  = () => imgsReady++;
+  img.onerror = () => { console.warn('SVG load error:', name); imgsReady++; };
+  img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgStr);
+  IMGS[name] = img;
+}
+loadSVG('lettuce', SVG_LETTUCE);
+loadSVG('bomb',    SVG_BOMB);
+loadSVG('turtle',  SVG_TURTLE);
+loadSVG('dead',    SVG_DEAD);
+
+// ─────────────────────────────────────────
+//  DRAW HELPERS
+// ─────────────────────────────────────────
+function rrect(x,y,w,h,r) {
+  ctx.beginPath();
+  ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.arcTo(x+w,y,x+w,y+r,r);
+  ctx.lineTo(x+w,y+h-r); ctx.arcTo(x+w,y+h,x+w-r,y+h,r);
+  ctx.lineTo(x+r,y+h); ctx.arcTo(x,y+h,x,y+h-r,r);
+  ctx.lineTo(x,y+r); ctx.arcTo(x,y,x+r,y,r);
+  ctx.closePath();
+}
+
+// Draw from SVG image, optionally flipped horizontally
+function drawImg(key, x, y, w, h, flipH) {
+  const img = IMGS[key];
+  ctx.save();
+  if (flipH) { ctx.transform(-1,0,0,1, x+w, y); x=0; }
+  else ctx.translate(x, y);
+  ctx.drawImage(img, 0, 0, w, h);
+  ctx.restore();
+}
+
+function drawLettuce(x, y, r) {
+  // SVG viewBox 68×68 (circle); centre on (x,y)
+  const s = r * 2.1;
+  drawImg('lettuce', x - s*0.5, y - s*0.5, s, s);
+}
+
+function drawBomb(x, y, r) {
+  // SVG viewBox 66×96; includes flame above (viewBox y starts at -10 via viewBox offset)
+  const s = r * 2.1;
+  drawImg('bomb', x - s*0.5, y - s*0.48, s, s*1.45);
+}
+
+function drawTurtleAlive(x, y, w, h, flipH) {
+  // SVG viewBox 162×122
+  drawImg('turtle', x, y, w, h, flipH);
+}
+
+function drawTurtleDead(x, y, w, h) {
+  // SVG viewBox 162×130
+  drawImg('dead', x, y, w, h, false);
+}
+
+// ─────────────────────────────────────────
+//  GAME STATE
+// ─────────────────────────────────────────
+const S={TITLE:0,PLAY:1,DEAD:2,OVER:3,MAZE:4,WIN:5};
+let state=S.TITLE;
+let score=0, lives=3, frameCount=0, spawnTimer=0;
+let fallSpeed=2.2, spawnRate=80;
+let objects=[], popups=[];
+let deadTimer=0, overTimer=0;
+let titleFrame=0, winFrame=0;
+const turtle={x:W/2, y:H-72, w:90, h:66};
+let tFacing=1;
+
+// ─────────────────────────────────────────
+//  INPUT
+// ─────────────────────────────────────────
+const keys={};
+document.addEventListener('keydown', e=>{
+  if(!keys[e.key]){ keys[e.key]=true; onKeyPress(e.key); }
+  if([' ','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)) e.preventDefault();
+});
+document.addEventListener('keyup', e=>{ keys[e.key]=false; });
+
+function onKeyPress(key) {
+  if(state===S.TITLE  && (key===' '||key==='Enter')) return startGame();
+  if(state===S.OVER   && overTimer>90)               return startMaze(0);
+  if(state===S.MAZE)                                  return mazeMove(key);
+  if(state===S.WIN    && (key===' '||key==='Enter'))  return nextMaze();
+}
+
+// ─────────────────────────────────────────
+//  CATCHING GAME
+// ─────────────────────────────────────────
+function startGame(){
+  state=S.PLAY; score=0; lives=3; frameCount=0;
+  spawnTimer=0; spawnRate=80; fallSpeed=2.2;
+  objects=[]; popups=[]; turtle.x=W/2; tFacing=1;
+}
+function spawnObj(){
+  const isL=Math.random()<0.62;
+  objects.push({type:isL?'L':'B', x:45+Math.random()*(W-90), y:-55,
+    r:17+Math.random()*9, vy:fallSpeed*(0.78+Math.random()*0.55),
+    wobble:Math.random()*Math.PI*2, wAmp:(Math.random()-0.5)*2.5});
+}
+function updatePlay(){
+  frameCount++;
+  if(frameCount%300===0){ fallSpeed=Math.min(fallSpeed+0.35,9); spawnRate=Math.max(spawnRate-8,26); }
+  if(keys['ArrowLeft'] ||keys['a']){ turtle.x=Math.max(46,turtle.x-6); tFacing=-1; }
+  if(keys['ArrowRight']||keys['d']){ turtle.x=Math.min(W-46,turtle.x+6); tFacing=1; }
+  if(++spawnTimer>=spawnRate){ spawnObj(); spawnTimer=0; }
+  for(let i=objects.length-1;i>=0;i--){
+    const o=objects[i];
+    o.y+=o.vy; o.wobble+=0.05;
+    o.x=Math.max(22,Math.min(W-22,o.x+Math.sin(o.wobble)*o.wAmp));
+    if(o.y>H+60){ objects.splice(i,1); continue; }
+    const dx=o.x-turtle.x, dy=o.y-turtle.y;
+    if(Math.sqrt(dx*dx+dy*dy)<o.r+30){
+      objects.splice(i,1);
+      if(o.type==='L'){
+        score++;
+        popups.push({x:turtle.x,y:turtle.y-20,text:'+1',life:50,color:'#228800'});
+      } else {
+        lives--;
+        popups.push({x:turtle.x,y:turtle.y-20,text:'💥 OUCH!',life:80,color:'#cc2200'});
+        if(lives<=0){ state=S.OVER; overTimer=0; }
+        else         { state=S.DEAD; deadTimer=160; }
+      }
+    }
+  }
+  for(let i=popups.length-1;i>=0;i--){ popups[i].life--; popups[i].y-=0.8; if(popups[i].life<=0)popups.splice(i,1); }
+}
+function updateFallingOnly(){
+  if(++spawnTimer>=spawnRate){ spawnObj(); spawnTimer=0; }
+  for(let i=objects.length-1;i>=0;i--){
+    const o=objects[i]; o.y+=o.vy; o.wobble+=0.05;
+    o.x=Math.max(22,Math.min(W-22,o.x+Math.sin(o.wobble)*o.wAmp));
+    if(o.y>H+60) objects.splice(i,1);
+  }
+  for(let i=popups.length-1;i>=0;i--){ popups[i].life--; popups[i].y-=0.8; if(popups[i].life<=0)popups.splice(i,1); }
+}
+
+function drawPlayScene(deadTurtle=false){
+  const sky=ctx.createLinearGradient(0,0,0,H);
+  sky.addColorStop(0,'#6ab8e8'); sky.addColorStop(0.65,'#b8e888'); sky.addColorStop(1,'#88cc44');
+  ctx.fillStyle=sky; ctx.fillRect(0,0,W,H);
+  // clouds
+  ctx.fillStyle='rgba(255,255,255,0.82)';
+  [[70,55,28],[180,38,22],[310,62,26],[400,42,20]].forEach(([cx,cy,r])=>{
+    [[0,0,r],[r*.7,r*.2,r*.75],[-r*.6,r*.25,r*.65]].forEach(([ox,oy,rr])=>{
+      ctx.beginPath(); ctx.arc(cx+ox,cy+oy,rr,0,Math.PI*2); ctx.fill();
+    });
+  });
+  // ground
+  ctx.fillStyle='#6ab030'; ctx.fillRect(0,H-48,W,48);
+  ctx.fillStyle='#80cc3c'; ctx.fillRect(0,H-48,W,10);
+  for(let gx=8;gx<W;gx+=18){
+    ctx.fillStyle='#4a8c24'; ctx.beginPath();
+    ctx.moveTo(gx,H-48); ctx.lineTo(gx+4,H-58); ctx.lineTo(gx+9,H-48); ctx.fill();
+  }
+  // HUD
+  ctx.fillStyle='rgba(0,0,0,0.4)'; rrect(6,6,120,40,10); ctx.fill();
+  rrect(W-126,6,120,40,10); ctx.fill();
+  ctx.textBaseline='top'; ctx.textAlign='left';
+  ctx.fillStyle='white'; ctx.font='bold 21px Comic Sans MS, cursive';
+  ctx.fillText(`🥬 ${score}`,14,13);
+  ctx.textAlign='right';
+  ctx.fillStyle=lives<=1?'#ff5555':'white';
+  ctx.fillText(`💣 × ${lives}`,W-10,13);
+  // life dots
+  for(let i=0;i<3;i++){
+    ctx.fillStyle=i<(3-lives)?'#cc2222':'#88ff44';
+    ctx.strokeStyle='#1a3a08'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.arc(W/2-20+i*20,H-16,9,0,Math.PI*2); ctx.fill(); ctx.stroke();
+  }
+  // falling objects
+  for(const o of objects){ o.type==='L'?drawLettuce(o.x,o.y,o.r):drawBomb(o.x,o.y,o.r); }
+  // turtle
+  if(deadTurtle){
+    const sh=deadTimer>130?(Math.random()-0.5)*6:0;
+    drawTurtleDead(turtle.x-turtle.w/2+sh,turtle.y-turtle.h/2+sh,turtle.w,turtle.h);
+    if(Math.floor(deadTimer/12)%2===0){
+      ctx.fillStyle='#ff3300'; ctx.font='bold 30px Comic Sans MS'; ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText('💥 OUCH!! 💥',W/2,H/2-40);
+    }
+  } else {
+    drawTurtleAlive(turtle.x-turtle.w/2, turtle.y-turtle.h/2, turtle.w, turtle.h, tFacing===-1);
+  }
+  // popups
+  for(const p of popups){
+    ctx.globalAlpha=Math.min(1,p.life/30);
+    ctx.fillStyle=p.color; ctx.font='bold 22px Comic Sans MS';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(p.text,p.x,p.y);
+    ctx.globalAlpha=1;
+  }
+}
+
+// ─────────────────────────────────────────
+//  TITLE
+// ─────────────────────────────────────────
+function drawTitle(){
+  titleFrame++;
+  const sky=ctx.createLinearGradient(0,0,0,H);
+  sky.addColorStop(0,'#4488cc'); sky.addColorStop(1,'#88dd66');
+  ctx.fillStyle=sky; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='rgba(255,255,255,0.75)';
+  [[60,50,24],[220,35,20],[370,55,22],[430,35,16]].forEach(([cx,cy,r])=>{
+    [[0,0,r],[r*.7,r*.2,r*.7],[-r*.6,r*.25,r*.6]].forEach(([ox,oy,rr])=>{
+      ctx.beginPath(); ctx.arc(cx+ox,cy+oy,rr,0,Math.PI*2); ctx.fill();
+    });
+  });
+  const b=Math.sin(titleFrame*0.055)*5;
+  ctx.save(); ctx.translate(W/2,88+b); ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.font='bold 58px Comic Sans MS,cursive';
+  ctx.strokeStyle='#1a3a08'; ctx.lineWidth=6; ctx.strokeText('SUPER',0,-24);
+  ctx.fillStyle='#ffd700'; ctx.fillText('SUPER',0,-24);
+  ctx.font='bold 68px Comic Sans MS,cursive';
+  ctx.strokeStyle='#1a3a08'; ctx.lineWidth=8; ctx.strokeText('TURTLE!',0,44);
+  ctx.fillStyle='#ff6600'; ctx.fillText('TURTLE!',0,44);
+  ctx.restore();
+  // big turtle on title
+  drawTurtleAlive(W/2-75,190,150,112,true);
+  // floating samples
+  const fl=Math.sin(titleFrame*0.065)*8;
+  drawLettuce(62,276+fl,22); drawBomb(400,264-fl,18);
+  // instructions panel
+  ctx.fillStyle='rgba(0,0,0,0.45)'; rrect(55,328,370,118,14); ctx.fill();
+  ctx.strokeStyle='#88ff44'; ctx.lineWidth=2; rrect(55,328,370,118,14); ctx.stroke();
+  ctx.textAlign='center'; ctx.textBaseline='top';
+  ctx.font='16px Comic Sans MS,cursive';
+  ctx.fillStyle='#eeffcc'; ctx.fillText('🥬  Catch lettuce = +1 point!',W/2,343);
+  ctx.fillText('💣  Eat a bomb = you die for a sec',W/2,366);
+  ctx.fillStyle='#ff9999'; ctx.fillText('💀  3 bombs = GAME OVER!',W/2,389);
+  ctx.fillStyle='#99ffcc'; ctx.fillText('Then escape TWO HUGE MAZES! 🐢',W/2,412);
+  if(Math.floor(titleFrame/28)%2===0){
+    ctx.fillStyle='#ffd700'; ctx.font='bold 22px Comic Sans MS,cursive';
+    ctx.fillText('▶  PRESS SPACE TO START  ◀',W/2,466);
+  }
+}
+
+// ─────────────────────────────────────────
+//  GAME OVER
+// ─────────────────────────────────────────
+function drawGameOver(){
+  const grad=ctx.createLinearGradient(0,0,0,H);
+  grad.addColorStop(0,'#220000'); grad.addColorStop(1,'#440011');
+  ctx.fillStyle=grad; ctx.fillRect(0,0,W,H);
+  const sh=overTimer<25?(Math.random()-0.5)*8:0;
+  drawTurtleDead(W/2-74+sh,145+sh,148,118);
+  ctx.textAlign='center'; ctx.textBaseline='top';
+  ctx.font='bold 50px Comic Sans MS,cursive'; ctx.fillStyle='#ff4444';
+  ctx.fillText('💥 BOOM! 💥',W/2,44);
+  ctx.font='bold 38px Comic Sans MS,cursive'; ctx.fillStyle='#ffdd00';
+  ctx.fillText('GAME OVER!',W/2,104);
+  ctx.fillStyle='rgba(255,255,255,0.1)'; rrect(80,288,320,98,14); ctx.fill();
+  ctx.strokeStyle='#ffdd00'; ctx.lineWidth=2; rrect(80,288,320,98,14); ctx.stroke();
+  ctx.fillStyle='white'; ctx.font='bold 28px Comic Sans MS,cursive';
+  ctx.fillText(`You caught ${score} 🥬`,W/2,302);
+  const rating=score<5?'Baby steps! 🐣':score<15?'Nice munching! 🌟':score<30?'Lettuce Legend! 🏆':'TURTLE GOD!! 🐢👑';
+  ctx.fillStyle='#aaffaa'; ctx.font='bold 22px Comic Sans MS,cursive';
+  ctx.fillText(rating,W/2,348);
+  if(overTimer>90&&Math.floor(overTimer/26)%2===0){
+    ctx.fillStyle='#88ffcc'; ctx.font='bold 19px Comic Sans MS,cursive';
+    ctx.fillText('▶  Any key → MAZE 1  ◀',W/2,412);
+  }
+  for(let i=0;i<3;i++){
+    ctx.save(); ctx.translate(W/2-44+i*44,472); ctx.scale(0.85,0.85);
+    drawBomb(0,0,18); ctx.restore();
+  }
+}
+
+// ─────────────────────────────────────────
+//  PROCEDURAL MAZE GENERATOR
+//  Uses recursive-backtracker (depth-first).
+//  Guarantees: every cell reachable, one solution path, lots of dead ends.
+//  0=open  1=wall  3=lettuce(goal)  4=bomb
+// ─────────────────────────────────────────
+
+// Two difficulty configs:
+//   LW/LH  = logical cell grid (bigger = harder, longer path)
+//   bombs  = number of bombs scattered through maze
+const MAZE_CFG = [
+  { LW:11, LH:13, bombs:10, name:'MAZE 1' },      // 23×27 display grid
+  { LW:15, LH:18, bombs:20, name:'MAZE 2 💀💀' }, // 31×37 display grid
+];
+const MAZE_TOTAL = MAZE_CFG.length;
+
+function buildMaze(cfg) {
+  const {LW, LH, bombs} = cfg;
+  const DW = LW*2+1, DH = LH*2+1;
+
+  // Start all cells as walls
+  const grid = Array.from({length:DH}, () => Array(DW).fill(1));
+  // Open all logical cell centres
+  for(let r=0;r<LH;r++) for(let c=0;c<LW;c++) grid[r*2+1][c*2+1]=0;
+
+  // Recursive backtracker — carves passages by knocking out walls
+  const vis = Array.from({length:LH}, ()=>Array(LW).fill(false));
+  // Iterative DFS to avoid any stack-depth worries on large mazes
+  const stack = [[0,0]];
+  vis[0][0]=true;
+  while(stack.length){
+    const [c,r] = stack[stack.length-1];
+    const dirs = [[0,-1],[1,0],[0,1],[-1,0]].filter(([dc,dr])=>{
+      const nc=c+dc, nr=r+dr;
+      return nc>=0&&nc<LW&&nr>=0&&nr<LH&&!vis[nr][nc];
+    });
+    if(dirs.length===0){ stack.pop(); continue; }
+    // Pick a random unvisited neighbour
+    const [dc,dr] = dirs[Math.floor(Math.random()*dirs.length)];
+    const nc=c+dc, nr=r+dr;
+    // Knock out the wall between current and neighbour
+    grid[r*2+1+dr][c*2+1+dc]=0;
+    vis[nr][nc]=true;
+    stack.push([nc,nr]);
+  }
+
+  // Place goal at bottom-right logical cell
+  grid[DH-2][DW-2]=3;
+
+  // Scatter bombs — avoid start region (top-left 3×3 display cells) and goal cell
+  const candidates=[];
+  for(let r=0;r<DH;r++) for(let c=0;c<DW;c++){
+    if(grid[r][c]===0 && !(r<=3&&c<=3) && !(r>=DH-3&&c>=DW-3)) candidates.push([r,c]);
+  }
+  // Fisher-Yates shuffle candidates
+  for(let i=candidates.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [candidates[i],candidates[j]]=[candidates[j],candidates[i]];
+  }
+  candidates.slice(0, Math.min(bombs, candidates.length)).forEach(([r,c])=>{ grid[r][c]=4; });
+
+  // Cell pixel size — fill canvas width, leave 52px header
+  const CW = Math.floor(W / DW);
+  const CH = Math.floor((H-52) / DH);
+
+  return { grid, DW, DH, CW, CH };
+}
+
+let mazeCfg, mazeData, mPos, mFacing, mBombed, mBombTimer, mLevel;
+
+function startMaze(level){
+  state=S.MAZE; mLevel=level;
+  mazeCfg=MAZE_CFG[level];
+  mazeData=buildMaze(mazeCfg);
+  mPos={c:1,r:1}; mFacing=1; mBombed=false; mBombTimer=0;
+}
+function nextMaze(){
+  if(mLevel<MAZE_TOTAL-1) startMaze(mLevel+1);
+  else { state=S.TITLE; titleFrame=0; }
+}
+
+function mazeMove(key){
+  if(mBombed) return;
+  const {grid,DW,DH}=mazeData;
+  let {c,r}=mPos;
+  if(key==='ArrowUp')    r--;
+  if(key==='ArrowDown')  r++;
+  if(key==='ArrowLeft')  { c--; mFacing=-1; }
+  if(key==='ArrowRight') { c++; mFacing= 1; }
+  if(r<0||r>=DH||c<0||c>=DW) return;
+  const cell=grid[r][c];
+  if(cell===1) return;
+  mPos={c,r};
+  if(cell===3)      { winFrame=0; state=S.WIN; }
+  else if(cell===4) { grid[r][c]=0; mBombed=true; mBombTimer=110; }
+}
+
+function drawMaze(){
+  const {grid,DW,DH,CW,CH}=mazeData;
+  ctx.fillStyle='#1a2a0a'; ctx.fillRect(0,0,W,H);
+  // stars bg
+  ctx.fillStyle='rgba(255,255,255,0.4)';
+  [[35,28],[160,14],[305,22],[425,38],[90,9],[385,17],[240,6]].forEach(([sx,sy])=>{
+    ctx.beginPath(); ctx.arc(sx,sy,1.5,0,Math.PI*2); ctx.fill();
+  });
+  // header
+  ctx.textAlign='center'; ctx.textBaseline='top';
+  ctx.fillStyle='#88ff44'; ctx.font='bold 17px Comic Sans MS,cursive';
+  ctx.fillText(`🐢  ${mazeCfg.name}  —  Get the lettuce! 🥬`, W/2, 7);
+  ctx.fillStyle='#88ff88'; ctx.font='12px Comic Sans MS,cursive';
+  ctx.fillText('Arrow keys  •  Avoid the BOMBS!', W/2, 30);
+
+  const MY=52;
+  // cells
+  for(let r=0;r<DH;r++){
+    for(let c=0;c<DW;c++){
+      const px=c*CW, py=MY+r*CH, cell=grid[r][c];
+      if(cell===1){
+        ctx.fillStyle='#2a4a14'; ctx.fillRect(px,py,CW,CH);
+        if(CH>6){ ctx.fillStyle='#3a6a1c'; ctx.fillRect(px+1,py+1,CW-2,Math.min(4,CH-2)); }
+      } else {
+        ctx.fillStyle='#edfde0'; ctx.fillRect(px,py,CW,CH);
+      }
+      if(cell===4){
+        const br=Math.min(CW,CH)*0.34;
+        drawBomb(px+CW/2, py+CH/2+br*0.1, br);
+      } else if(cell===3){
+        const lr=Math.min(CW,CH)*0.36;
+        const gl=ctx.createRadialGradient(px+CW/2,py+CH/2,1,px+CW/2,py+CH/2,lr*1.6);
+        gl.addColorStop(0,'rgba(100,255,60,0.5)'); gl.addColorStop(1,'rgba(100,255,60,0)');
+        ctx.fillStyle=gl; ctx.beginPath(); ctx.arc(px+CW/2,py+CH/2,lr*1.6,0,Math.PI*2); ctx.fill();
+        drawLettuce(px+CW/2, py+CH/2, lr);
+      }
+    }
+  }
+  // maze turtle
+  const px=mPos.c*CW, py=MY+mPos.r*CH;
+  if(mBombed){
+    drawTurtleDead(px+1,py+1,CW-2,CH-2);
+    if(mBombTimer>0){
+      ctx.fillStyle='#ff4400'; ctx.font='bold 13px Comic Sans MS';
+      ctx.textAlign='center'; ctx.fillText('💥',px+CW/2,py-4);
+    }
+  } else {
+    drawTurtleAlive(px+1,py+1,CW-2,CH-2,mFacing===-1);
+  }
+  // border
+  ctx.strokeStyle='#66cc22'; ctx.lineWidth=2;
+  ctx.strokeRect(0,MY,DW*CW,DH*CH);
+}
+
+// ─────────────────────────────────────────
+//  WIN SCREEN
+// ─────────────────────────────────────────
+const confetti=Array.from({length:45},()=>({
+  x:Math.random()*W, y:Math.random()*H,
+  vx:(Math.random()-0.5)*3, vy:1+Math.random()*2,
+  r:3+Math.random()*5,
+  color:`hsl(${Math.random()*360},90%,65%)`,
+  spin:Math.random()*0.25-0.12
+}));
+
+function drawWin(){
+  winFrame++;
+  const grad=ctx.createLinearGradient(0,0,0,H);
+  grad.addColorStop(0,'#004422'); grad.addColorStop(1,'#007744');
+  ctx.fillStyle=grad; ctx.fillRect(0,0,W,H);
+  confetti.forEach(p=>{
+    p.x=(p.x+p.vx+W)%W; p.y=(p.y+p.vy)%H;
+    ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(winFrame*p.spin);
+    ctx.fillStyle=p.color; ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r); ctx.restore();
+  });
+  const b=Math.sin(winFrame*0.09)*7;
+  ctx.textAlign='center'; ctx.textBaseline='top';
+  ctx.font='bold 56px Comic Sans MS,cursive';
+  ctx.strokeStyle='#1a4a0a'; ctx.lineWidth=7; ctx.strokeText('🎉 YAY!! 🎉',W/2,50+b);
+  ctx.fillStyle='#ffd700'; ctx.fillText('🎉 YAY!! 🎉',W/2,50+b);
+  drawTurtleAlive(W/2-80,145,152,114,true);
+  drawLettuce(W/2+58,178,33);
+  ctx.font='bold 24px Comic Sans MS,cursive'; ctx.fillStyle='white';
+  ctx.fillText('Super Turtle got the',W/2,295);
+  ctx.fillStyle='#88ff44'; ctx.font='bold 30px Comic Sans MS,cursive';
+  ctx.fillText('LETTUCE!! 🥬✨',W/2,328);
+  if(mLevel<MAZE_TOTAL-1){
+    ctx.fillStyle='#ffcc44'; ctx.font='bold 20px Comic Sans MS,cursive';
+    ctx.fillText(`MAZE ${mLevel+2} awaits... 😱`,W/2,378);
+    if(Math.floor(winFrame/28)%2===0){
+      ctx.fillStyle='#aaffcc'; ctx.font='bold 19px Comic Sans MS,cursive';
+      ctx.fillText('▶  SPACE → NEXT MAZE  ◀',W/2,426);
+    }
+  } else {
+    ctx.fillStyle='#ffcc44'; ctx.font='bold 22px Comic Sans MS,cursive';
+    ctx.fillText(`Total score: ${score} lettuces`,W/2,378);
+    ctx.fillText('YOU BEAT EVERYTHING!! 👑',W/2,410);
+    if(Math.floor(winFrame/28)%2===0){
+      ctx.fillStyle='#aaffcc'; ctx.font='bold 19px Comic Sans MS,cursive';
+      ctx.fillText('▶  SPACE to play again!  ◀',W/2,456);
+    }
+  }
+}
+
+// ─────────────────────────────────────────
+//  MAIN LOOP
+// ─────────────────────────────────────────
+function loop(){
+  ctx.clearRect(0,0,W,H);
+  ctx.textBaseline='alphabetic';
+  switch(state){
+    case S.TITLE: drawTitle(); break;
+    case S.PLAY:  updatePlay(); drawPlayScene(false); break;
+    case S.DEAD:
+      deadTimer--; updateFallingOnly(); drawPlayScene(true);
+      if(deadTimer<=0) state=S.PLAY;
+      break;
+    case S.OVER: overTimer++; drawGameOver(); break;
+    case S.MAZE:
+      if(mBombTimer>0&&--mBombTimer<=0) mBombed=false;
+      drawMaze(); break;
+    case S.WIN: drawWin(); break;
+  }
+  requestAnimationFrame(loop);
+}
+loop();
+</script>
+</body>
+</html>
