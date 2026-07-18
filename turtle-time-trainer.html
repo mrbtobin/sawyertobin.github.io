@@ -483,23 +483,24 @@
   }
 
   /* ---------------- Level configs ----------------
-     Level 1 varies the hour across all 12 o'clock positions. Every level
-     after that fixes the hour at seven so he's practicing pure minute-hand
-     reading without the hour hand changing underneath him, and difficulty
-     climbs through the minute values: whole/half/quarter -> five-minute
-     landmarks -> any single minute across the first half of the hour ->
-     any single minute across the second half of the hour. */
+     Every level varies the hour across all 12 o'clock positions, so the set
+     of times he sees is different every playthrough. What actually changes
+     level to level is the minute pattern he has to read: whole/half/quarter
+     -> five-minute landmarks -> any single minute across the first half of
+     the hour -> any single minute across the second half of the hour. */
   function range(a,b,step){ var r=[]; for(var i=a;i<=b;i+=step) r.push(i); return r; }
 
+  var ALL_HOURS = range(1,12,1);
+
   var LEVELS = [
-    { id:1, name:"Sea Turtle Start",     hours:range(1,12,1), minutes:[0],            style:"numeric" },
-    { id:2, name:"Half Shell",           hours:[7],           minutes:[30],           style:"mixed"   },
-    { id:3, name:"Quarter Deck",         hours:[7],           minutes:[15],           style:"mixed"   },
-    { id:4, name:"Forty-Five Flippers",  hours:[7],           minutes:[45],           style:"numeric" },
-    { id:5, name:"Five Minute Flippers", hours:[7],           minutes:[5,10,20,25],   style:"numeric" },
-    { id:6, name:"Snapping Speedster",   hours:[7],           minutes:[35,40,50,55],  style:"numeric" },
-    { id:7, name:"Minute Marsh",         hours:[7],           minutes:range(1,29,1),  style:"numeric" },
-    { id:8, name:"Turtle Time Master",   hours:[7],           minutes:range(31,59,1), style:"numeric" }
+    { id:1, name:"Sea Turtle Start",     hours:ALL_HOURS, minutes:[0],            style:"numeric" },
+    { id:2, name:"Half Shell",           hours:ALL_HOURS, minutes:[30],           style:"mixed"   },
+    { id:3, name:"Quarter Deck",         hours:ALL_HOURS, minutes:[15],           style:"mixed"   },
+    { id:4, name:"Forty-Five Flippers",  hours:ALL_HOURS, minutes:[45],           style:"numeric" },
+    { id:5, name:"Five Minute Flippers", hours:ALL_HOURS, minutes:[5,10,20,25],   style:"numeric" },
+    { id:6, name:"Snapping Speedster",   hours:ALL_HOURS, minutes:[35,40,50,55],  style:"numeric" },
+    { id:7, name:"Minute Marsh",         hours:ALL_HOURS, minutes:range(1,29,1),  style:"numeric" },
+    { id:8, name:"Turtle Time Master",   hours:ALL_HOURS, minutes:range(31,59,1), style:"numeric" }
   ];
   var PASS_THRESHOLD = 9;
   var QUESTIONS_PER_LEVEL = 12;
