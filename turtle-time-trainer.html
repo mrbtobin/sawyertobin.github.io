@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Turtle Time Trainer 🐢</title>
+<style>
+  :root{
+    --shell-dark:#2e7d32;
+    --shell-mid:#43a047;
+    --shell-light:#81c784;
+    --shell-pale:#dcedc8;
+    --sand:#fff8e1;
+    --sky1:#8ecae6;
+    --sky2:#cdeefd;
+    --brown:#6d4c41;
+    --brown-dark:#4e342e;
+    --accent:#ff7043;
+    --ink:#1b3a2b;
+    --danger:#e53935;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    font-family:'Trebuchet MS','Segoe UI',Verdana,sans-serif;
+    background:linear-gradient(180deg,var(--sky1) 0%,var(--sky2) 40%,var(--shell-pale) 100%);
+    color:var(--ink);
+    min-height:100vh;
+    overscroll-behavior:none;
+  }
+  #app{
+    max-width:480px;
+    margin:0 auto;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+    overflow-x:hidden;
+  }
+  .screen{display:none; flex-direction:column; flex:1; padding:18px 16px 34px;}
+  .screen.active{display:flex;}
+
+  h1{font-size:1.8rem; margin:6px 0 2px; text-align:center; color:var(--shell-dark); text-shadow:1px 1px 0 #fff;}
+  h2{font-size:1.3rem; margin:4px 0 10px; text-align:center; color:var(--shell-dark);}
+  p.sub{text-align:center; margin:0 0 14px; color:var(--ink); opacity:.85; font-size:.95rem;}
+
+  .card{
+    background:#fff;
+    border-radius:22px;
+    padding:16px 16px;
+    box-shadow:0 6px 0 rgba(0,0,0,.08), 0 8px 18px rgba(0,0,0,.08);
+    margin-bottom:16px;
+  }
+
+  .mascot-big{font-size:5.5rem; text-align:center; animation:idleBob 2.4s ease-in-out infinite;}
+  @keyframes idleBob{0%,100%{transform:translateY(0) rotate(-2deg);}50%{transform:translateY(-10px) rotate(2deg);}}
+
+  .btn{
+    display:block;
+    width:100%;
+    background:var(--shell-dark);
+    color:#fff;
+    border:none;
+    border-radius:18px;
+    padding:16px 18px;
+    font-size:1.1rem;
+    font-weight:700;
+    box-shadow:0 5px 0 #1b5e20;
+    touch-action:manipulation;
+    cursor:pointer;
+    margin-bottom:12px;
+    transition:transform .05s;
+  }
+  .btn:active{transform:translateY(4px); box-shadow:0 1px 0 #1b5e20;}
+  .btn.secondary{background:var(--brown); box-shadow:0 5px 0 var(--brown-dark);}
+  .btn.secondary:active{box-shadow:0 1px 0 var(--brown-dark);}
+  .btn.accent{background:var(--accent); box-shadow:0 5px 0 #bf360c;}
+  .btn.accent:active{box-shadow:0 1px 0 #bf360c;}
+  .btn.small{padding:10px 14px; font-size:.9rem; box-shadow:0 4px 0 rgba(0,0,0,.15); width:auto;}
+  .btn:disabled{opacity:.45; box-shadow:none; cursor:default;}
+
+  .legend{display:flex; flex-direction:column; gap:6px; font-size:.85rem; margin-top:2px;}
+  .legend .row{display:flex; align-items:center; gap:8px;}
+  .dot{width:16px;height:16px;border-radius:50%;display:inline-block;flex:none;}
+  .dot-hour{background:var(--brown);}
+  .dot-minute{background:var(--shell-dark);}
+
+  /* Level select */
+  .level-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-top:6px;}
+  .level-btn{
+    background:var(--shell-mid);
+    color:#fff;
+    border:none;
+    border-radius:18px;
+    padding:14px 10px;
+    text-align:center;
+    box-shadow:0 5px 0 #2e7d32;
+    font-weight:700;
+    cursor:pointer;
+  }
+  .level-btn .num{font-size:1.4rem; display:block;}
+  .level-btn .name{font-size:.72rem; font-weight:600; opacity:.95; display:block; margin-top:2px;}
+  .level-btn.locked{background:#9e9e9e; box-shadow:0 5px 0 #616161; opacity:.7; cursor:default;}
+  .level-btn:active:not(.locked){transform:translateY(4px); box-shadow:0 1px 0 #2e7d32;}
+  .reset-link{text-align:center; font-size:.75rem; color:#607d8b; margin-top:8px; text-decoration:underline; cursor:pointer;}
+
+  /* Game screen */
+  .topbar{display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;}
+  .topbar .lvl-label{font-weight:700; color:var(--shell-dark); font-size:.95rem;}
+  .topbar .score-label{font-weight:700; color:var(--brown); font-size:.95rem;}
+  .back-x{background:none; border:none; font-size:1.3rem; cursor:pointer; color:var(--brown);}
+  .topbar-right{display:flex; align-items:center; gap:2px;}
+
+  .dots{display:flex; gap:5px; justify-content:center; margin:6px 0 12px; flex-wrap:wrap;}
+  .qdot{width:11px; height:11px; border-radius:50%; background:#c8d6c8; border:2px solid #fff;}
+  .qdot.current{outline:2px solid var(--accent); outline-offset:1px;}
+  .qdot.correct{background:var(--shell-dark);}
+  .qdot.wrong{background:var(--danger);}
+
+  .question-banner{
+    background:#fff;
+    border-radius:20px;
+    padding:14px 16px;
+    text-align:center;
+    font-size:1.25rem;
+    font-weight:700;
+    box-shadow:0 4px 12px rgba(0,0,0,.1);
+    margin-bottom:10px;
+    min-height:1.4em;
+  }
+
+  .clock-wrap{display:flex; justify-content:center; margin:6px 0 8px;}
+  #clockSvg{width:100%; max-width:300px; height:auto; touch-action:none; user-select:none;}
+  #clockSvg.shake{animation:shakeAnim .4s;}
+  @keyframes shakeAnim{0%,100%{transform:translateX(0);}20%{transform:translateX(-8px);}40%{transform:translateX(8px);}60%{transform:translateX(-6px);}80%{transform:translateX(6px);}}
+
+  .hand{stroke-linecap:round;}
+  .hour-hand-line{stroke:var(--brown); stroke-width:9;}
+  .minute-hand-line{stroke:var(--shell-dark); stroke-width:6;}
+  .knob{cursor:grab; filter:drop-shadow(0 2px 2px rgba(0,0,0,.25));}
+  .hour-knob{fill:var(--brown);}
+  .minute-knob{fill:var(--shell-dark);}
+  .hand-group.transition{transition:transform .6s cubic-bezier(.34,1.56,.64,1);}
+
+  .feedback{text-align:center; min-height:1.5em; font-weight:700; font-size:1.02rem; margin-bottom:8px;}
+  .feedback.ok{color:var(--shell-dark);}
+  .feedback.bad{color:var(--danger);}
+  .feedback.reveal{color:var(--brown);}
+
+  .check-row{display:flex; gap:10px;}
+  .check-row .btn{margin-bottom:0;}
+
+  /* Results screen */
+  .results-emoji{font-size:4.2rem; text-align:center; margin-bottom:6px;}
+  .score-big{text-align:center; font-size:2rem; font-weight:800; color:var(--shell-dark); margin-bottom:4px;}
+  .score-msg{text-align:center; font-size:1.05rem; margin-bottom:16px;}
+
+  /* Turtle celebration overlay */
+  .turtle-stage{
+    position:fixed; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    background:rgba(0,0,0,0);
+    opacity:0; pointer-events:none;
+    transition:opacity .25s, background .25s;
+    z-index:80;
+  }
+  .turtle-stage.show{opacity:1; background:rgba(20,30,20,.18);}
+  .turtle-stage-inner{position:relative; width:260px; height:260px;}
+  .turtle-emoji{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); font-size:96px; line-height:1; filter:drop-shadow(0 6px 8px rgba(0,0,0,.25));}
+  .acc{position:absolute; display:none; font-size:46px; transform:translate(-50%,-50%); left:50%; top:50%;}
+  .acc-hat{top:27%; font-size:38px;}
+  .acc-crown{top:23%; font-size:34px;}
+  .acc-cape{top:56%; font-size:66px; z-index:0;}
+  .acc-sword{left:80%; top:44%;}
+  .acc-glasses{left:41%; top:36%; font-size:28px;}
+  .acc-board{top:84%;}
+  .acc-stars{top:6%; font-size:38px;}
+  .turtle-emoji{z-index:1;}
+  .confetti-layer{position:absolute; inset:0; overflow:visible; pointer-events:none;}
+  .confetti-piece{position:absolute; top:-14px; width:9px; height:9px; border-radius:2px; animation-name:confettiFall; animation-timing-function:linear; animation-fill-mode:forwards;}
+  @keyframes confettiFall{0%{transform:translateY(0) rotate(0deg); opacity:1;}100%{transform:translateY(280px) rotate(420deg); opacity:0;}}
+  .celebrate-text{position:absolute; bottom:-6px; left:50%; transform:translateX(-50%); font-weight:800; color:#fff; text-shadow:0 2px 4px rgba(0,0,0,.4); font-size:1.1rem; white-space:nowrap;}
+
+  /* SO MANY TURTLES mega celebration */
+  .turtle-swarm{position:fixed; inset:0; pointer-events:none; z-index:85; overflow:hidden; opacity:0; transition:opacity .25s; background:radial-gradient(circle at 50% 35%, rgba(255,255,255,.3), rgba(0,0,0,.15));}
+  .turtle-swarm.show{opacity:1;}
+  .swarm-turtle{position:absolute; will-change:transform; filter:drop-shadow(0 3px 4px rgba(0,0,0,.3));}
+  @keyframes swarmFloat{0%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-30px) rotate(15deg);}100%{transform:translateY(0) rotate(-15deg);}}
+  @keyframes swarmSpin{0%{transform:rotate(0deg) scale(1);}50%{transform:rotate(180deg) scale(1.25);}100%{transform:rotate(360deg) scale(1);}}
+  @keyframes swarmBounce{0%{transform:translateY(0);}50%{transform:translateY(-45px);}100%{transform:translateY(0);}}
+  .mega-text{position:fixed; top:12%; left:50%; transform:translateX(-50%) scale(1); font-size:1.7rem; font-weight:900; color:#fff; text-shadow:0 3px 0 #d84315, 0 6px 14px rgba(0,0,0,.45); text-align:center; z-index:90; opacity:0; pointer-events:none; transition:opacity .2s; animation:megaPulse .5s ease-in-out infinite alternate; width:90%;}
+  .mega-text.show{opacity:1;}
+  @keyframes megaPulse{0%{transform:translateX(-50%) scale(1) rotate(-2deg);}100%{transform:translateX(-50%) scale(1.12) rotate(2deg);}}
+
+  /* ---- Per-question movement patterns: a big pool, one picked at random
+         (never the same twice in a row) every time he gets an answer right ---- */
+  @keyframes moveBounceDance{0%{transform:translate(-50%,-50%) translateY(0) rotate(0);}20%{transform:translate(-50%,-50%) translateY(-40px) rotate(-6deg);}40%{transform:translate(-50%,-50%) translateY(0) rotate(0);}60%{transform:translate(-50%,-50%) translateY(-30px) rotate(6deg);}80%{transform:translate(-50%,-50%) translateY(0) rotate(0);}100%{transform:translate(-50%,-50%) translateY(0) rotate(0);}}
+  @keyframes moveDiagonalZoom{0%{transform:translate(-50%,-50%) translate(-90px,90px) scale(.7);}50%{transform:translate(-50%,-50%) translate(60px,-60px) scale(1.15);}100%{transform:translate(-50%,-50%) translate(0,0) scale(1);}}
+  @keyframes moveSwirlSpiral{0%{transform:translate(-50%,-50%) translate(80px,0) rotate(0deg) scale(.6);}25%{transform:translate(-50%,-50%) translate(0,-80px) rotate(180deg) scale(.8);}50%{transform:translate(-50%,-50%) translate(-50px,0) rotate(360deg) scale(.9);}75%{transform:translate(-50%,-50%) translate(0,40px) rotate(540deg) scale(1);}100%{transform:translate(-50%,-50%) translate(0,0) rotate(720deg) scale(1);}}
+  @keyframes moveFigureEight{0%{transform:translate(-50%,-50%) translate(0,0);}12%{transform:translate(-50%,-50%) translate(-60px,-40px);}25%{transform:translate(-50%,-50%) translate(-90px,0);}37%{transform:translate(-50%,-50%) translate(-60px,40px);}50%{transform:translate(-50%,-50%) translate(0,0);}62%{transform:translate(-50%,-50%) translate(60px,-40px);}75%{transform:translate(-50%,-50%) translate(90px,0);}87%{transform:translate(-50%,-50%) translate(60px,40px);}100%{transform:translate(-50%,-50%) translate(0,0);}}
+  @keyframes moveZigzagDash{0%{transform:translate(-50%,-50%) translate(-120px,0);}20%{transform:translate(-50%,-50%) translate(-70px,-40px);}40%{transform:translate(-50%,-50%) translate(-20px,20px);}60%{transform:translate(-50%,-50%) translate(30px,-30px);}80%{transform:translate(-50%,-50%) translate(70px,15px);}100%{transform:translate(-50%,-50%) translate(0,0);}}
+  @keyframes moveSnakeWave{0%{transform:translate(-50%,-50%) translate(-90px,-20px) rotate(-10deg);}25%{transform:translate(-50%,-50%) translate(-45px,10px) rotate(10deg);}50%{transform:translate(-50%,-50%) translate(0,-15px) rotate(-8deg);}75%{transform:translate(-50%,-50%) translate(45px,10px) rotate(8deg);}100%{transform:translate(-50%,-50%) translate(0,0) rotate(0);}}
+  @keyframes movePendulumSwing{0%{transform:translate(-50%,-50%) rotate(-55deg);}30%{transform:translate(-50%,-50%) rotate(40deg);}55%{transform:translate(-50%,-50%) rotate(-25deg);}75%{transform:translate(-50%,-50%) rotate(15deg);}90%{transform:translate(-50%,-50%) rotate(-6deg);}100%{transform:translate(-50%,-50%) rotate(0deg);}}
+  @keyframes moveMoonwalkSlide{0%{transform:translate(-50%,-50%) translate(100px,0) scaleX(-1);}50%{transform:translate(-50%,-50%) translate(-40px,0) scaleX(-1);}80%{transform:translate(-50%,-50%) translate(10px,0) scaleX(1);}100%{transform:translate(-50%,-50%) translate(0,0) scaleX(1);}}
+  @keyframes moveTripleHop{0%{transform:translate(-50%,-50%) translateY(0) scale(1);}10%{transform:translate(-50%,-50%) translateY(-70px) scale(1.05);}20%{transform:translate(-50%,-50%) translateY(0) scale(.95);}35%{transform:translate(-50%,-50%) translateY(-45px) scale(1.03);}45%{transform:translate(-50%,-50%) translateY(0) scale(.97);}60%{transform:translate(-50%,-50%) translateY(-25px) scale(1.02);}70%{transform:translate(-50%,-50%) translateY(0) scale(1);}100%{transform:translate(-50%,-50%) translateY(0) scale(1);}}
+  @keyframes moveBalletTwirl{0%{transform:translate(-50%,-50%) rotate(0deg) scale(1);}50%{transform:translate(-50%,-50%) rotate(360deg) scale(1.2);}100%{transform:translate(-50%,-50%) rotate(720deg) scale(1);}}
+  @keyframes moveShimmyShake{0%{transform:translate(-50%,-50%) translateX(0) rotate(0);}10%{transform:translate(-50%,-50%) translateX(-18px) rotate(-8deg);}20%{transform:translate(-50%,-50%) translateX(18px) rotate(8deg);}30%{transform:translate(-50%,-50%) translateX(-18px) rotate(-8deg);}40%{transform:translate(-50%,-50%) translateX(18px) rotate(8deg);}50%{transform:translate(-50%,-50%) translateX(-12px) rotate(-5deg);}60%{transform:translate(-50%,-50%) translateX(12px) rotate(5deg);}70%{transform:translate(-50%,-50%) translateX(-6px) rotate(0);}80%{transform:translate(-50%,-50%) translateX(6px) rotate(0);}100%{transform:translate(-50%,-50%) translateX(0) rotate(0);}}
+  @keyframes moveRocketZoomIn{0%{transform:translate(-50%,-50%) translate(0,-200px) scale(.3); opacity:0;}60%{transform:translate(-50%,-50%) translate(0,20px) scale(1.15); opacity:1;}80%{transform:translate(-50%,-50%) translate(0,-10px) scale(.95); opacity:1;}100%{transform:translate(-50%,-50%) translate(0,0) scale(1); opacity:1;}}
+  @keyframes moveHeartbeatPulse{0%,100%{transform:translate(-50%,-50%) scale(1);}14%{transform:translate(-50%,-50%) scale(1.3);}28%{transform:translate(-50%,-50%) scale(1);}42%{transform:translate(-50%,-50%) scale(1.25);}56%{transform:translate(-50%,-50%) scale(1);}}
+  @keyframes moveOrbitCircle{0%{transform:translate(-50%,-50%) translate(70px,0) rotate(0deg);}25%{transform:translate(-50%,-50%) translate(0,70px) rotate(90deg);}50%{transform:translate(-50%,-50%) translate(-70px,0) rotate(180deg);}75%{transform:translate(-50%,-50%) translate(0,-70px) rotate(270deg);}100%{transform:translate(-50%,-50%) translate(0,0) rotate(360deg);}}
+  @keyframes moveJellyWiggle{0%,100%{transform:translate(-50%,-50%) scale(1,1);}20%{transform:translate(-50%,-50%) scale(1.3,.7);}40%{transform:translate(-50%,-50%) scale(.7,1.3);}60%{transform:translate(-50%,-50%) scale(1.2,.8);}80%{transform:translate(-50%,-50%) scale(.9,1.1);}}
+
+  /* ---- Level-specific costume flourishes: a filter or an accessory that
+         always belongs to that level, layered on top of the random movement ---- */
+  @keyframes flavorInvert{0%,100%{filter:invert(0);}20%{filter:invert(1);}40%{filter:invert(0);}60%{filter:invert(1);}80%{filter:invert(0);}}
+  @keyframes flavorDisco{0%{filter:hue-rotate(0deg);}100%{filter:hue-rotate(360deg);}}
+
+  /* Level 4: top hat drop */
+  @keyframes lvl4Hat{0%{opacity:0; transform:translate(-50%,-50%) translateY(-150px) rotate(-30deg);}60%{opacity:1; transform:translate(-50%,-50%) translateY(6px) rotate(10deg);}80%{transform:translate(-50%,-50%) translateY(-8px) rotate(-4deg);}100%{opacity:1; transform:translate(-50%,-50%) translateY(0) rotate(0);}}
+  .turtle-stage.lvl-4 .acc-hat{display:block; animation:lvl4Hat 1s ease-out forwards;}
+
+  /* Level 5: sword slash */
+  @keyframes lvl5Sword{0%{opacity:0; transform:translate(-50%,-50%) rotate(-110deg);}25%{opacity:1;}50%{transform:translate(-50%,-50%) rotate(80deg);}100%{transform:translate(-50%,-50%) rotate(15deg); opacity:1;}}
+  .turtle-stage.lvl-5 .acc-sword{display:block; animation:lvl5Sword .9s ease-in-out;}
+
+  /* Level 6: superman cape */
+  @keyframes lvl6Cape{0%{opacity:0; transform:translate(-50%,-50%) translateY(-14px) skewX(0deg);}20%{opacity:1;}50%{transform:translate(-50%,-50%) translateY(0) skewX(14deg);}100%{opacity:1; transform:translate(-50%,-50%) translateY(0) skewX(-8deg);}}
+  .turtle-stage.lvl-6 .acc-cape{display:block; animation:lvl6Cape 1.6s ease-in-out;}
+
+  /* Level 8: mega combo finale accessories (this is the last level now) */
+  @keyframes lvl8Pop{0%{opacity:0; transform:translate(-50%,-50%) scale(.3);}35%{opacity:1; transform:translate(-50%,-50%) scale(1.25);}100%{opacity:1; transform:translate(-50%,-50%) scale(1);}}
+  .turtle-stage.lvl-8 .acc-hat,
+  .turtle-stage.lvl-8 .acc-cape,
+  .turtle-stage.lvl-8 .acc-sword,
+  .turtle-stage.lvl-8 .acc-glasses,
+  .turtle-stage.lvl-8 .acc-crown{display:block; animation:lvl8Pop 2.2s ease-in-out;}
+
+  .info-panel{font-size:.8rem; text-align:center; color:#3a5a44; margin-top:6px;}
+  .tip-text{font-size:.72rem; text-align:center; color:#3a5a44; opacity:.65; margin:2px 0 0;}
+  .mute-btn{background:none; border:none; font-size:1.25rem; cursor:pointer; padding:0 0 0 8px; touch-action:manipulation; line-height:1;}
+  .lang-toggle{display:flex; justify-content:center; gap:0; margin:6px 0 10px;}
+  .lang-btn{border:2px solid var(--shell-dark); background:#fff; color:var(--shell-dark); font-weight:700; padding:6px 20px; font-size:.85rem; cursor:pointer; touch-action:manipulation;}
+  .lang-btn:first-child{border-radius:14px 0 0 14px; border-right:none;}
+  .lang-btn:last-child{border-radius:0 14px 14px 0;}
+  .lang-btn.active{background:var(--shell-dark); color:#fff;}
+  #errBanner{position:fixed; top:0; left:0; right:0; background:#c62828; color:#fff; padding:10px 14px; font-size:11px; font-family:monospace; z-index:999; white-space:pre-wrap;}
+</style>
+</head>
+<body>
+<!-- This banner needs NO JavaScript to appear — plain HTML/CSS only.
+     It is hidden by a script line near the very bottom, so it only stays
+     visible if scripts never ran at all (e.g. iOS Files "Quick Look"),
+     which is the giveaway that the buttons below won't work either. -->
+<div id="qlBanner" style="display:block; background:#ffb300; color:#3a2a00; font-family:-apple-system,sans-serif; font-size:14px; line-height:1.5; font-weight:700; text-align:center; padding:14px 16px;">
+  📱 Buttons not responding? This is Files' <b>Quick Look</b> preview — it can't run the app.<br>
+  Use <b>Firefox</b> (or Chrome) to open HTML files: tap the <b>Share icon</b> (square with an arrow ⬆️) at the top, then pick it from the app list. If you don't see it, install Firefox or Chrome from the App Store first.
+</div>
+<div id="app">
+
+  <!-- HOME SCREEN -->
+  <div class="screen active" id="screen-home">
+    <div class="mascot-big">🐢</div>
+    <h1 id="appTitle">Turtle Time Trainer</h1>
+    <div class="lang-toggle">
+      <button type="button" class="lang-btn" id="btnLangEn">EN</button>
+      <button type="button" class="lang-btn" id="btnLangEs">ES</button>
+    </div>
+    <p class="sub" id="appSubtitle">Learn to read a clock, one shell at a time!</p>
+    <div class="card">
+      <h2 style="margin-top:0;" id="howToTitle">How to tell time</h2>
+      <div class="legend">
+        <div class="row"><span class="dot dot-hour"></span> <span id="littleHandDesc"><b>Little hand</b> (short) points to the <b>hour</b></span></div>
+        <div class="row"><span class="dot dot-minute"></span> <span id="bigHandDesc"><b>Big hand</b> (long) points to the <b>minutes</b></span></div>
+      </div>
+    </div>
+    <button type="button" class="btn" id="btnPlay">▶ Play</button>
+    <button type="button" class="btn secondary" id="btnLevels">🗺 Choose a Level</button>
+    <p class="tip-text" id="tipText">Tip: for sound and the smoothest touch controls, open this file directly in Safari (not a Mail or Files preview).</p>
+  </div>
+
+  <!-- LEVEL SELECT SCREEN -->
+  <div class="screen" id="screen-levels">
+    <div class="topbar">
+      <button type="button" class="back-x" id="backFromLevels">✕</button>
+      <h2 style="margin:0;" id="levelsTitle">Choose a Level</h2>
+      <span style="width:22px;"></span>
+    </div>
+    <p class="sub" id="levelsSubtitle">Score 9/12 or better to unlock the next level!</p>
+    <div class="level-grid" id="levelGrid"></div>
+    <div class="reset-link" id="resetProgress">Reset progress</div>
+  </div>
+
+  <!-- GAME SCREEN -->
+  <div class="screen" id="screen-game">
+    <div class="topbar">
+      <button type="button" class="back-x" id="backFromGame">✕</button>
+      <span class="lvl-label" id="lvlLabel">Level 1</span>
+      <div class="topbar-right">
+        <span class="score-label" id="scoreLabel">Score: 0</span>
+        <button type="button" class="mute-btn" id="btnMute" aria-label="Toggle music">🔊</button>
+      </div>
+    </div>
+    <div class="dots" id="dots"></div>
+    <div class="question-banner" id="questionText">What time is...?</div>
+
+    <div class="clock-wrap">
+      <svg id="clockSvg" viewBox="0 0 300 300"></svg>
+    </div>
+    <div class="info-panel">
+      <span class="dot dot-hour" style="width:10px;height:10px;"></span> <span id="littleHandShortLabel">little hand = hour</span> &nbsp;&nbsp;
+      <span class="dot dot-minute" style="width:10px;height:10px;"></span> <span id="bigHandShortLabel">big hand = minutes</span>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+
+    <div class="check-row">
+      <button type="button" class="btn accent" id="btnCheck">Check ✓</button>
+    </div>
+  </div>
+
+  <!-- RESULTS SCREEN -->
+  <div class="screen" id="screen-results">
+    <div class="results-emoji" id="resultsEmoji">🐢</div>
+    <div class="score-big" id="resultsScore">0 / 12</div>
+    <div class="score-msg" id="resultsMsg">Nice try!</div>
+    <button type="button" class="btn" id="btnNextLevel">Next Level ▶</button>
+    <button type="button" class="btn secondary" id="btnRetryLevel">↻ Retry This Level</button>
+    <button type="button" class="btn secondary" id="btnToMenu">🗺 Level Menu</button>
+  </div>
+
+  <!-- TURTLE CELEBRATION OVERLAY -->
+  <div class="turtle-stage" id="turtleStage">
+    <div class="turtle-stage-inner" id="turtleStageInner">
+      <div class="turtle-emoji">🐢</div>
+      <div class="acc acc-hat">🎩</div>
+      <div class="acc acc-crown">👑</div>
+      <div class="acc acc-cape">🦸</div>
+      <div class="acc acc-sword">🗡️</div>
+      <div class="acc acc-glasses">🕶️</div>
+      <div class="acc acc-board">🛹</div>
+      <div class="acc acc-stars">✨</div>
+      <div class="confetti-layer" id="confettiLayer"></div>
+      <div class="celebrate-text">Correct!</div>
+    </div>
+  </div>
+
+  <!-- SO MANY TURTLES mega celebration (once per level, random) -->
+  <div class="turtle-swarm" id="turtleSwarm"></div>
+  <div class="mega-text" id="megaText">SOOOO MANY TURTLES!!! 🐢🐢🐢</div>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------------- Visible error banner ----------------
+     If a real script error ever happens (as opposed to the page
+     just being opened in a non-JS preview), show it on screen so
+     it's obvious instead of silently doing nothing. */
+  window.onerror = function(msg, url, line){
+    try{
+      var banner = document.getElementById("errBanner");
+      if(!banner){
+        banner = document.createElement("div");
+        banner.id = "errBanner";
+        document.body.appendChild(banner);
+      }
+      banner.textContent = "⚠ Something went wrong: " + msg + " (line " + line + ")";
+    }catch(e){}
+    return false;
+  };
+
+  /* ---------------- Cookie helpers ---------------- */
+  function setCookie(name, value, days){
+    var d = new Date();
+    d.setTime(d.getTime() + days*24*60*60*1000);
+    document.cookie = name + "=" + encodeURIComponent(JSON.stringify(value)) + ";expires=" + d.toUTCString() + ";path=/";
+  }
+  function getCookie(name){
+    var parts = document.cookie.split(";");
+    for(var i=0;i<parts.length;i++){
+      var p = parts[i].trim();
+      if(p.indexOf(name+"=")===0){
+        try{ return JSON.parse(decodeURIComponent(p.substring(name.length+1))); }catch(e){ return null; }
+      }
+    }
+    return null;
+  }
+  var PROGRESS_KEY = "turtleTimeProgress";
+  function loadProgress(){
+    var p = getCookie(PROGRESS_KEY);
+    if(!p || typeof p.maxUnlocked !== "number") p = { maxUnlocked:1, bestScores:{} };
+    if(!p.bestScores) p.bestScores = {};
+    return p;
+  }
+  function saveProgress(p){ setCookie(PROGRESS_KEY, p, 365); }
+  var progress = loadProgress();
+
+  /* ---------------- Language ---------------- */
+  var LANG_KEY = "turtleTimeLang";
+  var currentLang = getCookie(LANG_KEY) === "es" ? "es" : "en";
+
+  /* ---------------- Word helpers (English) ---------------- */
+  var ones = ["zero","one","two","three","four","five","six","seven","eight","nine","ten",
+              "eleven","twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen"];
+  var tensWords = ["","","twenty","thirty","forty","fifty"];
+  function numToWords(n){
+    if(n < 20) return ones[n];
+    var t = Math.floor(n/10), o = n%10;
+    return tensWords[t] + (o ? "-" + ones[o] : "");
+  }
+  function hourWord(h){ return ones[h]; } // h expected 1..12, ones[1..12] match
+
+  // "Numeric" style reads like a digital clock spoken aloud: "seven oh five",
+  // "seven forty-five". "Idiom" style uses the traditional o'clock/quarter/half
+  // words, and only applies to minute 0/15/30/45.
+  function buildNumericPhrase(hour, minute){
+    var hWord = hourWord(hour);
+    if(minute === 0) return hWord + " o'clock";
+    var minuteWord = minute < 10 ? ("oh " + numToWords(minute)) : numToWords(minute);
+    return hWord + " " + minuteWord;
+  }
+  function buildIdiomPhrase(hour, minute){
+    var hWord = hourWord(hour);
+    var nextHour = hour === 12 ? 1 : hour + 1;
+    var nextHWord = hourWord(nextHour);
+    if(minute === 0) return hWord + " o'clock";
+    if(minute === 15) return "quarter past " + hWord;
+    if(minute === 30) return "half past " + hWord;
+    if(minute === 45) return "quarter to " + nextHWord;
+    return buildNumericPhrase(hour, minute);
+  }
+
+  /* ---------------- Word helpers (Spanish) ---------------- */
+  var onesEs = ["cero","uno","dos","tres","cuatro","cinco","seis","siete","ocho","nueve","diez",
+                "once","doce","trece","catorce","quince","dieciséis","diecisiete","dieciocho","diecinueve"];
+  var tensEs = ["","","veinte","treinta","cuarenta","cincuenta"];
+  var veintiEs = {1:"veintiuno",2:"veintidós",3:"veintitrés",4:"veinticuatro",5:"veinticinco",6:"veintiséis",7:"veintisiete",8:"veintiocho",9:"veintinueve"};
+  var hourWordsEs = ["","una","dos","tres","cuatro","cinco","seis","siete","ocho","nueve","diez","once","doce"]; // index 1..12
+  function numToWordsEs(n){
+    if(n < 20) return onesEs[n];
+    var t = Math.floor(n/10), o = n%10;
+    if(t === 2) return o === 0 ? "veinte" : veintiEs[o];
+    return tensEs[t] + (o ? " y " + onesEs[o] : "");
+  }
+
+  function buildNumericPhraseEs(hour, minute){
+    var hWord = hourWordsEs[hour];
+    var art = hour === 1 ? "la una" : "las " + hWord;
+    var verb = hour === 1 ? "Es" : "Son";
+    if(minute === 0) return verb + " " + art + " en punto";
+    return verb + " " + art + " y " + numToWordsEs(minute);
+  }
+  function buildIdiomPhraseEs(hour, minute){
+    var hWord = hourWordsEs[hour];
+    var art = hour === 1 ? "la una" : "las " + hWord;
+    var verb = hour === 1 ? "Es" : "Son";
+    var nextHour = hour === 12 ? 1 : hour + 1;
+    var nextHWord = hourWordsEs[nextHour];
+    var artNext = nextHour === 1 ? "la una" : "las " + nextHWord;
+    var verbNext = nextHour === 1 ? "Es" : "Son";
+    if(minute === 0) return verb + " " + art + " en punto";
+    if(minute === 15) return verb + " " + art + " y cuarto";
+    if(minute === 30) return verb + " " + art + " y media";
+    if(minute === 45) return verbNext + " " + artNext + " menos cuarto";
+    return buildNumericPhraseEs(hour, minute);
+  }
+
+  // style: "numeric" (always digital-style), "idiom" (always o'clock/quarter/
+  // half wording), or "mixed" (50/50 each question — used where we want both
+  // the numeric and traditional wording practiced for the same time).
+  function buildTimePhrase(hour, minute, style){
+    var useIdiom = style === "idiom" ? true : (style === "mixed" ? Math.random() < 0.5 : false);
+    if(currentLang === "es"){
+      return useIdiom ? buildIdiomPhraseEs(hour, minute) : buildNumericPhraseEs(hour, minute);
+    }
+    return useIdiom ? buildIdiomPhrase(hour, minute) : buildNumericPhrase(hour, minute);
+  }
+
+  function formatQuestion(q){
+    return currentLang === "es" ? ("Ajusta el reloj a: " + q.text) : ("What time is " + q.text + "?");
+  }
+
+  /* ---------------- Level configs ----------------
+     Level 1 varies the hour across all 12 o'clock positions. Every level
+     after that fixes the hour at seven so he's practicing pure minute-hand
+     reading without the hour hand changing underneath him, and difficulty
+     climbs through the minute values: whole/half/quarter -> five-minute
+     landmarks -> any single minute across the first half of the hour ->
+     any single minute across the second half of the hour. */
+  function range(a,b,step){ var r=[]; for(var i=a;i<=b;i+=step) r.push(i); return r; }
+
+  var LEVELS = [
+    { id:1, name:"Sea Turtle Start",     hours:range(1,12,1), minutes:[0],            style:"numeric" },
+    { id:2, name:"Half Shell",           hours:[7],           minutes:[30],           style:"mixed"   },
+    { id:3, name:"Quarter Deck",         hours:[7],           minutes:[15],           style:"mixed"   },
+    { id:4, name:"Forty-Five Flippers",  hours:[7],           minutes:[45],           style:"numeric" },
+    { id:5, name:"Five Minute Flippers", hours:[7],           minutes:[5,10,20,25],   style:"numeric" },
+    { id:6, name:"Snapping Speedster",   hours:[7],           minutes:[35,40,50,55],  style:"numeric" },
+    { id:7, name:"Minute Marsh",         hours:[7],           minutes:range(1,29,1),  style:"numeric" },
+    { id:8, name:"Turtle Time Master",   hours:[7],           minutes:range(31,59,1), style:"numeric" }
+  ];
+  var PASS_THRESHOLD = 9;
+  var QUESTIONS_PER_LEVEL = 12;
+  var TOTAL_LEVELS = LEVELS.length;
+
+  // How close his drag needs to be to count as correct. Kids' fingers aren't
+  // pixel-precise on a touchscreen, so this is intentionally forgiving:
+  //  - Minute hand: never stricter than about 1 minute off, either direction.
+  //  - Hour hand: a real clock's hour hand for hour H at any minute is always
+  //    somewhere within H's own 30-degree wedge, so we accept the WHOLE wedge
+  //    (not a tight angle around the exact fractional position) plus a small
+  //    grace zone just short of the wedge for "a little before, if it's close".
+  //    We never accept drifting into the *next* hour's wedge.
+  var MINUTE_TOL_MIN = { 1:6, 2:5, 3:4.5, 4:3.5, 5:3, 6:2.5, 7:1.4, 8:1.4 };
+  var HOUR_GRACE_DEG = 6;
+
+  function isHourCorrect(currentAngle, targetHour){
+    var sectorStart = (targetHour % 12) * 30;
+    var rel = ((currentAngle - sectorStart) % 360 + 360) % 360;
+    return rel <= 30 || rel >= (360 - HOUR_GRACE_DEG);
+  }
+
+  /* ---------------- UI text (English / Spanish) ---------------- */
+  var LEVEL_NAMES_ES = {
+    1:"Inicio Tortuga Marina", 2:"Media Concha", 3:"Cubierta de Cuarto",
+    4:"Aletas Cuarenta y Cinco", 5:"Aletas de Cinco Minutos", 6:"Velocista Mordelona",
+    7:"Pantano de Minutos", 8:"Maestra del Tiempo"
+  };
+  function getLevelName(lvl){
+    return currentLang === "es" ? (LEVEL_NAMES_ES[lvl.id] || lvl.name) : lvl.name;
+  }
+
+  var STR = {
+    en: {
+      appTitle:"Turtle Time Trainer", subtitle:"Learn to read a clock, one shell at a time!",
+      howToTitle:"How to tell time",
+      littleHandDesc:"<b>Little hand</b> (short) points to the <b>hour</b>",
+      bigHandDesc:"<b>Big hand</b> (long) points to the <b>minutes</b>",
+      play:"▶ Play", chooseLevel:"🗺 Choose a Level",
+      tipSafari:"Tip: for sound and the smoothest touch controls, open this file directly in Safari (not a Mail or Files preview).",
+      levelsTitle:"Choose a Level", scoreToUnlock:"Score 9/12 or better to unlock the next level!",
+      resetProgress:"Reset progress", resetConfirm:"Reset all level progress?",
+      score:"Score: ", check:"Check ✓",
+      littleHandShort:"little hand = hour", bigHandShort:"big hand = minutes",
+      correctFeedback:"🎉 Correct! Great reading!",
+      tryAgainFeedback:"Not quite — check the little hand (hour) and big hand (minutes) again!",
+      revealFeedback:"Here's the right time — take a look!",
+      perfectMsg:"Perfect score! You're a Time Master Turtle! 🏆",
+      passedMsg:"Level beaten! Next level unlocked!",
+      okMsg:"Good effort! Score 9/12 to unlock the next level.",
+      tryAgainMsg:"Keep practicing — try this level again!",
+      nextLevel:"Next Level ▶", retryLevel:"↻ Retry This Level", levelMenu:"🗺 Level Menu",
+      allComplete:"🏆 All Levels Complete!", level:"Level "
+    },
+    es: {
+      appTitle:"Entrenador de la Hora Tortuga", subtitle:"¡Aprende a leer el reloj, caparazón a caparazón!",
+      howToTitle:"Cómo decir la hora",
+      littleHandDesc:"La <b>manecilla pequeña</b> (corta) señala la <b>hora</b>",
+      bigHandDesc:"La <b>manecilla grande</b> (larga) señala los <b>minutos</b>",
+      play:"▶ Jugar", chooseLevel:"🗺 Elegir Nivel",
+      tipSafari:"Consejo: para tener sonido y los mejores controles táctiles, abre este archivo directamente en Safari (no en una vista previa de Mail o Archivos).",
+      levelsTitle:"Elegir Nivel", scoreToUnlock:"¡Consigue 9/12 o más para desbloquear el siguiente nivel!",
+      resetProgress:"Reiniciar progreso", resetConfirm:"¿Reiniciar todo el progreso?",
+      score:"Puntos: ", check:"Comprobar ✓",
+      littleHandShort:"manecilla pequeña = hora", bigHandShort:"manecilla grande = minutos",
+      correctFeedback:"🎉 ¡Correcto! ¡Muy bien leído!",
+      tryAgainFeedback:"No es correcto — ¡revisa la manecilla pequeña (hora) y la manecilla grande (minutos)!",
+      revealFeedback:"¡Así se ve la hora correcta!",
+      perfectMsg:"¡Puntuación perfecta! ¡Eres una Tortuga Maestra del Tiempo! 🏆",
+      passedMsg:"¡Nivel superado! ¡Siguiente nivel desbloqueado!",
+      okMsg:"¡Buen esfuerzo! Consigue 9/12 para desbloquear el siguiente nivel.",
+      tryAgainMsg:"Sigue practicando — ¡inténtalo de nuevo!",
+      nextLevel:"Siguiente Nivel ▶", retryLevel:"↻ Repetir este Nivel", levelMenu:"🗺 Menú de Niveles",
+      allComplete:"🏆 ¡Todos los Niveles Completos!", level:"Nivel "
+    }
+  };
+  function t(key){ return (STR[currentLang] || STR.en)[key] || key; }
+
+  function updateScoreLabel(){
+    document.getElementById("scoreLabel").textContent = t("score") + score;
+  }
+
+  /* ---------------- 8-bit level music (Web Audio, synthesized) ----------------
+     No audio files — everything is generated with oscillators so the app
+     stays a single file. iOS requires audio to start from a user gesture,
+     so the AudioContext is only created/resumed inside button click handlers. */
+  var audioCtx = null;
+  function ensureAudio(){
+    if(!audioCtx){
+      try{ audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+      catch(e){ audioCtx = null; }
+    }
+    if(audioCtx && audioCtx.state === "suspended"){
+      audioCtx.resume().catch(function(){});
+    }
+  }
+
+  function playNote(freq, startTime, duration, type, peakGain){
+    if(!audioCtx) return;
+    try{
+      var osc = audioCtx.createOscillator();
+      var gain = audioCtx.createGain();
+      osc.type = type || "square";
+      osc.frequency.setValueAtTime(freq, startTime);
+      gain.gain.setValueAtTime(0.0001, startTime);
+      gain.gain.linearRampToValueAtTime(peakGain || 0.12, startTime + 0.008);
+      gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(startTime);
+      osc.stop(startTime + duration + 0.03);
+    }catch(e){}
+  }
+
+  var N = { // note name -> frequency (Hz), equal temperament
+    A2:110.00, C3:130.81, D3:146.83, E3:164.81, F3:174.61, G3:196.00, A3:220.00, B3:246.94, C4:261.63, Db4:277.18,
+    D4:293.66, Eb4:311.13, E4:329.63, F4:349.23, Gb4:369.99, G4:392.00, Ab4:415.30,
+    A4:440.00, Bb4:466.16, B4:493.88, C5:523.25, Db5:554.37, D5:587.33, Eb5:622.25,
+    E5:659.25, F5:698.46, Gb5:739.99, G5:783.99, Ab5:830.61, A5:880.00, Bb5:932.33,
+    B5:987.77, C6:1046.50
+  };
+  function m(f,d){ return {f:f, d:d}; } // melody step: frequency + duration (eighth-note units)
+
+  // 8 short looping tracks. Tempo climbs and the scale drifts from cheerful
+  // major/pentatonic toward minor, chromatic and dissonant as levels get harder.
+  var MUSIC_TRACKS = {
+    1:  { bpm:96,  melody:[m(N.C4,4),m(N.E4,4),m(N.G4,4),m(N.C5,4),m(N.G4,4),m(N.E4,4)] },
+    2:  { bpm:104, melody:[m(N.C4,2),m(N.D4,2),m(N.E4,2),m(N.G4,2),m(N.A4,2),m(N.G4,2),m(N.E4,2),m(N.D4,2)] },
+    3:  { bpm:112, melody:[m(N.C4,1),m(N.E4,1),m(N.G4,1),m(N.A4,1),m(N.G4,1),m(N.F4,1),m(N.E4,1),m(N.D4,1),m(N.C4,1),m(N.E4,1),m(N.G4,1),m(N.C5,1)],
+          bass:{ every:4, notes:[N.C3,N.G3] } },
+    4:  { bpm:120, melody:[m(N.A4,1),m(N.C5,1),m(N.E5,1),m(N.D5,1),m(N.C5,1),m(N.B4,1),m(N.A4,1),m(N.G4,1),m(N.A4,1),m(N.C5,1),m(N.E5,1),m(N.A4,2)],
+          bass:{ every:2, notes:[N.A3,N.E3] } },
+    5:  { bpm:128, melody:[m(N.A4,1),m(N.B4,1),m(N.C5,1),m(N.D5,1),m(N.E5,1),m(N.D5,1),m(N.C5,1),m(N.B4,1),m(N.A4,1),m(N.G4,1),m(N.F4,1),m(N.E4,1)],
+          bass:{ every:1, notes:[N.A3,N.E3] } },
+    6:  { bpm:136, melody:[m(N.A4,1),m(N.Ab4,1),m(N.A4,1),m(N.C5,1),m(N.B4,1),m(N.C5,1),m(N.E5,1),m(N.D5,1),m(N.C5,1),m(N.B4,1),m(N.A4,1),m(N.Ab4,1)],
+          bass:{ every:1, notes:[N.A3,N.E3,N.A3,N.D3] } },
+    7:  { bpm:144, melody:[m(N.E5,0.5),m(N.D5,0.5),m(N.C5,0.5),m(N.B4,0.5),m(N.A4,0.5),m(N.G4,0.5),m(N.F4,0.5),m(N.E4,0.5),m(N.D4,0.5),m(N.C4,0.5),m(N.B3,0.5),m(N.A3,0.5)],
+          bass:{ every:2, notes:[N.A3,N.E3] } },
+    8:  { bpm:168, melody:[m(N.C6,0.5),m(N.B5,0.5),m(N.Bb5,0.5),m(N.A5,0.5),m(N.Ab5,0.5),m(N.G5,0.5),m(N.Gb5,0.5),m(N.F5,0.5),m(N.E5,0.5),m(N.Eb5,0.5),m(N.D5,0.5),m(N.Db5,0.5)],
+          bass:{ every:1, notes:[N.A3,N.D3] } }
+  };
+
+  var currentMusicLevel = null;
+  var musicTimer = null;
+  var musicMuted = getCookie("turtleTimeMuted") === true;
+
+  function stopMusic(){
+    if(musicTimer) clearTimeout(musicTimer);
+    musicTimer = null;
+    currentMusicLevel = null;
+  }
+
+  function startLevelMusic(levelId){
+    stopMusic();
+    if(!audioCtx || musicMuted) return;
+    var track = MUSIC_TRACKS[levelId];
+    if(!track) return;
+    currentMusicLevel = levelId;
+    var stepIdx = 0;
+    var eighth = 60 / track.bpm / 2;
+    (function scheduleStep(){
+      if(currentMusicLevel !== levelId) return;
+      var note = track.melody[stepIdx % track.melody.length];
+      var now = audioCtx.currentTime;
+      var noteDurSec = eighth * note.d;
+      if(note.f) playNote(note.f, now, noteDurSec * 0.85, "square", 0.1);
+      if(track.bass && stepIdx % track.bass.every === 0){
+        var bIdx = Math.floor(stepIdx / track.bass.every) % track.bass.notes.length;
+        playNote(track.bass.notes[bIdx], now, eighth * track.bass.every * 0.85, "triangle", 0.08);
+      }
+      stepIdx++;
+      musicTimer = setTimeout(scheduleStep, Math.max(noteDurSec * 1000, 60));
+    })();
+  }
+
+  // A bright, bouncy, "everything is awesome" style pop loop for the SO MANY
+  // TURTLES mega celebration — original composition, not a reproduction of
+  // any existing song, just channeling the same exuberant four-on-the-floor
+  // major-key energy.
+  var AWESOME_TRACK = {
+    bpm: 132,
+    melody: [
+      m(N.C5,1),m(N.C5,1),m(N.E5,1),m(N.G5,1), m(N.F5,1),m(N.E5,1),m(N.D5,1),m(N.C5,1),
+      m(N.G4,1),m(N.G4,1),m(N.C5,1),m(N.E5,1), m(N.D5,1),m(N.C5,1),m(N.B4,1),m(N.C5,2)
+    ],
+    bass: { every:2, notes:[N.C3,N.C3,N.F3,N.F3,N.G3,N.G3,N.C3,N.C3] }
+  };
+  var awesomeMusicActive = false;
+  var awesomeMusicTimer = null;
+  function playAwesomeMusicLoop(){
+    if(!audioCtx || musicMuted) return;
+    awesomeMusicActive = true;
+    var stepIdx = 0;
+    var eighth = 60 / AWESOME_TRACK.bpm / 2;
+    (function scheduleStep(){
+      if(!awesomeMusicActive) return;
+      var note = AWESOME_TRACK.melody[stepIdx % AWESOME_TRACK.melody.length];
+      var now = audioCtx.currentTime;
+      var noteDurSec = eighth * note.d;
+      if(note.f) playNote(note.f, now, noteDurSec * 0.85, "square", 0.13);
+      if(AWESOME_TRACK.bass && stepIdx % AWESOME_TRACK.bass.every === 0){
+        var bIdx = Math.floor(stepIdx / AWESOME_TRACK.bass.every) % AWESOME_TRACK.bass.notes.length;
+        playNote(AWESOME_TRACK.bass.notes[bIdx], now, eighth * AWESOME_TRACK.bass.every * 0.85, "triangle", 0.11);
+      }
+      stepIdx++;
+      awesomeMusicTimer = setTimeout(scheduleStep, Math.max(noteDurSec * 1000, 60));
+    })();
+  }
+  function stopAwesomeMusicLoop(){
+    awesomeMusicActive = false;
+    if(awesomeMusicTimer) clearTimeout(awesomeMusicTimer);
+    awesomeMusicTimer = null;
+  }
+
+  function playResultJingle(passed){
+    if(!audioCtx || musicMuted) return;
+    var now = audioCtx.currentTime;
+    if(passed){
+      playNote(523.25, now, 0.18, "square", 0.13);
+      playNote(659.25, now + 0.15, 0.18, "square", 0.13);
+      playNote(783.99, now + 0.30, 0.4, "square", 0.15);
+    } else {
+      playNote(392.00, now, 0.2, "square", 0.11);
+      playNote(349.23, now + 0.18, 0.4, "square", 0.11);
+    }
+  }
+
+  function updateMuteButton(){
+    var b = document.getElementById("btnMute");
+    if(b) b.textContent = musicMuted ? "🔇" : "🔊";
+  }
+
+  function setMuted(m){
+    musicMuted = m;
+    setCookie("turtleTimeMuted", m, 365);
+    updateMuteButton();
+    if(m) stopMusic();
+    else if(currentLevel) startLevelMusic(currentLevel.id);
+  }
+
+  function shuffle(arr){
+    for(var i=arr.length-1;i>0;i--){
+      var j = Math.floor(Math.random()*(i+1));
+      var t = arr[i]; arr[i]=arr[j]; arr[j]=t;
+    }
+    return arr;
+  }
+
+  function generateQuestions(cfg){
+    var hoursArr = cfg.hours || range(1,12,1);
+    var combos = [];
+    hoursArr.forEach(function(h){
+      cfg.minutes.forEach(function(m){ combos.push({h:h,m:m}); });
+    });
+    shuffle(combos);
+    var picks = [];
+    var seen = {};
+    for(var i=0;i<combos.length && picks.length<QUESTIONS_PER_LEVEL;i++){
+      var c = combos[i];
+      var key = c.h+"_"+c.m;
+      if(!seen[key]){ seen[key]=true; picks.push(c); }
+    }
+    while(picks.length < QUESTIONS_PER_LEVEL){
+      picks.push(combos[Math.floor(Math.random()*combos.length)]);
+    }
+    shuffle(picks);
+    return picks.map(function(c){
+      return { hour:c.h, minute:c.m, text: buildTimePhrase(c.h, c.m, cfg.style) };
+    });
+  }
+
+  /* ---------------- Screen navigation ---------------- */
+  function showScreen(id){
+    document.querySelectorAll(".screen").forEach(function(s){ s.classList.remove("active"); });
+    document.getElementById(id).classList.add("active");
+  }
+
+  /* ---------------- Level select rendering ---------------- */
+  function renderLevelSelect(){
+    var grid = document.getElementById("levelGrid");
+    grid.innerHTML = "";
+    LEVELS.forEach(function(lvl){
+      var btn = document.createElement("button");
+      btn.type = "button";
+      var locked = lvl.id > progress.maxUnlocked;
+      btn.className = "level-btn" + (locked ? " locked" : "");
+      var best = progress.bestScores[lvl.id];
+      btn.innerHTML = '<span class="num">' + (locked ? "🔒" : lvl.id) + '</span>' +
+                       '<span class="name">' + getLevelName(lvl) + (best!==undefined ? (" · " + best + "/12") : "") + '</span>';
+      if(!locked){
+        btn.addEventListener("click", function(){ startLevel(lvl.id); });
+      }
+      grid.appendChild(btn);
+    });
+  }
+
+  document.getElementById("resetProgress").addEventListener("click", function(){
+    if(confirm(t("resetConfirm"))){
+      progress = { maxUnlocked:1, bestScores:{} };
+      saveProgress(progress);
+      renderLevelSelect();
+    }
+  });
+
+  /* ---------------- Clock SVG construction ---------------- */
+  var svg = document.getElementById("clockSvg");
+  var CX = 150, CY = 150;
+
+  function svgEl(tag, attrs){
+    var el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    for(var k in attrs) el.setAttribute(k, attrs[k]);
+    return el;
+  }
+
+  function buildClockFace(){
+    svg.innerHTML = "";
+    // face
+    svg.appendChild(svgEl("circle", {cx:CX,cy:CY,r:140,fill:"#fdfaf1",stroke:"#2e7d32","stroke-width":6}));
+    svg.appendChild(svgEl("circle", {cx:CX,cy:CY,r:122,fill:"none",stroke:"#c8e6c9","stroke-width":2}));
+    // ticks
+    for(var i=0;i<60;i++){
+      var ang = i*6*Math.PI/180;
+      var isHour = i%5===0;
+      var rOuter = 132;
+      var rInner = isHour ? 112 : 122;
+      var x1 = CX + rOuter*Math.sin(ang), y1 = CY - rOuter*Math.cos(ang);
+      var x2 = CX + rInner*Math.sin(ang), y2 = CY - rInner*Math.cos(ang);
+      svg.appendChild(svgEl("line", {x1:x1,y1:y1,x2:x2,y2:y2,stroke:"#6d4c41","stroke-width":isHour?3:1.4,"stroke-linecap":"round"}));
+    }
+    // numbers
+    for(var n=1;n<=12;n++){
+      var a = n*30*Math.PI/180;
+      var r = 96;
+      var x = CX + r*Math.sin(a), y = CY - r*Math.cos(a);
+      var t = svgEl("text", {x:x,y:y+8,"text-anchor":"middle","font-size":"22","font-weight":"800",fill:"#2e7d32","font-family":"Trebuchet MS, sans-serif"});
+      t.textContent = n;
+      svg.appendChild(t);
+    }
+    // center turtle
+    var ct = svgEl("text", {x:CX,y:CY+40,"text-anchor":"middle","font-size":"20"});
+    ct.textContent = "🐢";
+    svg.appendChild(ct);
+
+    // hour hand group
+    hourGroup = svgEl("g", {id:"hourHand", class:"hand-group", transform:"rotate(0 "+CX+" "+CY+")"});
+    hourGroup.appendChild(svgEl("line", {x1:CX,y1:CY,x2:CX,y2:CY-65,class:"hand hour-hand-line"}));
+    var hourKnob = svgEl("circle", {cx:CX,cy:CY-65,r:17,class:"knob hour-knob","data-hand":"hour"});
+    hourGroup.appendChild(hourKnob);
+    svg.appendChild(hourGroup);
+
+    // minute hand group
+    minuteGroup = svgEl("g", {id:"minuteHand", class:"hand-group", transform:"rotate(0 "+CX+" "+CY+")"});
+    minuteGroup.appendChild(svgEl("line", {x1:CX,y1:CY,x2:CX,y2:CY-108,class:"hand minute-hand-line"}));
+    var minKnob = svgEl("circle", {cx:CX,cy:CY-108,r:15,class:"knob minute-knob","data-hand":"minute"});
+    minuteGroup.appendChild(minKnob);
+    svg.appendChild(minuteGroup);
+
+    svg.appendChild(svgEl("circle", {cx:CX,cy:CY,r:9,fill:"#4e342e"}));
+  }
+
+  var hourGroup, minuteGroup;
+  var currentAngles = { hour:0, minute:0 };
+  var dragHand = null;
+
+  function setHandAngle(hand, angle){
+    currentAngles[hand] = angle;
+    var g = hand==="hour" ? hourGroup : minuteGroup;
+    g.setAttribute("transform", "rotate(" + angle + " " + CX + " " + CY + ")");
+  }
+
+  function angleFromEvent(evt){
+    var rect = svg.getBoundingClientRect();
+    var scaleX = 300/rect.width, scaleY = 300/rect.height;
+    var clientX = evt.clientX, clientY = evt.clientY;
+    if(clientX === undefined && evt.touches && evt.touches[0]){
+      clientX = evt.touches[0].clientX; clientY = evt.touches[0].clientY;
+    }
+    var localX = (clientX - rect.left) * scaleX;
+    var localY = (clientY - rect.top) * scaleY;
+    var dx = localX - CX, dy = localY - CY;
+    var a = Math.atan2(dx, -dy) * 180/Math.PI;
+    if(a < 0) a += 360;
+    return a;
+  }
+
+  svg.addEventListener("pointerdown", function(evt){
+    var target = evt.target;
+    var hand = target.getAttribute && target.getAttribute("data-hand");
+    if(!hand) return;
+    dragHand = hand;
+    hourGroup.classList.remove("transition");
+    minuteGroup.classList.remove("transition");
+    try{ svg.setPointerCapture(evt.pointerId); }catch(e){}
+    evt.preventDefault();
+  });
+  svg.addEventListener("pointermove", function(evt){
+    if(!dragHand) return;
+    var a = angleFromEvent(evt);
+    setHandAngle(dragHand, a);
+    evt.preventDefault();
+  });
+  function endDrag(evt){ dragHand = null; }
+  svg.addEventListener("pointerup", endDrag);
+  svg.addEventListener("pointercancel", endDrag);
+  svg.addEventListener("pointerleave", function(evt){ if(evt.buttons===0) dragHand=null; });
+
+  /* ---------------- Game state ---------------- */
+  var currentLevel = null;
+  var questions = [];
+  var qIndex = 0;
+  var score = 0;
+  var attempts = 0;
+  var answered = false;
+  var megaTurtleIndex = -1; // which correct-answer slot (0..11) triggers SO MANY TURTLES this level
+
+  function startLevel(levelId){
+    ensureAudio();
+    currentLevel = LEVELS.filter(function(l){ return l.id===levelId; })[0];
+    questions = generateQuestions(currentLevel);
+    qIndex = 0;
+    score = 0;
+    megaTurtleIndex = Math.floor(Math.random() * QUESTIONS_PER_LEVEL);
+    buildClockFace();
+    document.getElementById("lvlLabel").textContent = t("level") + currentLevel.id + ": " + getLevelName(currentLevel);
+    renderDots();
+    updateMuteButton();
+    showScreen("screen-game");
+    loadQuestion();
+    startLevelMusic(levelId);
+  }
+
+  function renderDots(){
+    var wrap = document.getElementById("dots");
+    wrap.innerHTML = "";
+    for(var i=0;i<QUESTIONS_PER_LEVEL;i++){
+      var d = document.createElement("div");
+      d.className = "qdot";
+      d.id = "dot-" + i;
+      wrap.appendChild(d);
+    }
+  }
+
+  function updateDot(i, state){
+    var d = document.getElementById("dot-" + i);
+    if(d) d.className = "qdot " + state;
+  }
+
+  function loadQuestion(){
+    if(qIndex >= QUESTIONS_PER_LEVEL){ endLevel(); return; }
+    answered = false;
+    attempts = 0;
+    var q = questions[qIndex];
+    document.getElementById("questionText").textContent = formatQuestion(q);
+    document.getElementById("feedback").textContent = "";
+    document.getElementById("feedback").className = "feedback";
+    updateScoreLabel();
+    document.getElementById("btnCheck").disabled = false;
+    document.getElementById("btnCheck").textContent = t("check");
+    for(var i=0;i<QUESTIONS_PER_LEVEL;i++){
+      var d = document.getElementById("dot-"+i);
+      if(d && !d.classList.contains("correct") && !d.classList.contains("wrong")){
+        d.classList.remove("current");
+      }
+    }
+    document.getElementById("dot-"+qIndex).classList.add("current");
+    setHandAngle("hour", Math.random()*360);
+    setHandAngle("minute", Math.random()*360);
+  }
+
+  function angDiff(a,b){
+    var d = Math.abs(a-b) % 360;
+    return d > 180 ? 360 - d : d;
+  }
+
+  document.getElementById("btnCheck").addEventListener("click", function(){
+    if(answered) return;
+    var q = questions[qIndex];
+    var targetMinuteAngle = q.minute * 6;
+    var targetHourAngle = ((q.hour % 12) * 30 + q.minute * 0.5) % 360;
+    var minuteTolDeg = (MINUTE_TOL_MIN[currentLevel.id] || 1.5) * 6;
+    var minuteDiff = angDiff(currentAngles.minute, targetMinuteAngle);
+    var minuteOk = minuteDiff <= minuteTolDeg;
+    var hourOk = isHourCorrect(currentAngles.hour, q.hour);
+    var correct = hourOk && minuteOk;
+    var fb = document.getElementById("feedback");
+
+    if(correct){
+      answered = true;
+      score++;
+      updateScoreLabel();
+      updateDot(qIndex, "correct");
+      fb.textContent = t("correctFeedback");
+      fb.className = "feedback ok";
+      document.getElementById("btnCheck").disabled = true;
+      if(qIndex === megaTurtleIndex){
+        playMegaTurtleCelebration(currentLevel.id, function(){ qIndex++; loadQuestion(); });
+      } else {
+        var effMs = playTurtleEffect(currentLevel.id);
+        setTimeout(function(){ qIndex++; loadQuestion(); }, effMs + 150);
+      }
+      return;
+    }
+
+    attempts++;
+    if(attempts < 2){
+      fb.textContent = t("tryAgainFeedback");
+      fb.className = "feedback bad";
+      svg.classList.remove("shake"); void svg.offsetWidth; svg.classList.add("shake");
+    } else {
+      answered = true;
+      updateDot(qIndex, "wrong");
+      fb.textContent = t("revealFeedback");
+      fb.className = "feedback reveal";
+      hourGroup.classList.add("transition");
+      minuteGroup.classList.add("transition");
+      setHandAngle("hour", targetHourAngle);
+      setHandAngle("minute", targetMinuteAngle);
+      document.getElementById("btnCheck").disabled = true;
+      setTimeout(function(){ qIndex++; loadQuestion(); }, 2200);
+    }
+  });
+
+  function endLevel(){
+    stopMusic();
+    var passed = score >= PASS_THRESHOLD;
+    playResultJingle(passed);
+    if(progress.bestScores[currentLevel.id] === undefined || score > progress.bestScores[currentLevel.id]){
+      progress.bestScores[currentLevel.id] = score;
+    }
+    if(passed && currentLevel.id < TOTAL_LEVELS){
+      progress.maxUnlocked = Math.max(progress.maxUnlocked, currentLevel.id + 1);
+    }
+    saveProgress(progress);
+
+    document.getElementById("resultsScore").textContent = score + " / " + QUESTIONS_PER_LEVEL;
+    var msg, emoji;
+    if(score === 12){ msg = t("perfectMsg"); emoji = "🐢👑"; }
+    else if(passed){ msg = t("passedMsg"); emoji = "🐢🎉"; }
+    else if(score >= 6){ msg = t("okMsg"); emoji = "🐢"; }
+    else { msg = t("tryAgainMsg"); emoji = "🐢💪"; }
+    document.getElementById("resultsMsg").textContent = msg;
+    document.getElementById("resultsEmoji").textContent = emoji;
+
+    var nextBtn = document.getElementById("btnNextLevel");
+    if(currentLevel.id < TOTAL_LEVELS && progress.maxUnlocked >= currentLevel.id + 1){
+      nextBtn.style.display = "block";
+      nextBtn.disabled = false;
+      nextBtn.textContent = t("nextLevel");
+    } else if(currentLevel.id === TOTAL_LEVELS && passed){
+      nextBtn.style.display = "block";
+      nextBtn.disabled = true;
+      nextBtn.textContent = t("allComplete");
+    } else {
+      nextBtn.style.display = "none";
+    }
+    showScreen("screen-results");
+  }
+
+  document.getElementById("btnNextLevel").addEventListener("click", function(){
+    if(currentLevel.id < TOTAL_LEVELS) startLevel(currentLevel.id + 1);
+  });
+  document.getElementById("btnRetryLevel").addEventListener("click", function(){
+    startLevel(currentLevel.id);
+  });
+  document.getElementById("btnToMenu").addEventListener("click", function(){
+    renderLevelSelect();
+    showScreen("screen-levels");
+  });
+
+  /* ---------------- Turtle celebration effects ---------------- */
+  var stage = document.getElementById("turtleStage");
+  var stageInner = document.getElementById("turtleStageInner");
+
+  function spawnConfetti(){
+    var layer = document.getElementById("confettiLayer");
+    layer.innerHTML = "";
+    var colors = ["#ff7043","#ffca28","#66bb6a","#42a5f5","#ab47bc","#ff4081"];
+    for(var i=0;i<26;i++){
+      var piece = document.createElement("span");
+      piece.className = "confetti-piece";
+      piece.style.left = (Math.random()*100) + "%";
+      piece.style.background = colors[Math.floor(Math.random()*colors.length)];
+      piece.style.animationDuration = (1.2 + Math.random()*1.2) + "s";
+      piece.style.animationDelay = (Math.random()*0.3) + "s";
+      layer.appendChild(piece);
+    }
+  }
+
+  // A big pool of smooth movement patterns. One is picked at random every
+  // single time he gets an answer right, and it's never the same pattern
+  // twice in a row — so the turtle always does something new.
+  var MOVES = [
+    { name:"moveBounceDance",   dur:1.4 },  // dances up and down
+    { name:"moveDiagonalZoom",  dur:1.3 },  // zooms in diagonally
+    { name:"moveSwirlSpiral",   dur:1.6 },  // spirals inward while spinning
+    { name:"moveFigureEight",   dur:1.7 },  // traces a figure-8 loop
+    { name:"moveZigzagDash",    dur:1.4 },  // zigzags across the screen
+    { name:"moveSnakeWave",     dur:1.5 },  // wavy snake-like swim
+    { name:"movePendulumSwing", dur:1.4, origin:"50% -10%" }, // swings like a pendulum
+    { name:"moveMoonwalkSlide", dur:1.3 },  // slides in like a moonwalk
+    { name:"moveTripleHop",     dur:1.5 },  // three bouncy hops
+    { name:"moveBalletTwirl",   dur:1.5 },  // graceful spinning twirl
+    { name:"moveShimmyShake",   dur:1.2 },  // fast happy shimmy shake
+    { name:"moveRocketZoomIn",  dur:1.3 },  // rockets in from above
+    { name:"moveHeartbeatPulse",dur:1.3 },  // pulses like a heartbeat
+    { name:"moveOrbitCircle",   dur:1.5 },  // circles around in an orbit
+    { name:"moveJellyWiggle",   dur:1.2 }   // squishy jelly wiggle
+  ];
+  var lastMoveIdx = -1;
+  function pickMove(){
+    var idx;
+    do{ idx = Math.floor(Math.random()*MOVES.length); } while(idx===lastMoveIdx && MOVES.length>1);
+    lastMoveIdx = idx;
+    return MOVES[idx];
+  }
+
+  // Level-specific "flavor" — a filter effect that always belongs to that level.
+  var FLAVORS = {
+    3: { name:"flavorInvert", dur:1.4 },
+    7: { name:"flavorDisco",  dur:1.5 }
+  };
+  // Extra duration each level's costume animation needs, so the movement
+  // and the costume both get to finish before the overlay disappears.
+  // Level 8 is the final level, so it gets the big mega-combo finale.
+  var ACCESSORY_DUR = { 4:1.0, 5:0.9, 6:1.6, 8:2.2 };
+
+  function playTurtleEffect(levelId){
+    // reset classes
+    for(var i=1;i<=TOTAL_LEVELS;i++) stage.classList.remove("lvl-"+i);
+    stage.classList.remove("show");
+    var turtleEmoji = stageInner.querySelector(".turtle-emoji");
+    turtleEmoji.style.animation = "none";
+    void stage.offsetWidth; // force reflow so animation restarts
+
+    var move = pickMove();
+    var flavor = FLAVORS[levelId];
+    var accDur = ACCESSORY_DUR[levelId] || 0;
+    var totalDur = Math.max(move.dur, flavor ? flavor.dur : 0, accDur);
+
+    turtleEmoji.style.transformOrigin = move.origin || "50% 50%";
+    var animParts = [move.name + " " + move.dur + "s ease-in-out"];
+    if(flavor) animParts.push(flavor.name + " " + flavor.dur + "s linear");
+    turtleEmoji.style.animation = animParts.join(", ");
+
+    if(levelId === TOTAL_LEVELS) spawnConfetti();
+    else document.getElementById("confettiLayer").innerHTML = "";
+    stage.classList.add("lvl-" + levelId);
+    stage.classList.add("show");
+    var hideDelay = Math.max(totalDur*1000 - 150, 300);
+    setTimeout(function(){
+      stage.classList.remove("show");
+    }, hideDelay);
+    return totalDur*1000;
+  }
+
+  /* ---------------- SO MANY TURTLES mega celebration ----------------
+     Once per level, on a randomly chosen correct answer (picked fresh at
+     the start of every level, could land on the first question or the
+     last), we swap the usual small celebration for a full-screen swarm of
+     duplicated turtles dressed in that level's theme, with its own peppy
+     music loop that keeps going until he taps/clicks, presses a key, or
+     10 seconds pass — then everything resets and the game continues. */
+  var SWARM_ANIMS = ["swarmFloat", "swarmSpin", "swarmBounce"];
+  var SWARM_DECOR = {
+    // matches each level's normal costume/flavor so it still feels like "that level"
+    1: ["🐢"], 2: ["🐢"], 3: ["🐢"],           // 3 gets an invert filter below
+    4: ["🎩🐢", "🐢"],
+    5: ["🐢🗡️", "🐢"],
+    6: ["🦸🐢", "🐢"],
+    7: ["🐢"]                                  // gets a random hue-rotate filter below
+  };
+  SWARM_DECOR[TOTAL_LEVELS] = ["👑🐢", "🎩🐢", "🐢🗡️", "🦸🐢", "🐢"]; // final level: everything at once
+
+  var swarmStage = document.getElementById("turtleSwarm");
+  var megaTextEl = document.getElementById("megaText");
+  var megaAbort = null; // set while a mega celebration is active, for cleanup if he backs out mid-celebration
+
+  function spawnSwarm(levelId){
+    swarmStage.innerHTML = "";
+    var decor = SWARM_DECOR[levelId] || ["🐢"];
+    var count = 50;
+    for(var i = 0; i < count; i++){
+      var el = document.createElement("span");
+      el.className = "swarm-turtle";
+      el.textContent = decor[Math.floor(Math.random() * decor.length)];
+      var size = 24 + Math.random() * 48;
+      el.style.left = (Math.random() * 96) + "%";
+      el.style.top = (Math.random() * 92) + "%";
+      el.style.fontSize = size + "px";
+      var animName = SWARM_ANIMS[Math.floor(Math.random() * SWARM_ANIMS.length)];
+      var dur = (0.7 + Math.random() * 1.3).toFixed(2);
+      var delay = (-Math.random() * 2).toFixed(2);
+      el.style.animation = animName + " " + dur + "s ease-in-out " + delay + "s infinite";
+      if(levelId === 3) el.style.filter = "invert(1)";
+      if(levelId === 7) el.style.filter = "hue-rotate(" + Math.floor(Math.random() * 360) + "deg)";
+      swarmStage.appendChild(el);
+    }
+  }
+
+  function playMegaTurtleCelebration(levelId, onDone){
+    stopMusic();
+    spawnSwarm(levelId);
+    swarmStage.classList.add("show");
+    megaTextEl.classList.add("show");
+    playAwesomeMusicLoop();
+
+    var finished = false;
+    var timeoutId, attachTimer;
+
+    function dismissHandler(){ finish(); }
+
+    function finish(){
+      if(finished) return;
+      finished = true;
+      megaAbort = null;
+      clearTimeout(timeoutId);
+      clearTimeout(attachTimer);
+      document.removeEventListener("pointerdown", dismissHandler);
+      document.removeEventListener("keydown", dismissHandler);
+      stopAwesomeMusicLoop();
+      swarmStage.classList.remove("show");
+      megaTextEl.classList.remove("show");
+      setTimeout(function(){ swarmStage.innerHTML = ""; }, 260);
+      if(currentLevel) startLevelMusic(currentLevel.id);
+      onDone();
+    }
+
+    // small delay before listening so the tap that answered the question
+    // doesn't immediately dismiss the celebration it just triggered
+    attachTimer = setTimeout(function(){
+      document.addEventListener("pointerdown", dismissHandler);
+      document.addEventListener("keydown", dismissHandler);
+    }, 400);
+    timeoutId = setTimeout(finish, 10000);
+
+    megaAbort = function(){
+      if(finished) return;
+      finished = true;
+      megaAbort = null;
+      clearTimeout(timeoutId);
+      clearTimeout(attachTimer);
+      document.removeEventListener("pointerdown", dismissHandler);
+      document.removeEventListener("keydown", dismissHandler);
+      stopAwesomeMusicLoop();
+      swarmStage.classList.remove("show");
+      swarmStage.innerHTML = "";
+      megaTextEl.classList.remove("show");
+      // deliberately no onDone() — we're leaving the game screen entirely
+    };
+  }
+
+  /* ---------------- Language toggle ---------------- */
+  function applyLanguage(){
+    document.documentElement.lang = currentLang;
+    document.getElementById("appTitle").textContent = t("appTitle");
+    document.getElementById("appSubtitle").textContent = t("subtitle");
+    document.getElementById("howToTitle").textContent = t("howToTitle");
+    document.getElementById("littleHandDesc").innerHTML = t("littleHandDesc");
+    document.getElementById("bigHandDesc").innerHTML = t("bigHandDesc");
+    document.getElementById("btnPlay").textContent = t("play");
+    document.getElementById("btnLevels").textContent = t("chooseLevel");
+    document.getElementById("tipText").textContent = t("tipSafari");
+    document.getElementById("levelsTitle").textContent = t("levelsTitle");
+    document.getElementById("levelsSubtitle").textContent = t("scoreToUnlock");
+    document.getElementById("resetProgress").textContent = t("resetProgress");
+    document.getElementById("littleHandShortLabel").textContent = t("littleHandShort");
+    document.getElementById("bigHandShortLabel").textContent = t("bigHandShort");
+    document.getElementById("btnCheck").textContent = t("check");
+    document.getElementById("btnRetryLevel").textContent = t("retryLevel");
+    document.getElementById("btnToMenu").textContent = t("levelMenu");
+    document.getElementById("btnLangEn").classList.toggle("active", currentLang === "en");
+    document.getElementById("btnLangEs").classList.toggle("active", currentLang === "es");
+    if(currentLevel){
+      document.getElementById("lvlLabel").textContent = t("level") + currentLevel.id + ": " + getLevelName(currentLevel);
+    }
+    renderLevelSelect();
+  }
+
+  function setLang(l){
+    currentLang = l;
+    setCookie(LANG_KEY, l, 365);
+    applyLanguage();
+  }
+
+  document.getElementById("btnLangEn").addEventListener("click", function(){ setLang("en"); });
+  document.getElementById("btnLangEs").addEventListener("click", function(){ setLang("es"); });
+
+  /* ---------------- Navigation buttons ---------------- */
+  document.getElementById("btnPlay").addEventListener("click", function(){
+    startLevel(progress.maxUnlocked);
+  });
+  document.getElementById("btnLevels").addEventListener("click", function(){
+    renderLevelSelect();
+    showScreen("screen-levels");
+  });
+  document.getElementById("backFromLevels").addEventListener("click", function(){
+    showScreen("screen-home");
+  });
+  document.getElementById("backFromGame").addEventListener("click", function(){
+    if(megaAbort) megaAbort();
+    stopMusic();
+    renderLevelSelect();
+    showScreen("screen-levels");
+  });
+  document.getElementById("btnMute").addEventListener("click", function(){
+    ensureAudio();
+    setMuted(!musicMuted);
+  });
+
+  /* ---------------- Init ---------------- */
+  var qlBanner = document.getElementById("qlBanner");
+  if(qlBanner) qlBanner.style.display = "none"; // scripts ran, so we're in a real browser — hide the QuickLook warning
+  buildClockFace();
+  renderLevelSelect();
+  updateMuteButton();
+  applyLanguage();
+})();
+</script>
+</body>
+</html>
