@@ -2,14 +2,18 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Chibi Life</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:radial-gradient(ellipse at center,#2d1b4e 0%,#1a0a2e 100%);display:flex;justify-content:center;align-items:center;min-height:100vh;font-family:'Segoe UI',sans-serif;overflow:hidden}
-#wrap{position:relative;width:800px;height:560px}
-canvas{display:block;border-radius:16px;cursor:pointer;width:100%;height:auto;touch-action:none}
-#wrap{width:min(800px,100vw);height:auto;aspect-ratio:800/560}
+body{background:radial-gradient(ellipse at center,#2d1b4e 0%,#1a0a2e 100%);display:flex;justify-content:center;align-items:center;min-height:100vh;font-family:'Segoe UI',sans-serif;overflow:hidden;-webkit-tap-highlight-color:transparent}
+#wrap{position:relative;width:min(800px,100vw);height:auto}
+canvas{display:block;border-radius:16px;cursor:pointer;width:100%;height:auto;touch-action:none;-webkit-user-select:none;user-select:none}
+/* aspect-ratio fallback for iOS Safari < 15 */
+@supports not (aspect-ratio:800/560){
+  #wrap{height:calc(min(800px,100vw)*0.7)}
+  canvas{height:100%}
+}
 body{padding:0;margin:0}
 .panel{position:absolute;background:rgba(255,255,255,0.97);border:2px solid #FFB3D9;border-radius:16px;padding:16px;z-index:20;box-shadow:0 8px 32px rgba(0,0,0,0.18)}
 .panel h3{color:#c060a0;font-size:15px;margin-bottom:10px;text-align:center}
@@ -1984,7 +1988,9 @@ let mouseX=0,mouseY=0;
 function getPos(e){
   const r=canvas.getBoundingClientRect();
   const scaleX=800/r.width, scaleY=560/r.height;
-  const src=e.touches?e.touches[0]:e.changedTouches?e.changedTouches[0]:e;
+  // On touchend, e.touches is EMPTY (not null) — must check length
+  const src=(e.touches&&e.touches.length>0)?e.touches[0]:
+            (e.changedTouches&&e.changedTouches.length>0)?e.changedTouches[0]:e;
   return {x:(src.clientX-r.left)*scaleX, y:(src.clientY-r.top)*scaleY};
 }
 
@@ -2121,8 +2127,12 @@ canvas.addEventListener('mousemove', e=>{ const p=getPos(e); pointerMove(p.x,p.y
 canvas.addEventListener('mouseup',   e=>{ const p=getPos(e); pointerUp(p.x,p.y); });
 
 // ── Touch events (prevent scroll/zoom on canvas) ──────────────────────────
+// iOS: AudioContext must be resumed inside a user gesture handler
 canvas.addEventListener('touchstart', e=>{
-  e.preventDefault();const p=getPos(e);pointerDown(p.x,p.y);
+  e.preventDefault();
+  // Resume AudioContext on first touch (iOS Safari requirement)
+  if(MUS.ctx&&MUS.ctx.state==='suspended') MUS.ctx.resume();
+  const p=getPos(e);pointerDown(p.x,p.y);
 },{passive:false});
 canvas.addEventListener('touchmove', e=>{
   e.preventDefault();const p=getPos(e);pointerMove(p.x,p.y);
@@ -2130,7 +2140,9 @@ canvas.addEventListener('touchmove', e=>{
 canvas.addEventListener('touchend', e=>{
   e.preventDefault();const p=getPos(e);pointerUp(p.x,p.y);
 },{passive:false});
-canvas.addEventListener('touchcancel', e=>{cancelPointer();},{passive:false});
+canvas.addEventListener('touchcancel', e=>{
+  e.preventDefault();cancelPointer();
+},{passive:false});
 
 function handleClick(mx,my){
   if(checkResetClick(mx,my)) return;
