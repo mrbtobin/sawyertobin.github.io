@@ -2050,7 +2050,6 @@ function _tryStartDrag(x,y){
 
 function pointerDown(x,y){
   _resetPointer(x,y);
-  if(!MUS.ready) MUS.init();
   // Start boba drink-hold tracking regardless (cleared if dragged away)
   if(scene==='boba'){
     for(let i=bobaCups.length-1;i>=0;i--){
@@ -2138,8 +2137,7 @@ canvas.addEventListener('touchstart', e=>{
   e.preventDefault();
   _lastTouch=Date.now();
   // Resume AudioContext on first touch (iOS Safari requirement)
-  if(MUS.ctx&&MUS.ctx.state==='suspended') MUS.ctx.resume();
-  if(!MUS.ready) MUS.init();
+  try{ const _ac=getAC(); if(_ac.state==='suspended') _ac.resume(); } catch(err){}
   const p=getPos(e);pointerDown(p.x,p.y);
 },{passive:false});
 canvas.addEventListener('touchmove', e=>{
