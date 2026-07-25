@@ -2121,27 +2121,35 @@ function cancelPointer(){
   _moved=false;_activelyDragging=false;
 }
 
+// ── Ghost-click guard ────────────────────────────────────────────────────────
+// iOS Safari synthesizes mousemove/mousedown/mouseup after touch events.
+// mousemove fires at (0,0) (no real cursor), corrupting _px/_py → character walks left.
+// Suppress ALL mouse events for 600ms after any touch interaction.
+let _lastTouch = 0;
+function _isSynthetic(){ return (Date.now()-_lastTouch) < 600; }
+
 // ── Mouse events ─────────────────────────────────────────────────────────────
-canvas.addEventListener('mousedown', e=>{ const p=getPos(e); pointerDown(p.x,p.y); });
-canvas.addEventListener('mousemove', e=>{ const p=getPos(e); pointerMove(p.x,p.y); });
-canvas.addEventListener('mouseup',   e=>{ const p=getPos(e); pointerUp(p.x,p.y); });
+canvas.addEventListener('mousedown', e=>{ if(_isSynthetic())return; const p=getPos(e); pointerDown(p.x,p.y); });
+canvas.addEventListener('mousemove', e=>{ if(_isSynthetic())return; const p=getPos(e); pointerMove(p.x,p.y); });
+canvas.addEventListener('mouseup',   e=>{ if(_isSynthetic())return; const p=getPos(e); pointerUp(p.x,p.y); });
 
 // ── Touch events (prevent scroll/zoom on canvas) ──────────────────────────
-// iOS: AudioContext must be resumed inside a user gesture handler
 canvas.addEventListener('touchstart', e=>{
   e.preventDefault();
+  _lastTouch=Date.now();
   // Resume AudioContext on first touch (iOS Safari requirement)
   if(MUS.ctx&&MUS.ctx.state==='suspended') MUS.ctx.resume();
+  if(!MUS.ready) MUS.init();
   const p=getPos(e);pointerDown(p.x,p.y);
 },{passive:false});
 canvas.addEventListener('touchmove', e=>{
-  e.preventDefault();const p=getPos(e);pointerMove(p.x,p.y);
+  e.preventDefault();_lastTouch=Date.now();const p=getPos(e);pointerMove(p.x,p.y);
 },{passive:false});
 canvas.addEventListener('touchend', e=>{
-  e.preventDefault();const p=getPos(e);pointerUp(p.x,p.y);
+  e.preventDefault();_lastTouch=Date.now();const p=getPos(e);pointerUp(p.x,p.y);
 },{passive:false});
 canvas.addEventListener('touchcancel', e=>{
-  e.preventDefault();cancelPointer();
+  e.preventDefault();_lastTouch=Date.now();cancelPointer();
 },{passive:false});
 
 function handleClick(mx,my){
