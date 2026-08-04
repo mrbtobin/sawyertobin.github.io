@@ -203,7 +203,7 @@
           <span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span>
           <span style="margin-left:6px;">mission.py</span>
         </div>
-        <textarea id="codeInput" spellcheck="false"></textarea>
+        <textarea id="codeInput" spellcheck="false" autocapitalize="off" autocorrect="off" autocomplete="off" data-gramm="false"></textarea>
       </div>
 
       <div class="btn-row">
@@ -570,21 +570,41 @@ const LEVELS = [
 let state = { current:0, completed:[] };
 let hintShown=false;
 
+const COOKIE_NAME = 'ocean_code_progress';
+function setCookie(name, value, days){
+  const maxAge = days*24*60*60;
+  document.cookie = `${name}=${encodeURIComponent(value)}; max-age=${maxAge}; path=/; SameSite=Lax`;
+}
+function getCookie(name){
+  const parts = document.cookie.split('; ');
+  for(const p of parts){
+    const idx = p.indexOf('=');
+    if(idx===-1) continue;
+    const k = p.slice(0,idx), v = p.slice(idx+1);
+    if(k===name) return decodeURIComponent(v);
+  }
+  return null;
+}
+
 async function loadProgress(){
   try{
-    const r = await window.storage.get('ocean-code:progress', false);
-    if(r && r.value){
-      const parsed = JSON.parse(r.value);
+    let raw = getCookie(COOKIE_NAME);
+    if(!raw){
+      try{ raw = localStorage.getItem(COOKIE_NAME); }catch(e2){ /* ignore */ }
+    }
+    if(raw){
+      const parsed = JSON.parse(raw);
       if(parsed && Array.isArray(parsed.completed)){
         state.completed = parsed.completed;
         state.current = typeof parsed.current==='number' ? parsed.current : 0;
       }
     }
-  }catch(e){ /* first run or storage unavailable — start fresh */ }
+  }catch(e){ /* first run or storage unreadable — start fresh */ }
 }
 async function saveProgress(){
-  try{ await window.storage.set('ocean-code:progress', JSON.stringify(state), false); }
-  catch(e){ /* ignore if storage unavailable */ }
+  const raw = JSON.stringify(state);
+  try{ setCookie(COOKIE_NAME, raw, 400); }catch(e){ /* ignore if cookies unavailable */ }
+  try{ localStorage.setItem(COOKIE_NAME, raw); }catch(e){ /* ignore if localStorage unavailable */ }
 }
 
 function isUnlocked(i){ return i===0 || state.completed.includes(i-1) || state.completed.includes(i); }
