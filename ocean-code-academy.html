@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ocean Code Academy 🌊</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Quicksand:wght@500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --deep1:#031b2e;
+    --deep2:#063a5e;
+    --deep3:#0a5c82;
+    --surface:#0e2f47;
+    --panel:#0c2840;
+    --panel-light:#123a58;
+    --coral:#ff7a59;
+    --coral-dark:#e35c3b;
+    --seafoam:#4fe3c1;
+    --sand:#ffd166;
+    --ink:#eaf6fb;
+    --dim:#9fc4d8;
+    --good:#4fe3c1;
+    --bad:#ff8686;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    font-family:'Quicksand',sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(ellipse at 20% 0%, #0d4468 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 10%, #0a5c82 0%, transparent 55%),
+      linear-gradient(180deg, var(--deep1) 0%, var(--deep2) 45%, #021322 100%);
+    min-height:100%;
+    overflow-x:hidden;
+    position:relative;
+  }
+  h1,h2,h3{font-family:'Baloo 2',cursive; margin:0;}
+
+  /* ---- bubbles ---- */
+  .bubble-field{position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden;}
+  .bubble{
+    position:absolute; bottom:-40px; border-radius:50%;
+    background:radial-gradient(circle at 30% 30%, rgba(255,255,255,.55), rgba(255,255,255,.05) 60%);
+    animation:rise linear infinite;
+    opacity:.55;
+  }
+  @keyframes rise{
+    0%{transform:translateY(0) translateX(0); opacity:.6;}
+    100%{transform:translateY(-115vh) translateX(20px); opacity:0;}
+  }
+
+  /* ---- layout ---- */
+  .app{position:relative; z-index:1; max-width:1180px; margin:0 auto; padding:22px 18px 60px;}
+  header.top{display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; margin-bottom:20px;}
+  .brand{display:flex; align-items:center; gap:12px;}
+  .brand .icon{font-size:38px; filter:drop-shadow(0 2px 6px rgba(0,0,0,.4));}
+  .brand h1{font-size:26px; letter-spacing:.3px;}
+  .brand p{margin:2px 0 0; color:var(--dim); font-size:13px; font-weight:600;}
+  .journal-toggle{
+    background:var(--panel-light); border:1px solid #1c4a6b; color:var(--ink);
+    padding:10px 16px; border-radius:14px; font-family:'Baloo 2'; font-size:15px;
+    cursor:pointer; display:flex; align-items:center; gap:8px; transition:.15s;
+  }
+  .journal-toggle:hover{background:#194c70; transform:translateY(-1px);}
+  .journal-count{background:var(--coral); color:#fff; border-radius:999px; padding:2px 9px; font-size:12px; font-weight:700;}
+
+  .layout{display:grid; grid-template-columns:230px 1fr; gap:20px;}
+  @media (max-width:820px){ .layout{grid-template-columns:1fr;} .stations{flex-direction:row; overflow-x:auto; padding-bottom:10px;} }
+
+  /* ---- station map ---- */
+  .stations{display:flex; flex-direction:column; gap:10px;}
+  .station{
+    display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:14px;
+    background:var(--panel); border:1px solid #113652; cursor:pointer; transition:.15s;
+    min-width:190px;
+  }
+  .station:hover{border-color:var(--seafoam);}
+  .station.active{background:linear-gradient(135deg,#0f4a6c,#0a3450); border-color:var(--seafoam); box-shadow:0 0 0 2px rgba(79,227,193,.25);}
+  .station.locked{opacity:.4; cursor:not-allowed;}
+  .station .emoji{font-size:22px; width:30px; text-align:center;}
+  .station .txt{display:flex; flex-direction:column; line-height:1.25;}
+  .station .num{font-size:10px; letter-spacing:.08em; color:var(--dim); font-weight:700; text-transform:uppercase;}
+  .station .name{font-family:'Baloo 2'; font-size:14px;}
+  .station .check{margin-left:auto; color:var(--seafoam); font-size:15px;}
+
+  /* ---- main panel ---- */
+  .panel{background:var(--panel); border:1px solid #113652; border-radius:20px; padding:22px; position:relative; overflow:hidden;}
+  .panel::before{
+    content:""; position:absolute; top:0; left:0; right:0; height:5px;
+    background:linear-gradient(90deg,var(--seafoam),var(--sand),var(--coral));
+  }
+  .mission-head{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:4px;}
+  .mission-eyebrow{font-size:12px; font-weight:700; letter-spacing:.1em; color:var(--sand); text-transform:uppercase;}
+  .mission-title{font-size:24px;}
+
+  .guide{
+    display:flex; gap:12px; align-items:flex-start; background:var(--panel-light);
+    border-radius:14px; padding:14px 16px; margin:14px 0; border:1px solid #1c4a6b;
+  }
+  .guide .avatar{font-size:30px; flex:none;}
+  .guide .bubble-text{font-size:14.5px; line-height:1.55; color:var(--ink);}
+  .guide .bubble-text b{color:var(--sand);}
+
+  .task-box{margin:16px 0; font-size:14.5px; line-height:1.6; color:var(--dim);}
+  .task-box code{background:#04202f; color:var(--seafoam); padding:1px 6px; border-radius:6px; font-family:'Fira Code',monospace; font-size:13px;}
+
+  .editor-wrap{border-radius:14px; overflow:hidden; border:1px solid #1c4a6b;}
+  .editor-bar{background:#04202f; padding:8px 12px; display:flex; align-items:center; gap:8px; font-size:12px; color:var(--dim); font-family:'Fira Code',monospace;}
+  .editor-bar .dot{width:9px; height:9px; border-radius:50%; }
+  .editor-bar .d1{background:#ff6159;} .editor-bar .d2{background:#ffbd2e;} .editor-bar .d3{background:#28c93f;}
+  textarea#codeInput{
+    width:100%; min-height:170px; background:#04141f; color:#d8f6ea; border:none; outline:none;
+    font-family:'Fira Code',monospace; font-size:14.5px; line-height:1.6; padding:16px; resize:vertical;
+    tab-size:4;
+  }
+  .btn-row{display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;}
+  button{font-family:'Baloo 2'; border:none; border-radius:12px; cursor:pointer; font-size:15px; padding:11px 20px; transition:.15s;}
+  .btn-run{background:linear-gradient(135deg,var(--seafoam),#2fc4a3); color:#022; font-weight:700;}
+  .btn-run:hover{transform:translateY(-1px); box-shadow:0 6px 16px rgba(79,227,193,.3);}
+  .btn-reset{background:transparent; color:var(--dim); border:1px solid #1c4a6b;}
+  .btn-reset:hover{color:var(--ink); border-color:var(--dim);}
+  .btn-hint{background:transparent; color:var(--sand); border:1px solid #4a3d1c;}
+  .btn-hint:hover{background:rgba(255,209,102,.08);}
+
+  .hint-box{margin-top:10px; background:#2a2210; border:1px solid #4a3d1c; color:var(--sand); padding:10px 14px; border-radius:12px; font-size:13.5px; display:none;}
+  .hint-box.show{display:block;}
+
+  .console{margin-top:16px; background:#021017; border-radius:14px; border:1px solid #113652; overflow:hidden;}
+  .console-bar{padding:8px 12px; font-size:12px; color:var(--dim); font-family:'Fira Code',monospace; border-bottom:1px solid #113652; display:flex; justify-content:space-between;}
+  .console-body{padding:14px 16px; font-family:'Fira Code',monospace; font-size:14px; min-height:70px; white-space:pre-wrap; color:#a9f7de;}
+  .console-body .line{padding:2px 0;}
+  .console-body .err{color:var(--bad);}
+  .console-body .placeholder{color:#3d6376;}
+
+  .feedback{margin-top:14px; padding:14px 16px; border-radius:14px; font-size:14.5px; font-weight:600; display:none;}
+  .feedback.pass{display:block; background:rgba(79,227,193,.12); border:1px solid rgba(79,227,193,.4); color:var(--seafoam);}
+  .feedback.fail{display:block; background:rgba(255,134,134,.1); border:1px solid rgba(255,134,134,.35); color:var(--bad);}
+
+  .next-row{margin-top:14px; display:none;}
+  .next-row.show{display:block;}
+  .btn-next{background:linear-gradient(135deg,var(--coral),var(--coral-dark)); color:#fff; font-weight:700;}
+  .btn-next:hover{transform:translateY(-1px); box-shadow:0 6px 16px rgba(255,122,89,.35);}
+
+  /* ---- journal modal ---- */
+  .modal-back{position:fixed; inset:0; background:rgba(2,10,17,.72); display:none; align-items:center; justify-content:center; z-index:20; padding:20px;}
+  .modal-back.show{display:flex;}
+  .modal{background:var(--panel); border:1px solid #1c4a6b; border-radius:20px; padding:26px; max-width:640px; width:100%; max-height:80vh; overflow:auto;}
+  .modal h2{font-size:22px; margin-bottom:4px;}
+  .modal p.sub{color:var(--dim); margin:0 0 16px; font-size:13.5px;}
+  .cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:12px;}
+  .card{background:var(--panel-light); border:1px solid #1c4a6b; border-radius:14px; padding:14px 10px; text-align:center;}
+  .card.locked{opacity:.35;}
+  .card .emoji{font-size:34px;}
+  .card .cname{font-family:'Baloo 2'; font-size:13px; margin-top:6px;}
+  .modal-close{margin-top:18px; width:100%; background:var(--panel-light); color:var(--ink); border:1px solid #1c4a6b;}
+
+  /* ---- confetti ---- */
+  .confetti{position:fixed; top:-20px; z-index:30; font-size:20px; pointer-events:none; animation:fall linear forwards;}
+  @keyframes fall{ to{ transform:translateY(105vh) rotate(360deg); opacity:.2; } }
+
+  footer{text-align:center; color:var(--dim); font-size:12px; margin-top:28px;}
+</style>
+</head>
+<body>
+
+<div class="bubble-field" id="bubbleField"></div>
+
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <div class="icon">🐢</div>
+      <div>
+        <h1>Ocean Code Academy</h1>
+        <p>Trainee Marine Biologist Program — Python Basics</p>
+      </div>
+    </div>
+    <button class="journal-toggle" onclick="openJournal()">
+      📓 Field Journal <span class="journal-count" id="journalCount">0</span>
+    </button>
+  </header>
+
+  <div class="layout">
+    <nav class="stations" id="stations"></nav>
+
+    <main class="panel">
+      <div class="mission-head">
+        <span class="mission-eyebrow" id="missionEyebrow">Mission 1</span>
+      </div>
+      <h2 class="mission-title" id="missionTitle">Loading…</h2>
+
+      <div class="guide">
+        <div class="avatar">🐢</div>
+        <div class="bubble-text" id="guideText">…</div>
+      </div>
+
+      <div class="task-box" id="taskBox"></div>
+
+      <div class="editor-wrap">
+        <div class="editor-bar">
+          <span class="dot d1"></span><span class="dot d2"></span><span class="dot d3"></span>
+          <span style="margin-left:6px;">mission.py</span>
+        </div>
+        <textarea id="codeInput" spellcheck="false"></textarea>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-run" onclick="runCode()">▶ Run Code</button>
+        <button class="btn-reset" onclick="resetCode()">↺ Reset</button>
+        <button class="btn-hint" onclick="toggleHint()">💡 Need a hint?</button>
+      </div>
+      <div class="hint-box" id="hintBox"></div>
+
+      <div class="console">
+        <div class="console-bar"><span>🌊 Dive Computer Output</span><span id="consoleStatus"></span></div>
+        <div class="console-body" id="consoleBody"><span class="placeholder">Press "Run Code" to see what happens...</span></div>
+      </div>
+
+      <div class="feedback" id="feedback"></div>
+      <div class="next-row" id="nextRow">
+        <button class="btn-next" onclick="goNext()">Next Mission →</button>
+      </div>
+    </main>
+  </div>
+
+  <footer>Made with 🌊 for a future marine biologist. Your progress is saved automatically.</footer>
+</div>
+
+<div class="modal-back" id="journalBack">
+  <div class="modal">
+    <h2>📓 Field Journal</h2>
+    <p class="sub">Every mission you complete adds a creature to your collection.</p>
+    <div class="cards" id="cardsGrid"></div>
+    <button class="modal-close" onclick="closeJournal()">Close</button>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   MINI PYTHON-SUBSET INTERPRETER (transpiles to JS, then runs)
+   ============================================================ */
+function stripComment(line){
+  let inS=false, inD=false;
+  for(let i=0;i<line.length;i++){
+    const c=line[i];
+    if(c==="'" && !inD) inS=!inS;
+    else if(c==='"' && !inS) inD=!inD;
+    else if(c==='#' && !inS && !inD) return line.slice(0,i);
+  }
+  return line;
+}
+function indentOf(line){ const m=line.match(/^(\s*)/); return m[1].replace(/\t/g,'    ').length; }
+
+function buildTree(rawLines){
+  const lines=[];
+  for(const raw of rawLines){
+    const noComment=stripComment(raw).replace(/\t/g,'    ');
+    if(noComment.trim()==='') continue;
+    lines.push({indent:indentOf(noComment), text:noComment.trim()});
+  }
+  let pos=0;
+  function parseBlock(minIndent){
+    const nodes=[];
+    while(pos<lines.length && lines[pos].indent>=minIndent){
+      if(lines[pos].indent>minIndent){ pos++; continue; }
+      const node={text:lines[pos].text, children:[]};
+      pos++;
+      if(node.text.endsWith(':')){
+        if(pos<lines.length && lines[pos].indent>minIndent){
+          node.children=parseBlock(lines[pos].indent);
+        }
+      }
+      nodes.push(node);
+    }
+    return nodes;
+  }
+  return parseBlock(0);
+}
+
+function splitArgsRaw(s){
+  const parts=[]; let depth=0, cur='', inS=false, inD=false;
+  for(let i=0;i<s.length;i++){
+    const c=s[i];
+    if(c==="'" && !inD) inS=!inS;
+    else if(c==='"' && !inS) inD=!inD;
+    if(!inS && !inD){
+      if('([{'.includes(c)) depth++;
+      if(')]}'.includes(c)) depth--;
+      if(c===',' && depth===0){ parts.push(cur); cur=''; continue; }
+    }
+    cur+=c;
+  }
+  if(cur.trim().length) parts.push(cur);
+  return parts;
+}
+function splitArgs(s){ return splitArgsRaw(s).map(x=>x.trim()).filter(x=>x.length); }
+
+function transformExpr(expr){
+  expr=expr.trim();
+  expr=expr.replace(/f(['"])((?:\\.|(?!\1).)*)\1/g,(m,q,body)=>{
+    let out=body.replace(/`/g,'\\`').replace(/\$\{/g,'\\${');
+    out=out.replace(/\{([^{}]+)\}/g,(mm,inner)=>'${'+transformExpr(inner)+'}');
+    return '`'+out+'`';
+  });
+  expr=expr.replace(/\bTrue\b/g,'true').replace(/\bFalse\b/g,'false').replace(/\bNone\b/g,'null')
+           .replace(/\band\b/g,'&&').replace(/\bor\b/g,'||').replace(/\bnot\s+/g,'!');
+  return expr;
+}
+function floorDiv(expr){
+  return expr.replace(/([\w.\)\]'"]+)\s*\/\/\s*([\w.\(\['"]+)/g,'Math.floor($1 / $2)');
+}
+function transformArgList(s){ return splitArgs(s).map(transformExpr).join(', '); }
+
+let __loopGuardId=0;
+function transformLine(text){
+  text=floorDiv(text);
+  let m;
+  m=text.match(/^print\((.*)\)$/);
+  if(m) return `__print(${transformArgList(m[1])});`;
+
+  m=text.match(/^for\s+(\w+)\s+in\s+range\((.*)\):$/);
+  if(m){
+    const v=m[1]; const args=splitArgs(m[2]).map(transformExpr);
+    let start='0', end, step='1';
+    if(args.length===1){ end=args[0]; }
+    else if(args.length===2){ start=args[0]; end=args[1]; }
+    else{ start=args[0]; end=args[1]; step=args[2]; }
+    const cond = step.trim().startsWith('-') ? `${v} > (${end})` : `${v} < (${end})`;
+    return `for (var ${v} = ${start}; ${cond}; ${v} += (${step})) { __guard();`;
+  }
+  m=text.match(/^for\s+(\w+)\s+in\s+(.+):$/);
+  if(m) return `for (var ${m[1]} of ${transformExpr(m[2])}) { __guard();`;
+
+  m=text.match(/^while\s+(.+):$/);
+  if(m) return `while (${transformExpr(m[1])}) { __guard();`;
+
+  m=text.match(/^if\s+(.+):$/); if(m) return `if (${transformExpr(m[1])}) {`;
+  m=text.match(/^elif\s+(.+):$/); if(m) return `} else if (${transformExpr(m[1])}) {`;
+  if(text==='else:') return `} else {`;
+
+  m=text.match(/^def\s+(\w+)\s*\((.*)\):$/);
+  if(m) return `function ${m[1]}(${m[2]}) {`;
+
+  m=text.match(/^return(\s+.*)?$/);
+  if(m) return `return ${m[1]?transformExpr(m[1]):''};`;
+
+  m=text.match(/^(\w+)\s*(\+=|-=|\*=|\/=)\s*(.+)$/);
+  if(m) return `${m[1]} = ${m[1]} ${m[2][0]} (${transformExpr(m[3])});`;
+
+  m=text.match(/^(\w+(?:\[[^\]]+\])?)\s*=\s*(?!=)(.+)$/);
+  if(m) return `${/\[/.test(m[1])?'':'var '}${m[1]} = ${transformExpr(m[2])};`;
+
+  return `${transformExpr(text)};`;
+}
+
+function nodesToJs(nodes, capture, insideFunction){
+  let out='';
+  for(let i=0;i<nodes.length;i++){
+    const n=nodes[i];
+    const isDef=/^def\s+\w+\s*\(/.test(n.text);
+    if(!insideFunction){
+      const vm=n.text.match(/^(\w+)\s*(=|\+=|-=|\*=|\/=)\s*(?!=)/);
+      if(vm && capture) capture.add(vm[1]);
+      const fm=n.text.match(/^for\s+(\w+)\s+in\s+/);
+      if(fm && capture) capture.add(fm[1]);
+    }
+    if(n.text.endsWith(':')){
+      out+=transformLine(n.text)+'\n';
+      out+=nodesToJs(n.children, capture, insideFunction||isDef);
+      const next=nodes[i+1];
+      const nextIsChain = next && (next.text.startsWith('elif ') || next.text==='else:');
+      if(!nextIsChain) out+='}\n';
+    } else {
+      out+=transformLine(n.text)+'\n';
+    }
+  }
+  return out;
+}
+function pyToJs(source, capture){
+  const tree=buildTree(source.split('\n'));
+  return nodesToJs(tree, capture, false);
+}
+
+function runPython(source){
+  let jsCode;
+  const capture=new Set();
+  try{
+    jsCode=pyToJs(source, capture);
+  }catch(e){
+    return {ok:false, error:"Hmm, I couldn't read that code. Check your spacing and colons!", output:[]};
+  }
+  if(capture.size){
+    jsCode += `\nreturn {${[...capture].map(v=>`${v}: (typeof ${v}!=='undefined'?${v}:undefined)`).join(', ')}};`;
+  }
+  const output=[];
+  const __print=(...args)=>output.push(args.map(pyStr).join(' '));
+  const len=(x)=> (x && x.length!==undefined) ? x.length : Object.keys(x).length;
+  const str=(x)=> pyStr(x);
+  const int=(x)=> parseInt(x,10);
+  const float=(x)=> parseFloat(x);
+  const range=(n)=> Array.from({length:n},(_,i)=>i);
+  let steps=0;
+  const __guard=()=>{ steps++; if(steps>50000) throw new Error('LOOP_LIMIT'); };
+  function pyStr(x){
+    if(typeof x==='boolean') return x?'True':'False';
+    if(x===null||x===undefined) return 'None';
+    if(Array.isArray(x)) return '['+x.map(v=>typeof v==='string'?`'${v}'`:pyStr(v)).join(', ')+']';
+    return String(x);
+  }
+  try{
+    const fn=new Function('__print','__guard','len','str','int','float','range', jsCode);
+    const vars = fn(__print,__guard,len,str,int,float,range) || {};
+    return {ok:true, output, vars};
+  }catch(e){
+    if(e.message==='LOOP_LIMIT'){
+      return {ok:false, error:"Your loop ran too many times! Double-check your range() numbers.", output};
+    }
+    let friendly = "There's a small bug in your code. ";
+    if(e instanceof SyntaxError) friendly += "Check for missing colons ( : ), quotes, or parentheses.";
+    else friendly += e.message;
+    return {ok:false, error:friendly, output};
+  }
+}
+
+/* ============================================================
+   LEVEL DATA
+   ============================================================ */
+const LEVELS = [
+  {
+    id:0, emoji:'🐬', name:'Say Hello',
+    eyebrow:'Mission 1 · The print() Command',
+    title:'Send Your First Message',
+    guide:`Welcome aboard, trainee! I'm <b>Captain Coral</b> 🐢, and I'll guide you through Ocean Code Academy. Every dive computer needs one command first: <b>print()</b>. It shows a message on the screen.`,
+    task:`Use <code>print("your message")</code> to say hello to the ocean. The quotes matter — text always goes inside quote marks!`,
+    starter:`# print() shows a message on your dive screen.\n# Try running this code first!\nprint("Hello, Ocean!")`,
+    hint:`Your code should look like: print("Hello, Ocean!") — with quotes and parentheses.`,
+    check:(r)=>{
+      if(!r.ok) return {pass:false};
+      const ok = r.output.some(l=>l.trim().length>0);
+      return {pass:ok, msg: ok? `Message received! You're officially diving. 🫧` : `Try printing a message with print("...")!`};
+    }
+  },
+  {
+    id:1, emoji:'🐢', name:'Meet a Creature',
+    eyebrow:'Mission 2 · Variables',
+    title:'Log Your First Creature',
+    guide:`Great work! Now, marine biologists log every creature they find using a <b>variable</b> — a labeled box that stores information.`,
+    task:`Create a variable called <code>animal</code> and set it to your favorite ocean creature's name, in quotes. Then <code>print(animal)</code> to log it.`,
+    starter:`animal = "sea turtle"\nprint(animal)`,
+    hint:`Format: animal = "name here" then print(animal) on the next line — no quotes around "animal" itself.`,
+    check:(r)=>{
+      if(!r.ok) return {pass:false};
+      const ok = typeof r.vars.animal === 'string' && r.vars.animal.length>0 && r.output.join(' ').includes(r.vars.animal);
+      return {pass:ok, msg: ok? `Logged! ${r.vars.animal} is now in your field journal. 📘` : `Make sure you create "animal" and print it.`};
+    }
+  },
+  {
+    id:2, emoji:'🐠', name:'Tide Pool Notes',
+    eyebrow:'Mission 3 · Combining Text (f-strings)',
+    title:'Write a Full Field Note',
+    guide:`Biologists don't just log one word — they write full notes! An <b>f-string</b> lets you mix words and variables together using <code>f"..."</code> and curly braces <code>{ }</code>.`,
+    task:`Make two variables, <code>name</code> and <code>species</code>. Then print: <code>print(f"{name} is a {species}")</code>`,
+    starter:`name = "Nemo"\nspecies = "Clownfish"\nprint(f"{name} is a {species}")`,
+    hint:`f"{name} is a {species}" — the f before the quote turns on the magic, and {name} gets swapped for the variable's value.`,
+    check:(r)=>{
+      if(!r.ok) return {pass:false};
+      const n=r.vars.name, s=r.vars.species;
+      const ok = n && s && r.output.some(l=>l.includes(n) && l.includes(s));
+      return {pass:ok, msg: ok? `Beautiful field note! Real biologists write it exactly like that. 📝` : `Your printed line should include both name and species.`};
+    }
+  },
+  {
+    id:3, emoji:'🦀', name:'Counting Fish',
+    eyebrow:'Mission 4 · Numbers & Math',
+    title:'Survey the School of Fish',
+    guide:`During a reef survey you counted 5 fish... then 3 more swam into view! Numbers (no quotes!) let you do math right in your code.`,
+    task:`Set <code>fish = 5</code>, then add 3 more with <code>fish = fish + 3</code>, then print <code>fish</code>.`,
+    starter:`fish = 5\nfish = fish + 3\nprint(fish)`,
+    hint:`Numbers don't need quotes. fish + 3 adds 3 to whatever fish currently is.`,
+    check:(r)=>{
+      if(!r.ok) return {pass:false};
+      const ok = typeof r.vars.fish === 'number' && r.output.join(' ').includes(String(r.vars.fish));
+      return {pass:ok, msg: ok? `Survey logged: ${r.vars.fish} fish counted! Math makes counting easy. 🐟` : `Print the final value of fish.`};
+    }
+  },
+  {
+    id:4, emoji:'🦈', name:'Deep Dive Loop',
+    eyebrow:'Mission 5 · The for Loop',
+    title:'Repeat a Dive Check 5 Times',
+    guide:`Before a deep dive, you check your gear over and over. Instead of writing print() five times, use a <b>loop</b>: <code>for i in range(5):</code>`,
+    task:`Write a loop that prints "Diving deeper..." exactly 5 times. Remember: the line inside the loop needs 4 spaces of indent!`,
+    starter:`for i in range(5):\n    print("Diving deeper...")`,
+    hint:`for i in range(5):  then on the next line, indented, print("Diving deeper...")`,
+    check:(r)=>{
+      if(!r.ok) return {pass:false};
+      const ok = r.output.length===5;
+      return {pass:ok, msg: ok? `Gear checked 5 times — you're cleared to dive! 🦈` : `Your loop should print exactly 5 lines (got ${r.output.length}).`};
+    }
+  },
+  {
+    id:5, emoji:'🐙', name:'Field Journal List',
+    eyebrow:'Mission 6 · Lists',
+    title:'Log a Whole Collection',
+    guide:`A <b>list</b> holds many things in one variable — perfect for logging every creature on today's dive.`,
+    task:`Make a list called <code>creatures</code> with at least 3 ocean animals. Then loop through it and print each one: <code>for c in creatures:</code>`,
+    starter:`creatures = ["shark", "octopus", "seahorse"]\nfor c in creatures:\n    print(c)`,
+    hint:`Square brackets [ ] make a list. for c in creatures: then indented, print(c).`,
+    check:(r)=>{
+      if(!r.ok) return {pass:false};
+      const list=r.vars.creatures;
+      const ok = Array.isArray(list) && list.length>=2 && r.output.length===list.length;
+      return {pass:ok, msg: ok? `Full journal entry logged — ${list.length} creatures spotted today! 🐙` : `Make a list of 3+ creatures and print each one with a loop.`};
+    }
+  },
+  {
+    id:6, emoji:'🐡', name:'Ocean Zones',
+    eyebrow:'Mission 7 · if / else',
+    title:'Classify a Dive Zone',
+    guide:`Depth tells you which ocean zone a creature lives in: above 200m is the <b>Twilight Zone</b>, shallower is the <b>Sunlight Zone</b>. Use <code>if</code> and <code>else</code> to decide!`,
+    task:`Set <code>depth</code> to a number. If it's greater than 200, print "Twilight Zone", otherwise print "Sunlight Zone".`,
+    starter:`depth = 250\nif depth > 200:\n    print("Twilight Zone")\nelse:\n    print("Sunlight Zone")`,
+    hint:`if depth > 200: then indented print("Twilight Zone"), then else: then indented print("Sunlight Zone").`,
+    check:(r)=>{
+      if(!r.ok) return {pass:false};
+      const d=r.vars.depth;
+      if(typeof d!=='number') return {pass:false};
+      const expect = d>200 ? 'Twilight Zone' : 'Sunlight Zone';
+      const ok = r.output.some(l=>l.includes(expect));
+      return {pass:ok, msg: ok? `Correctly classified! At ${d}m, that's the ${expect}. 🔦` : `Check your if/else logic against the depth value.`};
+    }
+  },
+  {
+    id:7, emoji:'🦑', name:'Biologist Toolkit',
+    eyebrow:'Mission 8 · Functions',
+    title:'Build a Reusable Tool',
+    guide:`A <b>function</b> is a tool you build once and reuse on any creature. <code>def describe(animal):</code> creates a tool named "describe".`,
+    task:`Finish the function so it <code>return</code>s a description, then call <code>print(describe("octopus"))</code>.`,
+    starter:`def describe(animal):\n    return animal + " is amazing!"\n\nprint(describe("octopus"))`,
+    hint:`Inside the function, indented: return animal + " is amazing!" — then call it inside print().`,
+    check:(r)=>{
+      if(!r.ok) return {pass:false};
+      const ok = r.output.some(l=>l.toLowerCase().includes('amazing'));
+      return {pass:ok, msg: ok? `Toolkit ready! You can now describe any creature you meet. 🦑` : `Your function should return text, and you should print the result.`};
+    }
+  },
+  {
+    id:8, emoji:'🐋', name:'Certification Dive',
+    eyebrow:'Final Mission · Everything Together',
+    title:'Earn Your Marine Biologist Badge',
+    guide:`This is it — your certification dive! This code uses a <b>function</b>, an <b>if/else</b>, <b>variables</b>, and an <b>f-string</b> all together, just like a real biologist's tool. Make it your own!`,
+    task:`Change <code>animal</code> and <code>depth</code> to a creature and depth of your choice, then run your final dive.`,
+    starter:`def zone(depth):\n    if depth > 200:\n        return "Twilight Zone"\n    else:\n        return "Sunlight Zone"\n\nanimal = "Whale"\ndepth = 300\n\nprint(f"{animal} lives in the {zone(depth)}")`,
+    hint:`You only need to change the animal and depth values — the rest of the tool is already built for you!`,
+    check:(r)=>{
+      if(!r.ok) return {pass:false};
+      const a=r.vars.animal, d=r.vars.depth;
+      if(typeof a!=='string' || typeof d!=='number') return {pass:false};
+      const zone = d>200 ? 'Twilight Zone' : 'Sunlight Zone';
+      const ok = r.output.some(l=>l.includes(a) && l.includes(zone));
+      return {pass:ok, msg: ok? `🎓 CERTIFIED! You are officially an Ocean Code Academy Marine Biologist!` : `Make sure your final print line includes both the animal and the correct zone.`};
+    }
+  }
+];
+
+/* ============================================================
+   APP STATE & PERSISTENCE
+   ============================================================ */
+let state = { current:0, completed:[] };
+let hintShown=false;
+
+async function loadProgress(){
+  try{
+    const r = await window.storage.get('ocean-code:progress', false);
+    if(r && r.value){
+      const parsed = JSON.parse(r.value);
+      if(parsed && Array.isArray(parsed.completed)){
+        state.completed = parsed.completed;
+        state.current = typeof parsed.current==='number' ? parsed.current : 0;
+      }
+    }
+  }catch(e){ /* first run or storage unavailable — start fresh */ }
+}
+async function saveProgress(){
+  try{ await window.storage.set('ocean-code:progress', JSON.stringify(state), false); }
+  catch(e){ /* ignore if storage unavailable */ }
+}
+
+function isUnlocked(i){ return i===0 || state.completed.includes(i-1) || state.completed.includes(i); }
+
+function renderStations(){
+  const wrap=document.getElementById('stations');
+  wrap.innerHTML='';
+  LEVELS.forEach((lv,i)=>{
+    const unlocked=isUnlocked(i);
+    const done=state.completed.includes(i);
+    const div=document.createElement('div');
+    div.className='station'+(i===state.current?' active':'')+(!unlocked?' locked':'');
+    div.innerHTML=`<span class="emoji">${lv.emoji}</span>
+      <span class="txt"><span class="num">${i===LEVELS.length-1?'Final':'Mission '+(i+1)}</span><span class="name">${lv.name}</span></span>
+      ${done?'<span class="check">✓</span>':''}`;
+    if(unlocked) div.onclick=()=>selectLevel(i);
+    wrap.appendChild(div);
+  });
+}
+
+function selectLevel(i){
+  state.current=i;
+  hintShown=false;
+  const lv=LEVELS[i];
+  document.getElementById('missionEyebrow').textContent=lv.eyebrow;
+  document.getElementById('missionTitle').textContent=lv.title;
+  document.getElementById('guideText').innerHTML=lv.guide;
+  document.getElementById('taskBox').innerHTML=lv.task;
+  document.getElementById('codeInput').value=lv.starter;
+  document.getElementById('hintBox').textContent=lv.hint;
+  document.getElementById('hintBox').classList.remove('show');
+  document.getElementById('consoleBody').innerHTML='<span class="placeholder">Press "Run Code" to see what happens...</span>';
+  document.getElementById('consoleStatus').textContent='';
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('feedback').textContent='';
+  document.getElementById('nextRow').className='next-row';
+  renderStations();
+  saveProgress();
+}
+
+function resetCode(){
+  document.getElementById('codeInput').value = LEVELS[state.current].starter;
+}
+function toggleHint(){
+  hintShown=!hintShown;
+  document.getElementById('hintBox').classList.toggle('show', hintShown);
+}
+
+function runCode(){
+  const code = document.getElementById('codeInput').value;
+  const r = runPython(code);
+  const body = document.getElementById('consoleBody');
+  const status = document.getElementById('consoleStatus');
+  body.innerHTML='';
+  if(r.output.length===0 && r.ok){
+    body.innerHTML='<span class="placeholder">(no output — did you forget a print()?)</span>';
+  } else {
+    r.output.forEach(line=>{
+      const d=document.createElement('div');
+      d.className='line'; d.textContent='>> '+line;
+      body.appendChild(d);
+    });
+  }
+  if(!r.ok && r.error){
+    const d=document.createElement('div');
+    d.className='line err'; d.textContent='⚠ '+r.error;
+    body.appendChild(d);
+  }
+  status.textContent = r.ok ? 'ran successfully' : 'error';
+
+  const lv=LEVELS[state.current];
+  const result = lv.check(r);
+  const fb=document.getElementById('feedback');
+  const nextRow=document.getElementById('nextRow');
+  if(result.pass){
+    fb.className='feedback pass';
+    fb.textContent='✓ '+(result.msg||'Mission complete!');
+    if(!state.completed.includes(state.current)){
+      state.completed.push(state.current);
+      saveProgress();
+      renderStations();
+      updateJournalCount();
+      burstConfetti();
+    }
+    if(state.current < LEVELS.length-1){
+      nextRow.className='next-row show';
+    } else {
+      nextRow.className='next-row show';
+      document.querySelector('.btn-next').textContent='🎓 View Your Field Journal';
+      document.querySelector('.btn-next').onclick=openJournal;
+    }
+  } else {
+    fb.className='feedback fail';
+    fb.textContent = r.ok
+      ? '✗ Not quite yet — ' + (result.msg||'check the task instructions and try again.')
+      : '✗ ' + (r.error || 'Something went wrong — check your code.');
+    nextRow.className='next-row';
+  }
+}
+
+function goNext(){
+  if(state.current < LEVELS.length-1) selectLevel(state.current+1);
+}
+
+/* ---- journal modal ---- */
+function updateJournalCount(){ document.getElementById('journalCount').textContent = state.completed.length; }
+function openJournal(){
+  const grid=document.getElementById('cardsGrid');
+  grid.innerHTML='';
+  LEVELS.forEach((lv,i)=>{
+    const done=state.completed.includes(i);
+    const c=document.createElement('div');
+    c.className='card'+(done?'':' locked');
+    c.innerHTML=`<div class="emoji">${done?lv.emoji:'❔'}</div><div class="cname">${done?lv.name:'???'}</div>`;
+    grid.appendChild(c);
+  });
+  document.getElementById('journalBack').classList.add('show');
+}
+function closeJournal(){ document.getElementById('journalBack').classList.remove('show'); }
+
+/* ---- confetti ---- */
+function burstConfetti(){
+  const emojis=['🫧','⭐','🐚','✨'];
+  for(let i=0;i<18;i++){
+    const el=document.createElement('div');
+    el.className='confetti';
+    el.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+    el.style.left=Math.random()*100+'vw';
+    el.style.animationDuration=(2.2+Math.random()*1.4)+'s';
+    el.style.fontSize=(14+Math.random()*14)+'px';
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(), 4000);
+  }
+}
+
+/* ---- bubbles ---- */
+function makeBubbles(){
+  const field=document.getElementById('bubbleField');
+  for(let i=0;i<22;i++){
+    const b=document.createElement('div');
+    const size=6+Math.random()*22;
+    b.className='bubble';
+    b.style.width=size+'px'; b.style.height=size+'px';
+    b.style.left=Math.random()*100+'vw';
+    b.style.animationDuration=(9+Math.random()*14)+'s';
+    b.style.animationDelay=(Math.random()*14)+'s';
+    field.appendChild(b);
+  }
+}
+
+/* ---- init ---- */
+(async function init(){
+  makeBubbles();
+  await loadProgress();
+  if(state.current>=LEVELS.length) state.current=0;
+  renderStations();
+  updateJournalCount();
+  selectLevel(state.current);
+})();
+</script>
+</body>
+</html>
