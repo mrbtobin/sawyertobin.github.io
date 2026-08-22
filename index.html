@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Sawyer's Turtle Arcade 🐢</title>
 <style>
   :root{
@@ -16,6 +16,8 @@
     --brown-dark:#4e342e;
     --accent:#ff7043;
     --ink:#1b3a2b;
+    --gold:#d9a441;
+    --navy:#14213d;
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
   html,body{margin:0;padding:0;height:100%;}
@@ -55,11 +57,23 @@
   }
   p.sub{
     text-align:center;
-    margin:0 0 28px;
+    margin:0 0 20px;
     color:var(--ink);
     opacity:.85;
     font-size:1.05rem;
   }
+
+  .section-label{
+    width:100%;
+    font-size:.8rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:var(--shell-dark);
+    opacity:.7;
+    margin:22px 2px 10px;
+  }
+  .section-label:first-of-type{margin-top:6px;}
 
   .games{
     width:100%;
@@ -84,7 +98,12 @@
   .game-card:active{transform:translateY(4px); box-shadow:0 2px 0 rgba(0,0,0,.1), 0 4px 10px rgba(0,0,0,.1);}
 
   .game-card.super{border-color:#1b5e20;}
+  .game-card.lettuce{border-color:#558b2f;}
   .game-card.trainer{border-color:#00695c;}
+  .game-card.writing{border-color:#0277bd;}
+  .game-card.ocean{border-color:#00838f;}
+  .game-card.chibi{border-color:#ad1457;}
+  .game-card.dad{border-color:var(--gold); background:#fffdf5;}
 
   .game-icon{
     flex:none;
@@ -94,13 +113,24 @@
     font-size:2.1rem;
   }
   .game-card.super .game-icon{background:linear-gradient(135deg,#2e7d32,#66bb6a);}
+  .game-card.lettuce .game-icon{background:linear-gradient(135deg,#7cb342,#c5e1a5);}
   .game-card.trainer .game-icon{background:linear-gradient(135deg,#00838f,#4dd0e1);}
+  .game-card.writing .game-icon{background:linear-gradient(135deg,#0277bd,#4fc3f7);}
+  .game-card.ocean .game-icon{background:linear-gradient(135deg,#006064,#26c6da);}
+  .game-card.chibi .game-icon{background:linear-gradient(135deg,#ad1457,#f06292);}
+  .game-card.dad .game-icon{background:linear-gradient(135deg,#145a38,#d9a441);}
 
-  .game-text{flex:1;}
-  .game-text h2{margin:0 0 4px; font-size:1.2rem; color:var(--ink);}
+  .game-text{flex:1; min-width:0;}
+  .game-text h2{margin:0 0 4px; font-size:1.2rem; color:var(--ink); display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
   .game-text p{margin:0; font-size:.85rem; opacity:.75; line-height:1.35;}
 
+  .badge{
+    font-size:.62rem; font-weight:800; text-transform:uppercase; letter-spacing:.04em;
+    background:var(--gold); color:#3a2a08; padding:2px 8px; border-radius:999px;
+  }
+
   .play-chevron{flex:none; font-size:1.4rem; color:var(--accent); font-weight:900;}
+  .game-card.dad .play-chevron{color:var(--gold);}
 
   .footer{
     margin-top:36px;
@@ -133,12 +163,40 @@
   <h1>Sawyer's Turtle Arcade</h1>
   <p class="sub">Pick a game and let's go!</p>
 
+  <div class="section-label">🎮 Games</div>
   <div class="games">
     <a class="game-card super" href="superturtle.html">
       <div class="game-icon">🎮</div>
       <div class="game-text">
         <h2>Super Turtle Adventure</h2>
         <p>Jump, shoot, and munch lettuce through 5 wild levels — from the Infinite Keep to the Void Terminus!</p>
+      </div>
+      <div class="play-chevron">▶</div>
+    </a>
+
+    <a class="game-card lettuce" href="super_turtle.html">
+      <div class="game-icon">🥬</div>
+      <div class="game-text">
+        <h2>Super Turtle Lettuce</h2>
+        <p>The original lettuce-munching turtle run — see how many leaves you can grab!</p>
+      </div>
+      <div class="play-chevron">▶</div>
+    </a>
+
+    <a class="game-card ocean" href="ocean-code-academy.html">
+      <div class="game-icon">💻</div>
+      <div class="game-text">
+        <h2>Ocean Code Academy</h2>
+        <p>Dive under the sea and solve coding puzzles with your ocean critter friends!</p>
+      </div>
+      <div class="play-chevron">▶</div>
+    </a>
+
+    <a class="game-card chibi" href="chibi-life.html">
+      <div class="game-icon">🎨</div>
+      <div class="game-text">
+        <h2>Chibi Life</h2>
+        <p>Design, dress up, and play through your very own chibi world!</p>
       </div>
       <div class="play-chevron">▶</div>
     </a>
@@ -151,9 +209,30 @@
       </div>
       <div class="play-chevron">▶</div>
     </a>
+
+    <a class="game-card writing" href="turtle-time-writing.html">
+      <div class="game-icon">✍️</div>
+      <div class="game-text">
+        <h2>Turtle Time Writing</h2>
+        <p>Read the time out loud and write it down on your whiteboard — a parent-and-kid practice game!</p>
+      </div>
+      <div class="play-chevron">▶</div>
+    </a>
   </div>
 
-  <div class="footer">🐢 More games coming soon &nbsp;·&nbsp; sawyertobin.github.io</div>
+  <div class="section-label">💚 For the Grown-Ups</div>
+  <div class="games">
+    <a class="game-card dad" href="dmv.html">
+      <div class="game-icon">🦆</div>
+      <div class="game-text">
+        <h2>Dad's DMV Study Guide <span class="badge">For Dad</span></h2>
+        <p>Grampa James is studying for his Minnesota driver's license renewal — help him ace it!</p>
+      </div>
+      <div class="play-chevron">▶</div>
+    </a>
+  </div>
+
+  <div class="footer">🐢 More games coming soon &nbsp;·&nbsp; sawyertobin.com</div>
 </div>
 
 </body>
