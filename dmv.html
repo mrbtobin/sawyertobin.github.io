@@ -208,11 +208,41 @@ button{font-family:var(--font-body); cursor:pointer;}
 }
 .hide-toggle input{accent-color:#8a9a92; width:13px; height:13px; opacity:0.75;}
 
-.card-stage{position:relative; min-height:400px;}
+.card-stage{position:relative; min-height:400px; perspective:1400px;}
 .flashcard{
   background:var(--white); border-radius:var(--radius-lg); padding:26px 22px 22px;
   border:3px solid var(--cream-dk); box-shadow:0 12px 28px var(--shadow);
   position:relative; overflow:hidden;
+  transform-origin:bottom right;
+  animation: page-flip-in 1.3s cubic-bezier(.16,.7,.24,1);
+}
+@keyframes page-flip-in{
+  0%{
+    transform: rotateX(-82deg) rotateY(-58deg) translate(12%, 12%) scale(0.78) skew(-6deg,-3deg);
+    opacity:0;
+    box-shadow: 0 60px 70px rgba(0,0,0,0.45);
+  }
+  20%{
+    transform: rotateX(-78deg) rotateY(-54deg) translate(11%, 11%) scale(0.80) skew(-6deg,-3deg);
+    opacity:0.55;
+  }
+  45%{
+    transform: rotateX(-48deg) rotateY(-34deg) translate(6%, 6%) scale(0.88) skew(-4deg,-2deg);
+    opacity:0.9;
+    box-shadow: 0 42px 52px rgba(0,0,0,0.34);
+  }
+  70%{
+    transform: rotateX(-20deg) rotateY(-14deg) translate(2.5%, 2.5%) scale(0.95) skew(-1.5deg,-0.7deg);
+    opacity:1;
+  }
+  88%{
+    transform: rotateX(-5deg) rotateY(-3deg) translate(0.5%, 0.5%) scale(0.99) skew(0deg,0deg);
+  }
+  100%{
+    transform: rotateX(0deg) rotateY(0deg) translate(0,0) scale(1) skew(0deg,0deg);
+    opacity:1;
+    box-shadow:0 12px 28px var(--shadow);
+  }
 }
 .flashcard::before{
   content:""; position:absolute; top:0; left:0; right:0; height:6px;
