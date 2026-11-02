@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Español con Tortuga</title>
+<!-- Icons live in this same folder (espanol/) so they never collide with the root duck icons -->
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Español">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#2E7D4F; --green-dk:#1B5E3A; --green-lt:#5DB37E;
+  --teal:#1F8A8A; --terra:#E4572E; --sun:#F4B400;
+  --sand:#FFF6E5; --sand-dk:#F0E0BC; --ink:#1B2A41; --white:#FFFEFA;
+  --good:#2E8B57; --bad:#B03A2E; --shadow:rgba(27,42,65,0.18);
+  --font-display:'Baloo 2',system-ui,sans-serif; --font-body:'Nunito Sans',system-ui,sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:var(--font-body); color:var(--ink); font-size:18px; min-height:100vh; overflow-x:hidden;
+  background:radial-gradient(ellipse at 15% -10%,rgba(31,138,138,.28),transparent 55%),
+             radial-gradient(ellipse at 100% 0%,rgba(244,180,0,.22),transparent 45%),
+             linear-gradient(180deg,#FFF6E5 0%,#EAF3E4 60%,#D9EBDD 100%);
+}
+h1,h2,h3{font-family:var(--font-display);margin:0;}
+button{font-family:var(--font-body);cursor:pointer;}
+.hidden{display:none !important;}
+.app{max-width:760px;margin:0 auto;padding:18px 16px calc(48px + env(safe-area-inset-bottom));min-height:100vh;}
+
+/* buttons */
+.btn-primary{background:linear-gradient(180deg,var(--green-lt),var(--green));color:#fff;border:none;border-radius:999px;
+  padding:16px 38px;font-family:var(--font-display);font-weight:700;font-size:22px;
+  box-shadow:0 6px 0 var(--green-dk),0 10px 18px var(--shadow);}
+.btn-primary:active{transform:translateY(4px);box-shadow:0 2px 0 var(--green-dk);}
+.btn-secondary{background:var(--white);color:var(--teal);border:2.5px solid var(--teal);border-radius:999px;padding:13px 30px;
+  font-family:var(--font-display);font-weight:700;font-size:19px;}
+.icon-btn-round{background:var(--white);border:2px solid var(--sand-dk);border-radius:50%;width:48px;height:48px;min-width:48px;
+  display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:var(--ink);box-shadow:0 3px 0 var(--sand-dk);}
+.icon-btn-round:active{transform:translateY(2px);box-shadow:none;}
+.text-link{background:none;border:none;color:#7f8f86;font-size:14px;text-decoration:underline;font-weight:700;padding:8px;}
+
+/* home */
+#screen-home{display:flex;flex-direction:column;align-items:center;text-align:center;padding-top:30px;}
+.hero{font-size:84px;animation:bob 2.6s ease-in-out infinite;}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-14px) rotate(4deg)}}
+.home-title{font-size:clamp(34px,9vw,52px);color:var(--green-dk);font-weight:800;line-height:1.05;margin-top:6px;}
+.home-sub{font-family:var(--font-display);font-weight:600;font-size:20px;color:var(--terra);margin:6px 0 20px;}
+.note-card{background:var(--white);border:3px solid var(--sand-dk);border-radius:22px;padding:20px 22px;max-width:480px;margin-bottom:22px;box-shadow:0 10px 26px var(--shadow);}
+.note-es{font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--green-dk);}
+.note-en{font-size:16px;margin-top:6px;opacity:.8;}
+.stat-strip{display:flex;gap:12px;margin-top:20px;flex-wrap:wrap;justify-content:center;}
+.stat-pill{background:rgba(255,255,255,.75);border:2px solid var(--sand-dk);border-radius:999px;padding:8px 16px;font-size:15px;font-weight:800;}
+
+/* topbars */
+.topbar{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+.topbar .title-block{flex:1;min-width:0;}
+.topbar h2{font-size:26px;color:var(--green-dk);line-height:1.15;}
+.topbar .sub{font-size:15px;font-weight:800;color:var(--terra);font-family:var(--font-display);}
+
+/* list rows */
+.list{display:flex;flex-direction:column;gap:12px;}
+@media(min-width:700px){.list{display:grid;grid-template-columns:1fr 1fr;}}
+.row-card{background:var(--white);border:2px solid var(--sand-dk);border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:14px;
+  text-align:left;width:100%;box-shadow:0 4px 10px var(--shadow);position:relative;color:var(--ink);}
+.row-card:active{transform:scale(.98);}
+.row-card.done{background:linear-gradient(90deg,#E7F4EC,#F2FAF5);border-color:var(--green-lt);}
+.row-icon{font-size:32px;width:54px;height:54px;min-width:54px;display:flex;align-items:center;justify-content:center;background:var(--sand);border:2px solid var(--sand-dk);border-radius:14px;}
+.row-body{flex:1;min-width:0;}
+.row-name{font-family:var(--font-display);font-weight:700;font-size:19px;margin-bottom:2px;}
+.row-meta{font-size:14px;color:#6b7280;font-weight:700;margin-bottom:6px;}
+.bar{height:9px;background:var(--sand-dk);border-radius:999px;overflow:hidden;}
+.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--sun),var(--terra));border-radius:999px;}
+.row-card.done .bar>i{background:linear-gradient(90deg,var(--green-lt),var(--green));}
+.row-pct{font-family:var(--font-display);font-weight:800;font-size:18px;min-width:48px;text-align:right;}
+.row-check{position:absolute;top:8px;right:10px;font-size:18px;}
+
+/* study */
+.card-stage{position:relative;min-height:380px;perspective:1400px;}
+.card-stage.spot{z-index:45;}
+.flashcard{background:var(--white);border-radius:22px;padding:24px 22px 22px;border:3px solid var(--sand-dk);box-shadow:0 12px 28px var(--shadow);
+  position:relative;overflow:hidden;transform-origin:bottom right;animation:page-flip-in 1.3s linear;}
+@keyframes page-flip-in{
+  0%{transform:rotateX(-82.00deg) rotateY(-58.00deg) translate(12.00%,12.00%) scale(0.780) skew(-6.00deg,-3.00deg);opacity:0.000;box-shadow:0 60px 70px rgba(0,0,0,0.45);}
+  10%{transform:rotateX(-59.78deg) rotateY(-42.28deg) translate(8.75%,8.75%) scale(0.840) skew(-4.37deg,-2.19deg);opacity:0.271;box-shadow:0 47px 59px rgba(0,0,0,0.38);}
+  20%{transform:rotateX(-41.98deg) rotateY(-29.70deg) translate(6.14%,6.14%) scale(0.887) skew(-3.07deg,-1.54deg);opacity:0.488;box-shadow:0 37px 50px rgba(0,0,0,0.32);}
+  30%{transform:rotateX(-28.13deg) rotateY(-19.89deg) translate(4.12%,4.12%) scale(0.925) skew(-2.06deg,-1.03deg);opacity:0.657;box-shadow:0 28px 42px rgba(0,0,0,0.27);}
+  40%{transform:rotateX(-17.71deg) rotateY(-12.53deg) translate(2.59%,2.59%) scale(0.952) skew(-1.30deg,-0.65deg);opacity:0.784;box-shadow:0 22px 37px rgba(0,0,0,0.24);}
+  50%{transform:rotateX(-10.25deg) rotateY(-7.25deg) translate(1.50%,1.50%) scale(0.973) skew(-0.75deg,-0.38deg);opacity:0.875;box-shadow:0 18px 33px rgba(0,0,0,0.21);}
+  60%{transform:rotateX(-5.25deg) rotateY(-3.71deg) translate(0.77%,0.77%) scale(0.986) skew(-0.38deg,-0.19deg);opacity:0.936;box-shadow:0 15px 31px rgba(0,0,0,0.20);}
+  70%{transform:rotateX(-2.21deg) rotateY(-1.57deg) translate(0.32%,0.32%) scale(0.994) skew(-0.16deg,-0.08deg);opacity:0.973;box-shadow:0 13px 29px rgba(0,0,0,0.19);}
+  80%{transform:rotateX(-0.66deg) rotateY(-0.46deg) translate(0.10%,0.10%) scale(0.998) skew(-0.05deg,-0.02deg);opacity:0.992;box-shadow:0 12px 28px rgba(0,0,0,0.18);}
+  90%{transform:rotateX(-0.08deg) rotateY(-0.06deg) translate(0.01%,0.01%) scale(1.000) skew(-0.01deg,-0.00deg);opacity:0.999;box-shadow:0 12px 28px rgba(0,0,0,0.18);}
+  100%{transform:rotateX(0.00deg) rotateY(0.00deg) translate(0.00%,0.00%) scale(1.000) skew(0.00deg,0.00deg);opacity:1.000;box-shadow:0 12px 28px rgba(0,0,0,0.18);}
+}
+.flashcard::before{content:"";position:absolute;top:0;left:0;right:0;height:6px;background:linear-gradient(90deg,var(--green),var(--teal),var(--sun),var(--terra));}
+.word-row{display:flex;align-items:center;gap:12px;margin:6px 0 4px;}
+.word{font-family:var(--font-display);font-weight:800;font-size:clamp(36px,9vw,52px);line-height:1.1;color:var(--green-dk);flex:1;word-break:break-word;}
+.speak{background:var(--sand);border:2px solid var(--sand-dk);border-radius:50%;width:54px;height:54px;min-width:54px;font-size:26px;display:flex;align-items:center;justify-content:center;}
+.speak:active{transform:scale(.94);}
+.word-note{font-size:15px;color:#7a6a4a;font-weight:700;margin-bottom:6px;}
+.inf-line{font-size:16px;font-weight:800;color:var(--terra);margin-bottom:8px;}
+.ask{font-size:15px;font-weight:800;color:#7f8f86;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 10px;}
+.options{display:flex;flex-direction:column;gap:10px;}
+@media(min-width:700px){.options{display:grid;grid-template-columns:1fr 1fr;}}
+.option-btn{text-align:left;background:var(--sand);border:2.5px solid var(--sand-dk);border-radius:12px;padding:14px 16px;font-size:20px;font-weight:800;color:var(--ink);display:flex;gap:10px;align-items:flex-start;transition:all .12s ease;}
+.option-btn .letter{font-family:var(--font-display);font-weight:800;color:var(--teal);min-width:24px;}
+.option-btn:active{transform:scale(.99);}
+.option-btn:disabled{pointer-events:none;opacity:.55;}
+.option-btn.correct{background:#DCF3E4;border-color:var(--good);color:#1c5f3c;}
+.option-btn.wrong{background:#FBE2DE;border-color:var(--bad);color:#7a2318;}
+.option-btn.correct-reveal{background:#DCF3E4;border-color:var(--good);color:#1c5f3c;opacity:1 !important;}
+.option-btn.dim-other{opacity:.22 !important;filter:saturate(.4);}
+.option-btn.spotlight-pulse{animation:zoom-pulse 1.5s ease-in-out 2;box-shadow:0 0 0 4px rgba(46,139,87,.35),0 0 26px 6px rgba(46,139,87,.55);position:relative;z-index:46;}
+@keyframes zoom-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.simplified-badge{display:inline-block;background:#EFE3F7;color:#6b3fa0;border:2px solid #D9C2EE;border-radius:999px;padding:4px 12px;font-size:14px;font-weight:800;margin-bottom:8px;}
+.dim-scrim{position:fixed;inset:0;background:rgba(10,22,17,.62);z-index:40;display:flex;align-items:flex-end;justify-content:center;padding-bottom:34px;cursor:pointer;}
+.dim-scrim .tap-hint{color:#fff;font-weight:800;font-size:15px;background:rgba(255,255,255,.24);border:1.5px solid rgba(255,255,255,.55);border-radius:999px;padding:8px 18px;}
+.flash-overlay{position:absolute;inset:0;background:rgba(46,139,87,.88);border-radius:22px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:56px;z-index:5;}
+.flash-overlay.wrong{background:rgba(176,58,46,.88);}
+
+/* conjugations */
+.conj{margin-top:6px;margin-bottom:6px;background:#F6FBF7;border:2px solid #CFE6D6;border-radius:14px;padding:10px 12px;}
+.conj-title{font-size:14px;font-weight:800;color:var(--green-dk);margin-bottom:6px;text-transform:uppercase;letter-spacing:.4px;}
+.conj-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:4px 14px;}
+.conj-row{display:grid;grid-template-columns:150px 1fr;gap:8px;align-items:baseline;font-size:19px;}
+.conj-row span{color:#7f8f86;font-size:14px;font-weight:800;}
+.conj-row b{color:var(--ink);font-weight:800;}
+
+/* study footer toggle */
+.hide-toggle-bottom{display:flex;justify-content:center;margin-top:26px;}
+.hide-toggle{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:#8a9a92;padding:6px;}
+.hide-toggle input{accent-color:#8a9a92;width:15px;height:15px;opacity:.8;}
+
+/* celebration (card known) */
+.celebrate-overlay{position:absolute;inset:0;background:rgba(27,94,58,.93);border-radius:22px;z-index:6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#fff;text-align:center;overflow:hidden;}
+.celebrate-turtle{font-size:78px;display:inline-block;}
+.celebrate-es{font-family:var(--font-display);font-size:28px;font-weight:800;}
+.celebrate-en{font-size:15px;opacity:.85;font-weight:700;}
+
+/* turtle dances */
+@keyframes d-wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-16deg)}75%{transform:rotate(16deg)}}
+@keyframes d-hop{0%,100%{transform:translateY(0)}40%{transform:translateY(-38px)}}
+@keyframes d-spin{to{transform:rotate(360deg)}}
+@keyframes d-roll{0%{transform:translateX(-46px) rotate(0)}100%{transform:translateX(46px) rotate(360deg)}}
+@keyframes d-flip{0%{transform:perspective(300px) rotateY(0)}100%{transform:perspective(300px) rotateY(360deg)}}
+@keyframes d-stretch{0%,100%{transform:scale(1,1)}50%{transform:scale(.8,1.4)}}
+@keyframes d-moonwalk{0%{transform:scaleX(-1) translateX(0)}100%{transform:scaleX(-1) translateX(70px)}}
+.dance-wiggle{animation:d-wiggle .45s ease-in-out infinite}
+.dance-hop{animation:d-hop .5s ease-in-out infinite}
+.dance-spin{animation:d-spin .6s linear infinite}
+.dance-roll{animation:d-roll .6s ease-in-out infinite alternate}
+.dance-flip{animation:d-flip .7s linear infinite}
+.dance-stretch{animation:d-stretch .5s ease-in-out infinite}
+.dance-moonwalk{animation:d-moonwalk .6s ease-in-out infinite alternate}
+
+/* praise + disco + modal overlays */
+.overlay{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:22px;}
+.praise-overlay{background:radial-gradient(ellipse at 30% 0%,rgba(31,138,138,.30),transparent 55%),linear-gradient(180deg,#FFF6E5,#F0E0BC);}
+.praise-card{background:var(--white);border:4px solid var(--sun);border-radius:22px;padding:26px 24px;max-width:480px;width:100%;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.25);}
+.praise-badge{display:inline-block;background:var(--teal);color:#fff;font-family:var(--font-display);font-weight:700;font-size:14px;padding:5px 14px;border-radius:999px;text-transform:uppercase;letter-spacing:.4px;margin-bottom:12px;}
+.praise-turtle{font-size:70px;margin:4px 0;}
+.praise-es{font-family:var(--font-display);font-weight:800;font-size:28px;color:var(--green-dk);line-height:1.2;}
+.praise-en{font-size:17px;margin:10px 0 14px;opacity:.8;}
+.disco-overlay{background:radial-gradient(circle at 50% 30%,#5b2a86 0%,#1d1040 70%);color:#fff;flex-direction:column;gap:12px;text-align:center;overflow:hidden;}
+.disco-ball{font-size:70px;animation:d-spin 4s linear infinite;}
+.disco-title{font-family:var(--font-display);font-weight:800;font-size:34px;color:var(--sun);text-shadow:2px 2px 0 #E4572E;}
+.disco-sub{font-size:18px;font-weight:700;opacity:.9;}
+.disco-turtle{position:absolute;}
+.modal-box{background:var(--white);border-radius:22px;padding:22px;max-width:360px;width:100%;text-align:center;border:3px solid var(--sand-dk);}
+.modal-box h3{font-size:22px;color:var(--ink);margin-bottom:8px;}
+.modal-box p{font-size:16px;color:#555;line-height:1.5;margin:0 0 16px;}
+.modal-actions{display:flex;gap:10px;}
+.modal-actions button{flex:1;padding:12px;border-radius:999px;font-weight:800;font-size:17px;border:2px solid var(--sand-dk);background:var(--white);color:var(--ink);}
+.modal-actions .go{background:var(--green);color:#fff;border-color:var(--green-dk);}
+.modal-actions .danger{background:var(--bad);color:#fff;border-color:#7a2318;}
+.modal-back{background:rgba(27,42,65,.55);}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <section id="screen-home">
+    <div class="hero">🐢</div>
+    <h1 class="home-title">Español<br>con Tortuga</h1>
+    <p class="home-sub">Spanish for Kindergarten – 4th Grade</p>
+    <div class="note-card">
+      <div class="note-es">¡Hola! Aprende una palabra a la vez, como una tortuga campeona.</div>
+      <div class="note-en">Hi! Learn one word at a time, like a champion turtle.</div>
+    </div>
+    <button class="btn-primary" id="btnStart">Start Learning</button>
+    <div class="stat-strip" id="homeStats"></div>
+    <button class="text-link" id="btnReset" style="margin-top:28px">Reset all progress</button>
+  </section>
+
+  <section id="screen-grades" class="hidden">
+    <div class="topbar">
+      <button class="icon-btn-round" id="btnGradesBack" aria-label="Back">←</button>
+      <div class="title-block"><h2>Pick a Grade</h2><div class="sub">Words by grade level</div></div>
+    </div>
+    <div class="list" id="gradeList"></div>
+  </section>
+
+  <section id="screen-topics" class="hidden">
+    <div class="topbar">
+      <button class="icon-btn-round" id="btnTopicsBack" aria-label="Back to grades">←</button>
+      <div class="title-block"><h2 id="topicsTitle">Grade</h2><div class="sub">Pick a topic</div></div>
+    </div>
+    <div class="list" id="topicList"></div>
+  </section>
+
+  <section id="screen-study" class="hidden">
+    <div class="topbar">
+      <button class="icon-btn-round" id="btnStudyBack" aria-label="Back to topics">←</button>
+      <div class="title-block">
+        <h2 id="studyTitle">Topic</h2>
+        <div class="sub"><span id="studyGrade">K</span> · <span id="studyProgress">0% (0/0)</span></div>
+      </div>
+    </div>
+    <div class="card-stage" id="cardStage"></div>
+    <div class="hide-toggle-bottom">
+      <label class="hide-toggle"><input type="checkbox" id="chkHideKnown" checked> Hide known cards</label>
+    </div>
+  </section>
+</div>
+
+<div class="overlay modal-back hidden" id="confirmModal">
+  <div class="modal-box">
+    <h3>Show all cards again?</h3>
+    <p>This brings back cards you already know, mixed in with the ones you're still learning.</p>
+    <div class="modal-actions"><button id="btnCancelShowAll">Cancel</button><button class="go" id="btnConfirmShowAll">Show All Cards</button></div>
+  </div>
+</div>
+<div class="overlay modal-back hidden" id="resetModal">
+  <div class="modal-box">
+    <h3>Reset all progress?</h3>
+    <p>This erases saved progress on this device. It can't be undone.</p>
+    <div class="modal-actions"><button id="btnCancelReset">Cancel</button><button class="danger" id="btnConfirmReset">Reset Progress</button></div>
+  </div>
+</div>
+<div class="overlay praise-overlay hidden" id="praiseOverlay">
+  <div class="praise-card">
+    <div class="praise-badge">Mensaje especial</div>
+    <div class="praise-turtle" id="praiseTurtle">🐢</div>
+    <div class="praise-es" id="praiseEs"></div>
+    <div class="praise-en" id="praiseEn"></div>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="btn-secondary" id="btnPraiseHear">🔊 Hear it</button>
+      <button class="btn-primary" id="btnPraiseGo" style="font-size:19px;padding:13px 28px">Continue Learning</button>
+    </div>
+  </div>
+</div>
+<div class="overlay disco-overlay hidden" id="discoOverlay">
+  <div class="disco-ball">🪩</div>
+  <div class="disco-title">¡Felicidades!</div>
+  <div class="disco-sub" id="discoSub"></div>
+  <button class="btn-primary" id="btnDiscoGo" style="position:relative;z-index:2">Continue</button>
+</div>
+
+<script>
+(function(){
+"use strict";
+const RAW=`K|colors|rojo|red
+K|colors|azul|blue
+K|colors|amarillo|yellow
+K|colors|verde|green
+K|colors|naranja|orange
+K|colors|morado|purple
+K|colors|rosado|pink
+K|colors|negro|black
+K|colors|blanco|white
+K|colors|café|brown
+K|colors|gris|gray
+K|colors|el círculo|circle
+K|colors|el cuadrado|square
+K|colors|el triángulo|triangle
+K|colors|la estrella|star
+K|numbers|uno|one
+K|numbers|dos|two
+K|numbers|tres|three
+K|numbers|cuatro|four
+K|numbers|cinco|five
+K|numbers|seis|six
+K|numbers|siete|seven
+K|numbers|ocho|eight
+K|numbers|nueve|nine
+K|numbers|diez|ten
+K|family|la familia|family
+K|family|la mamá|mom
+K|family|el papá|dad
+K|family|el bebé|baby
+K|family|el hermano|brother
+K|family|la hermana|sister
+K|family|el abuelo|grandfather
+K|family|la abuela|grandmother
+K|family|el niño|boy
+K|family|la niña|girl
+K|body|la cabeza|head
+K|body|los ojos|eyes
+K|body|la nariz|nose
+K|body|la boca|mouth
+K|body|las orejas|ears
+K|body|las manos|hands
+K|body|los pies|feet
+K|body|el brazo|arm
+K|body|la pierna|leg
+K|body|el pelo|hair
+K|animals|el perro|dog
+K|animals|el gato|cat
+K|animals|el pájaro|bird
+K|animals|el pez|fish
+K|animals|la vaca|cow
+K|animals|el caballo|horse
+K|animals|el cerdo|pig
+K|animals|el pato|duck
+K|animals|la tortuga|turtle
+K|animals|el conejo|rabbit
+K|animals|el ratón|mouse
+K|animals|la rana|frog
+K|food|la manzana|apple
+K|food|el plátano|banana
+K|food|la leche|milk
+K|food|el agua|water
+K|food|el pan|bread
+K|food|el queso|cheese
+K|food|el huevo|egg
+K|food|la galleta|cookie
+K|food|el helado|ice cream
+K|food|la tortilla|tortilla
+K|school|el lápiz|pencil
+K|school|el libro|book
+K|school|la maestra|teacher
+K|school|la escuela|school
+K|school|el amigo|friend
+K|school|el papel|paper
+K|school|el crayón|crayon
+K|school|la mochila|backpack
+K|home|la casa|house
+K|home|la cama|bed
+K|home|la puerta|door
+K|home|la ventana|window
+K|home|el sofá|couch
+K|home|la cocina|kitchen
+K|home|el baño|bathroom
+K|home|la mesa|table
+K|home|la silla|chair
+K|feelings|feliz|happy
+K|feelings|triste|sad
+K|feelings|enojado/a|angry
+K|feelings|cansado/a|tired
+K|feelings|asustado/a|scared
+K|verbs|comiendo|eating|comer|como,comes,come,comemos,comen
+K|verbs|bebiendo|drinking|beber|bebo,bebes,bebe,bebemos,beben
+K|verbs|corriendo|running|correr|corro,corres,corre,corremos,corren
+K|verbs|saltando|jumping|saltar|salto,saltas,salta,saltamos,saltan
+K|verbs|jugando|playing|jugar|juego,juegas,juega,jugamos,juegan
+K|verbs|durmiendo|sleeping|dormir|duermo,duermes,duerme,dormimos,duermen
+K|verbs|cantando|singing|cantar|canto,cantas,canta,cantamos,cantan
+K|verbs|bailando|dancing|bailar|bailo,bailas,baila,bailamos,bailan
+K|verbs|mirando|looking|mirar|miro,miras,mira,miramos,miran
+K|verbs|hablando|talking|hablar|hablo,hablas,habla,hablamos,hablan
+1|numbers|once|eleven
+1|numbers|doce|twelve
+1|numbers|trece|thirteen
+1|numbers|catorce|fourteen
+1|numbers|quince|fifteen
+1|numbers|veinte|twenty
+1|numbers|treinta|thirty
+1|numbers|cuarenta|forty
+1|numbers|cincuenta|fifty
+1|numbers|cien|one hundred
+1|animals|el león|lion
+1|animals|el tigre|tiger
+1|animals|el oso|bear
+1|animals|el elefante|elephant
+1|animals|el mono|monkey
+1|animals|la jirafa|giraffe
+1|animals|la serpiente|snake
+1|animals|la mariposa|butterfly
+1|animals|la abeja|bee
+1|animals|la gallina|hen
+1|animals|la oveja|sheep
+1|food|el pollo|chicken
+1|food|el jugo|juice|Spain: el zumo
+1|food|la naranja|orange (fruit)
+1|food|la fresa|strawberry
+1|food|la uva|grape
+1|food|el arroz|rice
+1|food|los frijoles|beans
+1|food|la sopa|soup
+1|food|la ensalada|salad
+1|food|el desayuno|breakfast
+1|food|el almuerzo|lunch
+1|food|la cena|dinner
+1|food|el taco|taco
+1|food|la carne|meat
+1|time|lunes|Monday
+1|time|martes|Tuesday
+1|time|miércoles|Wednesday
+1|time|jueves|Thursday
+1|time|viernes|Friday
+1|time|sábado|Saturday
+1|time|domingo|Sunday
+1|time|hoy|today
+1|time|mañana|tomorrow
+1|time|ayer|yesterday
+1|weather|el sol|sun
+1|weather|la lluvia|rain
+1|weather|la nube|cloud
+1|weather|el viento|wind
+1|weather|la nieve|snow
+1|weather|la luna|moon
+1|weather|el cielo|sky
+1|weather|hace calor|it's hot
+1|weather|hace frío|it's cold
+1|clothes|la camisa|shirt
+1|clothes|los pantalones|pants
+1|clothes|los zapatos|shoes
+1|clothes|el sombrero|hat
+1|clothes|el vestido|dress
+1|clothes|los calcetines|socks
+1|clothes|la chaqueta|jacket
+1|clothes|la falda|skirt
+1|clothes|los guantes|gloves
+1|school|el cuaderno|notebook
+1|school|las tijeras|scissors
+1|school|el pizarrón|chalkboard|Spain: la pizarra
+1|school|la regla|ruler
+1|school|el borrador|eraser
+1|school|el recreo|recess
+1|school|la computadora|computer|Spain: el ordenador
+1|school|el pegamento|glue
+1|school|el marcador|marker
+1|school|el escritorio|desk
+1|school|el salón de clases|classroom
+1|home|el cuarto|bedroom|also: la recámara
+1|home|la sala|living room
+1|home|el jardín|garden
+1|home|la lámpara|lamp
+1|home|el espejo|mirror
+1|home|el refrigerador|refrigerator
+1|home|la televisión|television
+1|home|el teléfono|phone
+1|home|la alfombra|rug
+1|family|el tío|uncle
+1|family|la tía|aunt
+1|family|el primo|cousin
+1|family|los padres|parents
+1|family|el hijo|son
+1|family|la hija|daughter
+1|family|los abuelos|grandparents
+1|family|los hermanos|siblings
+1|body|el dedo|finger
+1|body|la rodilla|knee
+1|body|el hombro|shoulder
+1|body|el estómago|stomach
+1|body|la espalda|back
+1|body|el cuello|neck
+1|body|la cara|face
+1|body|los dientes|teeth
+1|body|la lengua|tongue
+1|verbs|caminando|walking|caminar|camino,caminas,camina,caminamos,caminan
+1|verbs|leyendo|reading|leer|leo,lees,lee,leemos,leen
+1|verbs|escribiendo|writing|escribir|escribo,escribes,escribe,escribimos,escriben
+1|verbs|dibujando|drawing|dibujar|dibujo,dibujas,dibuja,dibujamos,dibujan
+1|verbs|viviendo|living|vivir|vivo,vives,vive,vivimos,viven
+1|verbs|viendo|watching|ver|veo,ves,ve,vemos,ven
+1|verbs|escuchando|listening|escuchar|escucho,escuchas,escucha,escuchamos,escuchan
+1|verbs|yendo|going|ir|voy,vas,va,vamos,van
+1|verbs|teniendo|having|tener|tengo,tienes,tiene,tenemos,tienen
+1|verbs|queriendo|wanting|querer|quiero,quieres,quiere,queremos,quieren
+2|town|la ciudad|city
+2|town|el parque|park
+2|town|la tienda|store
+2|town|el supermercado|supermarket
+2|town|la biblioteca|library
+2|town|el hospital|hospital
+2|town|la iglesia|church
+2|town|el restaurante|restaurant
+2|town|la calle|street
+2|town|el banco|bank
+2|town|el edificio|building
+2|town|la plaza|town square
+2|town|el mercado|market
+2|town|la panadería|bakery
+2|town|la farmacia|pharmacy
+2|town|el cine|movie theater
+2|transport|el carro|car|Spain: el coche
+2|transport|el autobús|bus
+2|transport|el tren|train
+2|transport|el avión|airplane
+2|transport|el barco|boat
+2|transport|la bicicleta|bicycle
+2|transport|la moto|motorcycle
+2|transport|el camión|truck
+2|transport|el taxi|taxi
+2|transport|el helicóptero|helicopter
+2|transport|el metro|subway
+2|activities|el baile|dance
+2|activities|la música|music
+2|activities|el juego|game
+2|activities|la fiesta|party
+2|activities|el cumpleaños|birthday
+2|activities|el regalo|gift
+2|activities|las vacaciones|vacation
+2|activities|el paseo|walk
+2|activities|el cuento|story
+2|activities|la película|movie
+2|activities|el picnic|picnic
+2|sports|el deporte|sport
+2|sports|el fútbol|soccer
+2|sports|el béisbol|baseball
+2|sports|el básquetbol|basketball|Spain: el baloncesto
+2|sports|el tenis|tennis
+2|sports|la natación|swimming
+2|sports|el equipo|team
+2|sports|la pelota|ball
+2|sports|el jugador|player
+2|sports|la carrera|race
+2|sports|el gol|goal
+2|sports|la cancha|court
+2|sports|el golf|golf
+2|sports|el voleibol|volleyball
+2|sports|el campeón|champion
+2|food|la verdura|vegetable
+2|food|la fruta|fruit
+2|food|el tomate|tomato
+2|food|la zanahoria|carrot
+2|food|la papa|potato|Spain: la patata
+2|food|el maíz|corn
+2|food|el pastel|cake|Spain: la tarta
+2|food|la sandía|watermelon
+2|food|el aguacate|avocado
+2|food|la piña|pineapple
+2|food|el durazno|peach|Spain: el melocotón
+2|food|la cuchara|spoon
+2|food|el tenedor|fork
+2|food|el cuchillo|knife
+2|food|el plato|plate
+2|food|el vaso|glass (cup)
+2|clothes|la bufanda|scarf
+2|clothes|el abrigo|coat
+2|clothes|las botas|boots
+2|clothes|los pantalones cortos|shorts
+2|clothes|el pijama|pajamas
+2|clothes|los lentes|eyeglasses|Spain: las gafas
+2|clothes|el cinturón|belt
+2|clothes|la gorra|cap
+2|clothes|la camiseta|T-shirt
+2|clothes|el suéter|sweater
+2|clothes|los tenis|sneakers|Spain: las zapatillas
+2|weather|la primavera|spring
+2|weather|el verano|summer
+2|weather|el otoño|fall
+2|weather|el invierno|winter
+2|weather|la tormenta|storm
+2|weather|el arco iris|rainbow
+2|weather|el relámpago|lightning
+2|weather|el clima|weather
+2|weather|está nublado|it's cloudy
+2|weather|hace sol|it's sunny
+2|weather|hace viento|it's windy
+2|feelings|nervioso/a|nervous
+2|feelings|sorprendido/a|surprised
+2|feelings|orgulloso/a|proud
+2|feelings|aburrido/a|bored
+2|feelings|preocupado/a|worried
+2|feelings|emocionado/a|excited
+2|feelings|tranquilo/a|calm
+2|body|el corazón|heart
+2|body|los pulmones|lungs
+2|body|el cerebro|brain
+2|body|el codo|elbow
+2|body|el tobillo|ankle
+2|body|la muñeca|wrist
+2|animals|el lobo|wolf
+2|animals|el zorro|fox
+2|animals|el venado|deer|Spain: el ciervo
+2|animals|la ardilla|squirrel
+2|animals|el pingüino|penguin
+2|animals|el delfín|dolphin
+2|animals|la ballena|whale
+2|animals|el tiburón|shark
+2|animals|el pulpo|octopus
+2|animals|el águila|eagle
+2|animals|la araña|spider
+2|animals|el murciélago|bat (animal)
+2|animals|la hormiga|ant
+2|animals|el cocodrilo|crocodile
+2|numbers|sesenta|sixty
+2|numbers|setenta|seventy
+2|numbers|ochenta|eighty
+2|numbers|noventa|ninety
+2|numbers|mil|one thousand
+2|numbers|primero|first
+2|numbers|segundo|second
+2|numbers|tercero|third
+2|numbers|la mitad|half
+2|numbers|el cero|zero
+2|time|enero|January
+2|time|febrero|February
+2|time|marzo|March
+2|time|abril|April
+2|time|mayo|May
+2|time|junio|June
+2|time|julio|July
+2|time|agosto|August
+2|time|septiembre|September
+2|time|octubre|October
+2|time|noviembre|November
+2|time|diciembre|December
+2|colors|claro|light
+2|colors|oscuro|dark
+2|colors|el óvalo|oval
+2|colors|el diamante|diamond
+2|colors|la esfera|sphere
+2|colors|el cubo|cube
+2|colors|el cono|cone
+2|colors|la línea|line
+2|colors|la forma|shape
+2|school|la clase|class
+2|school|el alumno|student
+2|school|la lectura|reading (subject)
+2|school|la escritura|writing (subject)
+2|school|el dibujo|drawing (picture)
+2|home|el comedor|dining room
+2|home|la estufa|stove
+2|home|el horno|oven
+2|home|la almohada|pillow
+2|home|la cobija|blanket|Spain: la manta
+2|home|el clóset|closet|Spain: el armario
+2|home|la cortina|curtain
+2|home|el piso|floor
+2|home|la pared|wall
+2|jobs|el doctor|doctor
+2|jobs|el cartero|mail carrier
+2|jobs|el bombero|firefighter
+2|jobs|el policía|police officer
+2|jobs|el cocinero|cook
+2|jobs|el granjero|farmer
+2|jobs|el piloto|pilot
+2|nature|el árbol|tree
+2|nature|la flor|flower
+2|nature|la hoja|leaf
+2|nature|la piedra|rock
+2|nature|el río|river
+2|nature|la playa|beach
+2|nature|el mar|sea
+2|nature|la montaña|mountain
+2|nature|el lago|lake
+2|verbs|nadando|swimming|nadar|nado,nadas,nada,nadamos,nadan
+2|verbs|cocinando|cooking|cocinar|cocino,cocinas,cocina,cocinamos,cocinan
+2|verbs|pintando|painting|pintar|pinto,pintas,pinta,pintamos,pintan
+2|verbs|lavando|washing|lavar|lavo,lavas,lava,lavamos,lavan
+2|verbs|ayudando|helping|ayudar|ayudo,ayudas,ayuda,ayudamos,ayudan
+2|verbs|comprando|buying|comprar|compro,compras,compra,compramos,compran
+2|verbs|limpiando|cleaning|limpiar|limpio,limpias,limpia,limpiamos,limpian
+2|verbs|riendo|laughing|reír|río,ríes,ríe,reímos,ríen
+2|verbs|siendo|being (who/what)|ser|soy,eres,es,somos,son
+2|verbs|estando|being (how/where)|estar|estoy,estás,está,estamos,están
+3|school|la lección|lesson
+3|school|la tarea|homework
+3|school|el examen|test
+3|school|la pregunta|question
+3|school|la respuesta|answer
+3|school|el estudiante|student (pupil)
+3|school|el director|principal
+3|school|el diccionario|dictionary
+3|school|el mapa|map
+3|school|el horario|schedule
+3|school|la ciencia|science
+3|school|las matemáticas|math
+3|school|la historia|history
+3|school|el arte|art
+3|town|el aeropuerto|airport
+3|town|la estación|station
+3|town|el puente|bridge
+3|town|la gasolinera|gas station
+3|town|el museo|museum
+3|town|el zoológico|zoo
+3|town|la esquina|corner
+3|town|el semáforo|traffic light
+3|town|la acera|sidewalk
+3|town|la oficina de correos|post office
+3|town|la estación de bomberos|fire station
+3|town|el centro|downtown
+3|town|el vecindario|neighborhood
+3|transport|el conductor|driver
+3|transport|el boleto|ticket|Spain: el billete
+3|transport|la carretera|highway
+3|transport|el cinturón de seguridad|seat belt
+3|transport|el estacionamiento|parking lot
+3|transport|la gasolina|gasoline
+3|transport|el motor|engine
+3|transport|la llanta|tire
+3|transport|el viaje|trip
+3|transport|la maleta|suitcase
+3|home|el garaje|garage
+3|home|el sótano|basement
+3|home|el pasillo|hallway
+3|home|la escalera|stairs
+3|home|la lavadora|washing machine
+3|home|el fregadero|kitchen sink
+3|home|el lavabo|bathroom sink
+3|home|el microondas|microwave
+3|activities|el campamento|camp
+3|activities|la aventura|adventure
+3|activities|la excursión|field trip
+3|activities|el concierto|concert
+3|activities|el teatro|theater
+3|activities|el pasatiempo|hobby
+3|activities|el rompecabezas|puzzle
+3|activities|el juego de mesa|board game
+3|activities|el espectáculo|show
+3|activities|los videojuegos|video games
+3|activities|el ajedrez|chess
+3|activities|la pintura|painting
+3|sports|el entrenador|coach
+3|sports|el árbitro|referee
+3|sports|el estadio|stadium
+3|sports|el partido|match
+3|sports|el punto|point
+3|sports|la medalla|medal
+3|sports|el casco|helmet
+3|sports|la red|net
+3|sports|el bate|baseball bat
+3|sports|el patinaje|skating
+3|sports|la gimnasia|gymnastics
+3|sports|el ganador|winner
+3|food|el postre|dessert
+3|food|la propina|tip (money)
+3|food|el menú|menu
+3|food|el mesero|waiter|Spain: el camarero
+3|food|la cuenta|bill
+3|food|la receta|recipe
+3|food|el ingrediente|ingredient
+3|food|la mantequilla|butter
+3|food|el azúcar|sugar
+3|food|la sal|salt
+3|food|la pimienta|pepper
+3|food|el aceite|oil
+3|food|la harina|flour
+3|food|el caldo|broth
+3|jobs|el dentista|dentist
+3|jobs|el artista|artist
+3|jobs|el científico|scientist
+3|jobs|el mecánico|mechanic
+3|jobs|el veterinario|veterinarian
+3|jobs|el ingeniero|engineer
+3|jobs|el vecino|neighbor
+3|nature|el bosque|forest
+3|nature|el desierto|desert
+3|nature|la isla|island
+3|nature|la selva|jungle
+3|nature|el océano|ocean
+3|nature|el volcán|volcano
+3|nature|la tierra|earth
+3|nature|la cueva|cave
+3|nature|la costa|coast
+3|nature|el planeta|planet
+3|weather|el huracán|hurricane
+3|weather|la niebla|fog
+3|weather|el trueno|thunder
+3|weather|la temperatura|temperature
+3|weather|el granizo|hail
+3|weather|la sequía|drought
+3|weather|la inundación|flood
+3|weather|el pronóstico|forecast
+3|feelings|valiente|brave
+3|feelings|tímido/a|shy
+3|feelings|curioso/a|curious
+3|feelings|generoso/a|generous
+3|feelings|amable|kind
+3|feelings|honesto/a|honest
+3|feelings|paciente|patient
+3|feelings|divertido/a|fun
+3|animals|el búho|owl
+3|animals|el cangrejo|crab
+3|animals|la tortuga marina|sea turtle
+3|animals|el flamenco|flamingo
+3|animals|la foca|seal
+3|animals|el lagarto|lizard
+3|animals|el camello|camel
+3|animals|el canguro|kangaroo
+3|animals|el loro|parrot
+3|animals|la cebra|zebra
+3|animals|el hipopótamo|hippopotamus
+3|body|las uñas|nails
+3|body|las cejas|eyebrows
+3|body|la frente|forehead
+3|body|la mejilla|cheek
+3|body|el pecho|chest
+3|body|la garganta|throat
+3|clothes|el traje|suit
+3|clothes|la corbata|tie
+3|clothes|los pantalones de mezclilla|jeans
+3|clothes|la ropa|clothes
+3|clothes|el uniforme|uniform
+3|clothes|el bolsillo|pocket
+3|clothes|la bolsa|bag
+3|clothes|el impermeable|raincoat
+3|clothes|las sandalias|sandals
+3|time|la semana|week
+3|time|el mes|month
+3|time|el año|year
+3|time|la hora|hour
+3|time|el minuto|minute
+3|numbers|la suma|addition
+3|numbers|la resta|subtraction
+3|numbers|la multiplicación|multiplication
+3|numbers|la división|division
+3|numbers|el número|number
+3|numbers|par|even (number)
+3|numbers|impar|odd (number)
+3|colors|el pentágono|pentagon
+3|colors|el hexágono|hexagon
+3|colors|el ángulo|angle
+3|colors|el cilindro|cylinder
+3|colors|la pirámide|pyramid
+3|colors|la simetría|symmetry
+3|verbs|haciendo|doing / making|hacer|hago,haces,hace,hacemos,hacen
+3|verbs|pudiendo|being able to|poder|puedo,puedes,puede,podemos,pueden
+3|verbs|diciendo|saying|decir|digo,dices,dice,decimos,dicen
+3|verbs|viniendo|coming|venir|vengo,vienes,viene,venimos,vienen
+3|verbs|dando|giving|dar|doy,das,da,damos,dan
+3|verbs|sabiendo|knowing (a fact)|saber|sé,sabes,sabe,sabemos,saben
+3|verbs|abriendo|opening|abrir|abro,abres,abre,abrimos,abren
+3|verbs|cerrando|closing|cerrar|cierro,cierras,cierra,cerramos,cierran
+3|verbs|subiendo|going up|subir|subo,subes,sube,subimos,suben
+3|verbs|llorando|crying|llorar|lloro,lloras,llora,lloramos,lloran
+4|school|el vocabulario|vocabulary
+4|school|la oración|sentence
+4|school|el párrafo|paragraph
+4|school|el autor|author
+4|school|el proyecto|project
+4|school|la presentación|presentation
+4|school|la calculadora|calculator
+4|school|el experimento|experiment
+4|school|el informe|report
+4|school|el idioma|language
+4|town|el gobierno|government
+4|town|la comunidad|community
+4|town|el ciudadano|citizen
+4|town|la fábrica|factory
+4|town|la granja|farm
+4|town|el rascacielos|skyscraper
+4|town|el parque de diversiones|amusement park
+4|town|el centro comercial|mall
+4|town|el peatón|pedestrian
+4|transport|el pasaporte|passport
+4|transport|el pasajero|passenger
+4|transport|el equipaje|luggage
+4|transport|el tráfico|traffic
+4|transport|la salida|exit
+4|transport|la entrada|entrance
+4|transport|la ruta|route
+4|transport|el choque|crash
+4|transport|la velocidad|speed
+4|home|los muebles|furniture
+4|home|el reloj|clock
+4|home|el basurero|trash can
+4|home|el cepillo de dientes|toothbrush
+4|home|la bañera|bathtub
+4|home|la ducha|shower
+4|home|la escoba|broom
+4|home|el balcón|balcony
+4|home|el patio|patio
+4|activities|la colección|collection
+4|activities|el taller|workshop
+4|activities|la actuación|performance
+4|activities|la competencia|competition
+4|activities|el club|club
+4|activities|la tradición|tradition
+4|activities|el desfile|parade
+4|activities|el festival|festival
+4|activities|la celebración|celebration
+4|activities|la piñata|piñata
+4|sports|la temporada|season (sports)
+4|sports|el torneo|tournament
+4|sports|el récord|record
+4|sports|la práctica|practice
+4|sports|el calentamiento|warm-up
+4|sports|la defensa|defense
+4|sports|el ataque|offense
+4|sports|el portero|goalkeeper
+4|sports|el lanzador|pitcher
+4|sports|el atletismo|track and field
+4|food|el platillo|dish (meal)|Spain: el plato
+4|food|el aperitivo|appetizer
+4|food|la bebida|drink
+4|food|el refresco|soda
+4|food|la comida rápida|fast food
+4|food|la nutrición|nutrition
+4|food|saludable|healthy
+4|food|delicioso|delicious
+4|food|picante|spicy
+4|food|dulce|sweet
+4|food|salado|salty
+4|food|amargo|bitter
+4|food|las especias|spices
+4|jobs|el abogado|lawyer
+4|jobs|el juez|judge
+4|jobs|el periodista|journalist
+4|jobs|el arquitecto|architect
+4|jobs|el electricista|electrician
+4|jobs|el plomero|plumber
+4|jobs|el astronauta|astronaut
+4|jobs|el programador|programmer
+4|jobs|el alcalde|mayor
+4|nature|el universo|universe
+4|nature|el ecosistema|ecosystem
+4|nature|el reciclaje|recycling
+4|nature|el medio ambiente|environment
+4|nature|la contaminación|pollution
+4|nature|la energía|energy
+4|nature|el hábitat|habitat
+4|nature|la cadena alimenticia|food chain
+4|nature|el continente|continent
+4|feelings|frustrado/a|frustrated
+4|feelings|agradecido/a|grateful
+4|feelings|decepcionado/a|disappointed
+4|feelings|confiado/a|confident
+4|feelings|solo/a|lonely
+4|feelings|entusiasmado/a|enthusiastic
+4|feelings|determinado/a|determined
+4|feelings|responsable|responsible
+4|feelings|respetuoso/a|respectful
+4|animals|el mamífero|mammal
+4|animals|el reptil|reptile
+4|animals|el insecto|insect
+4|animals|el anfibio|amphibian
+4|animals|el nido|nest
+4|animals|la manada|herd
+4|animals|las alas|wings
+4|animals|las garras|claws
+4|animals|la cola|tail
+4|animals|las plumas|feathers
+4|animals|el pico|beak
+4|animals|el colmillo|fang
+4|body|la piel|skin
+4|body|el hueso|bone
+4|body|el músculo|muscle
+4|body|la sangre|blood
+4|body|el pulgar|thumb
+4|body|la cintura|waist
+4|body|las pestañas|eyelashes
+4|time|la mañana|morning
+4|time|la tarde|afternoon
+4|time|la noche|night
+4|time|el mediodía|noon
+4|time|la medianoche|midnight
+4|time|el fin de semana|weekend
+4|time|el calendario|calendar
+4|time|siempre|always
+4|time|nunca|never
+4|time|a veces|sometimes
+4|numbers|el millón|million
+4|numbers|la docena|dozen
+4|numbers|el promedio|average
+4|numbers|la fracción|fraction
+4|numbers|el porcentaje|percent
+4|colors|el perímetro|perimeter
+4|colors|el área|area
+4|colors|el volumen|volume
+4|colors|el diámetro|diameter
+4|verbs|pidiendo|asking for / ordering|pedir|pido,pides,pide,pedimos,piden
+4|verbs|sirviendo|serving|servir|sirvo,sirves,sirve,servimos,sirven
+4|verbs|construyendo|building|construir|construyo,construyes,construye,construimos,construyen
+4|verbs|trayendo|bringing|traer|traigo,traes,trae,traemos,traen
+4|verbs|saliendo|leaving / going out|salir|salgo,sales,sale,salimos,salen
+4|verbs|poniendo|putting|poner|pongo,pones,pone,ponemos,ponen
+4|verbs|pensando|thinking|pensar|pienso,piensas,piensa,pensamos,piensan
+4|verbs|aprendiendo|learning|aprender|aprendo,aprendes,aprende,aprendemos,aprenden
+4|verbs|recordando|remembering|recordar|recuerdo,recuerdas,recuerda,recordamos,recuerdan
+4|verbs|compartiendo|sharing|compartir|comparto,compartes,comparte,compartimos,comparten`;
+
+const TOPICS={
+  colors:{name:'Colors & Shapes',emoji:'🎨'}, numbers:{name:'Numbers & Math',emoji:'🔢'}, family:{name:'Family',emoji:'👨‍👩‍👧'},
+  body:{name:'Body',emoji:'🖐️'}, animals:{name:'Animals',emoji:'🐾'}, food:{name:'Dining and Food',emoji:'🍎'},
+  school:{name:'School',emoji:'🏫'}, home:{name:'At Home',emoji:'🏠'}, feelings:{name:'Feelings & Traits',emoji:'😊'},
+  verbs:{name:'Verbs (-ing)',emoji:'🏃'}, time:{name:'Days, Months & Time',emoji:'📅'}, weather:{name:'Weather & Seasons',emoji:'☀️'},
+  clothes:{name:'Clothes',emoji:'👕'}, town:{name:'Around Town',emoji:'🏙️'}, transport:{name:'Transportation',emoji:'🚌'},
+  activities:{name:'Activities',emoji:'🎭'}, sports:{name:'Sports',emoji:'⚽'}, jobs:{name:'Jobs & People',emoji:'👷'}, nature:{name:'Nature & Earth',emoji:'🌎'}
+};
+const TOPIC_ORDER=['school','family','body','animals','food','home','town','transport','activities','sports','clothes','weather','time','numbers','colors','feelings','jobs','nature','verbs'];
+const GRADES=[
+  {k:'K',name:'Kindergarten',emoji:'🌱',blurb:'First words: colors, numbers, family, animals'},
+  {k:'1',name:'1st Grade',emoji:'🌿',blurb:'Days, weather, clothes, and first action verbs'},
+  {k:'2',name:'2nd Grade',emoji:'🍀',blurb:'Town, sports, seasons, months, and more verbs'},
+  {k:'3',name:'3rd Grade',emoji:'🌳',blurb:'School subjects, jobs, nature, and key verbs'},
+  {k:'4',name:'4th Grade',emoji:'🏆',blurb:'Academic words, communities, and science'}
+];
+const DANCES={K:['wiggle','hop'],'1':['hop','spin'],'2':['spin','roll'],'3':['roll','flip','stretch'],'4':['flip','stretch','moonwalk']};
+const CHEERS=[['¡Muy bien!','Very good!'],['¡Excelente!','Excellent!'],['¡Fantástico!','Fantastic!'],['¡Bravo!','Bravo!'],['¡Lo lograste!','You did it!'],['¡Qué bien!','How great!'],['¡Súper!','Super!']];
+const PRAISE=[
+  ['¡Qué bien trabajas! Tu esfuerzo se nota.','You work so well! Your effort shows.'],
+  ['¡Mantienes muy bien la atención! Sigue así.','You are keeping your focus so well! Keep it up.'],
+  ['Cada palabra nueva te hace más fuerte.','Every new word makes you stronger.'],
+  ['Eres valiente por intentarlo, incluso cuando es difícil.','You are brave for trying, even when it is hard.'],
+  ['Los errores te ayudan a aprender. ¡Sigue adelante!','Mistakes help you learn. Keep going!'],
+  ['¡Tu cerebro está creciendo! ¡Qué orgullo!','Your brain is growing! So proud!'],
+  ['¡Cada día hablas mejor español!','You speak better Spanish every day!'],
+  ['Tu concentración es increíble.','Your concentration is amazing.'],
+  ['Poco a poco, como una tortuga campeona.','Little by little, like a champion turtle.'],
+  ['¡Trabajas duro y se nota! Eres una estrella.','You work hard and it shows! You are a star.'],
+  ['¡Lo estás haciendo fenomenal!','You are doing phenomenally!'],
+  ['Practicar un poco cada día te hace imparable.','A little practice every day makes you unstoppable.']
+];
+const PRONOUNS=['yo','tú','él / ella / usted','nosotros','ellos / ellas / ustedes'];
+const STORAGE_KEY='tobin_espanol_v1';
+const PRAISE_EVERY=15;
+
+/* ---------- data ---------- */
+function hash(s){let a=5381,b=52711;for(let i=0;i<s.length;i++){const c=s.charCodeAt(i);a=((a<<5)+a+c)|0;b=((b<<5)^b^c)|0;}return (a>>>0).toString(36)+(b>>>0).toString(36);}
+const WORDS=RAW.trim().split('\n').map(l=>l.trim()).filter(Boolean).map(l=>{
+  const p=l.split('|'); const w={grade:p[0],topic:p[1],es:p[2],en:p[3]};
+  if(w.topic==='verbs'){w.inf=p[4];w.conj=p[5].split(',');} else if(p[4]){w.note=p[4];}
+  w.id=hash(w.grade+'|'+w.topic+'|'+w.es);
+  return w;
+});
+const BY_ID={}; WORDS.forEach(w=>{ if(BY_ID[w.id]) console.warn('ID collision',w.es); BY_ID[w.id]=w; });
+
+/* ---------- state ---------- */
+let state=loadState();
+function loadState(){try{const r=localStorage.getItem(STORAGE_KEY);if(r){const s=JSON.parse(r);if(s&&s.progress)return s;}}catch(e){}return {progress:{}};}
+function saveState(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){}}
+const rec=id=>state.progress[id]||(state.progress[id]={streak:0,misses:0,missStreak:0});
+const streakOf=id=>(state.progress[id]&&state.progress[id].streak)||0;
+const missStreakOf=id=>(state.progress[id]&&state.progress[id].missStreak)||0;
+const isKnown=id=>streakOf(id)>=2;
+function statsFor(list){const known=list.filter(w=>isKnown(w.id)).length;return {known,total:list.length,pct:list.length?Math.round(known/list.length*100):0};}
+const wordsOf=(g,t)=>WORDS.filter(w=>w.grade===g&&(!t||w.topic===t));
+
+/* ---------- helpers ---------- */
+const $=id=>document.getElementById(id);
+const esc=s=>{const d=document.createElement('div');d.textContent=s;return d.innerHTML;};
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const screens={home:$('screen-home'),grades:$('screen-grades'),topics:$('screen-topics'),study:$('screen-study')};
+function show(n){Object.values(screens).forEach(s=>s.classList.add('hidden'));screens[n].classList.remove('hidden');window.scrollTo(0,0);}
+
+/* ---------- speech (tap to hear; Mexican Spanish voice if available) ---------- */
+function speak(text){
+  if(!('speechSynthesis' in window)) return;
+  try{
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(String(text).replace(/\/a\b/g,'').replace(/\s*\/\s*/g,', '));
+    const v=speechSynthesis.getVoices();
+    u.lang='es-MX';
+    const m=v.find(x=>x.lang==='es-MX'||x.lang==='es_MX')||v.find(x=>x.lang==='es-US'||x.lang==='es_US')||v.find(x=>/^es/i.test(x.lang));
+    if(m) u.voice=m;
+    u.rate=0.85;
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+
+/* ---------- home / grades / topics ---------- */
+function renderHome(){
+  const s=statsFor(WORDS);
+  const done=GRADES.reduce((n,g)=>n+Object.keys(TOPICS).filter(t=>{const l=wordsOf(g.k,t);return l.length&&statsFor(l).pct===100;}).length,0);
+  $('homeStats').innerHTML=`<div class="stat-pill">🐢 ${s.known}/${s.total} words mastered</div><div class="stat-pill">🏆 ${done} topics finished</div>`;
+}
+function rowCard(icon,name,meta,pct,done,onclick){
+  const b=document.createElement('button');b.className='row-card'+(done?' done':'');
+  b.innerHTML=`${done?'<div class="row-check">✅</div>':''}<div class="row-icon">${icon}</div><div class="row-body"><div class="row-name">${esc(name)}</div><div class="row-meta">${esc(meta)}</div><div class="bar"><i style="width:${pct}%"></i></div></div><div class="row-pct">${pct}%</div>`;
+  b.addEventListener('click',onclick);return b;
+}
+function renderGrades(){
+  const l=$('gradeList');l.innerHTML='';
+  GRADES.forEach(g=>{const st=statsFor(wordsOf(g.k));
+    l.appendChild(rowCard(g.emoji,g.name,`${st.known}/${st.total} words · ${g.blurb}`,st.pct,st.pct===100,()=>openGrade(g.k)));});
+}
+let cur={grade:'K',topic:null};
+function openGrade(g){cur.grade=g;renderTopics();show('topics');}
+function renderTopics(){
+  const g=GRADES.find(x=>x.k===cur.grade);$('topicsTitle').textContent=g.name;
+  const l=$('topicList');l.innerHTML='';
+  TOPIC_ORDER.forEach(t=>{const ws=wordsOf(cur.grade,t);if(!ws.length)return;const st=statsFor(ws);
+    l.appendChild(rowCard(TOPICS[t].emoji,TOPICS[t].name,`${st.known}/${st.total} mastered`,st.pct,st.pct===100,()=>openTopic(t)));});
+}
+
+/* ---------- study ---------- */
+let session=null, completed=0, token=0;
+function openTopic(t){
+  cur.topic=t;token++;
+  $('studyTitle').textContent=TOPICS[t].name;
+  $('studyGrade').textContent=GRADES.find(x=>x.k===cur.grade).name;
+  $('chkHideKnown').checked=true;
+  session={hideKnown:true,queue:[],pos:0,currentId:null};
+  rebuildQueue();show('study');nextCard();
+}
+const topicList=()=>wordsOf(cur.grade,cur.topic);
+function rebuildQueue(){
+  const all=topicList();
+  let ids=(session.hideKnown?all.filter(w=>!isKnown(w.id)):all).map(w=>w.id);
+  if(!ids.length) ids=all.map(w=>w.id);
+  session.queue=shuffle(ids);session.pos=0;
+}
+function updateProgress(){const st=statsFor(topicList());$('studyProgress').textContent=`${st.pct}% (${st.known}/${st.total})`;}
+function clearSpot(){document.querySelectorAll('.dim-scrim').forEach(n=>n.remove());$('cardStage').classList.remove('spot');}
+function nextCard(){
+  clearSpot();updateProgress();
+  if(session.pos>=session.queue.length)rebuildQueue();
+  const id=session.queue[session.pos++];session.currentId=id;renderCard(BY_ID[id]);
+}
+function distractors(w,n){
+  const isV=w.topic==='verbs';
+  const pool=WORDS.filter(x=>x!==w&&(x.topic==='verbs')===isV&&x.en!==w.en);
+  const groups=[pool.filter(x=>x.topic===w.topic&&x.grade===w.grade),pool.filter(x=>x.topic===w.topic),pool.filter(x=>x.grade===w.grade),pool];
+  const out=[],seen=new Set([w.en]);
+  for(const g of groups){for(const x of shuffle(g)){if(out.length>=n)break;if(!seen.has(x.en)){seen.add(x.en);out.push(x.en);}}if(out.length>=n)break;}
+  return out;
+}
+function renderCard(w){
+  const simplified=missStreakOf(w.id)>=2;
+  const stage=$('cardStage');
+  let extra='';
+  if(w.topic==='verbs'){
+    extra=`<div class="inf-line">infinitive: ${esc(w.inf)}</div>`;
+  }
+  let conj='';
+  if(w.topic==='verbs'){
+    conj=`<div class="conj"><div class="conj-title">How to say it: ${esc(w.inf)}</div><div class="conj-grid">${PRONOUNS.map((p,i)=>`<div class="conj-row"><span>${esc(p)}</span><b>${esc(w.conj[i])}</b></div>`).join('')}</div></div>`;
+  }
+  stage.innerHTML=`<div class="flashcard" id="flashcard">
+    ${simplified?'<div class="simplified-badge">✨ Just two choices this time</div>':''}
+    <div class="word-row"><div class="word">${esc(w.es)}</div><button class="speak" id="btnSpeak" aria-label="Hear the word">🔊</button></div>
+    ${w.note?`<div class="word-note">${esc(w.note)}</div>`:''}${extra}${conj}
+    <div class="ask">What does it mean?</div><div class="options" id="cardOptions"></div></div>`;
+  $('btnSpeak').addEventListener('click',()=>speak(w.es));
+  const ds=distractors(w,simplified?1:3);
+  const opts=shuffle([w.en,...ds]);
+  const L=['A','B','C','D'],box=$('cardOptions');
+  opts.forEach((t,i)=>{const b=document.createElement('button');b.className='option-btn';
+    b.innerHTML=`<span class="letter">${L[i]}.</span><span>${esc(t)}</span>`;
+    b.addEventListener('click',()=>answer(w,t,b,box));box.appendChild(b);});
+}
+function flash(ok){const f=document.createElement('div');f.className='flash-overlay'+(ok?'':' wrong');f.textContent=ok?'✅':'❌';$('cardStage').appendChild(f);setTimeout(()=>f.remove(),260);}
+function answer(w,chosen,btn,box){
+  const my=token;
+  const btns=[...box.querySelectorAll('.option-btn')];btns.forEach(b=>b.disabled=true);
+  const ok=chosen===w.en;const r=rec(w.id);const wasKnown=r.streak>=2;
+  if(ok){btn.classList.add('correct');r.streak++;r.missStreak=0;}
+  else{
+    btn.classList.add('wrong');r.streak=0;r.misses++;r.missStreak++;
+    const at=Math.min(session.queue.length,session.pos+2+Math.floor(Math.random()*3));session.queue.splice(at,0,w.id);
+    btns.forEach(b=>{const t=b.querySelector('span:last-child').textContent;
+      if(t===w.en){b.classList.add('correct-reveal','spotlight-pulse');}else if(b!==btn){b.classList.add('dim-other');}});
+    const scrim=document.createElement('div');scrim.className='dim-scrim';scrim.innerHTML='<span class="tap-hint">Tap to continue</span>';
+    document.body.appendChild(scrim);$('cardStage').classList.add('spot');
+  }
+  saveState();
+  const justKnown=ok&&!wasKnown&&r.streak>=2;
+  if(justKnown){setTimeout(()=>{if(my===token)celebrate(w);},180);}
+  else if(ok){setTimeout(()=>flash(true),60);setTimeout(()=>{if(my===token)advance(w,false);},380);}
+  else{
+    setTimeout(()=>flash(false),60);
+    let done=false;
+    const go=()=>{if(done||my!==token)return;done=true;clearTimeout(t);advance(w,false);};
+    const t=setTimeout(go,3000);
+    setTimeout(()=>{const sc=document.querySelector('.dim-scrim');if(sc)sc.addEventListener('click',go);const fc=$('flashcard');if(fc)fc.addEventListener('click',go);},300);
+  }
+}
+function celebrate(w){
+  const my=token,dance=pick(DANCES[cur.grade]),cheer=pick(CHEERS);
+  const o=document.createElement('div');o.className='celebrate-overlay';
+  o.innerHTML=`<div class="celebrate-turtle dance-${dance}">🐢</div><div class="celebrate-es">${cheer[0]}</div><div class="celebrate-en">${cheer[1]} · Card mastered ✅</div>`;
+  $('cardStage').appendChild(o);
+  setTimeout(()=>{o.remove();if(my===token)advance(w,true);},900);
+}
+function advance(w,justKnown){
+  if(justKnown&&statsFor(topicList()).pct===100){discoParty();return;}
+  if(session.hideKnown&&isKnown(w.id))session.queue=session.queue.filter((id,i)=>!(id===w.id&&i>=session.pos));
+  completed++;
+  if(completed%PRAISE_EVERY===0)showPraise(()=>nextCard());else nextCard();
+}
+
+/* ---------- praise (Spanish, with English) ---------- */
+function showPraise(cb){
+  const p=pick(PRAISE);$('praiseEs').textContent=p[0];$('praiseEn').textContent=p[1];
+  const t=$('praiseTurtle');const d=pick(DANCES[cur.grade]);t.className='praise-turtle dance-'+d;
+  $('praiseOverlay').classList.remove('hidden');
+  const go=$('btnPraiseGo'),hear=$('btnPraiseHear');
+  const close=()=>{$('praiseOverlay').classList.add('hidden');go.removeEventListener('click',close);hear.onclick=null;cb&&cb();};
+  go.addEventListener('click',close);hear.onclick=()=>speak(p[0]);
+}
+
+/* ---------- topic complete: disco (bigger with grade) ---------- */
+function discoParty(){
+  const gi=GRADES.findIndex(g=>g.k===cur.grade);const o=$('discoOverlay');
+  o.querySelectorAll('.disco-turtle').forEach(n=>n.remove());
+  $('discoSub').textContent=`You finished ${TOPICS[cur.topic].name} in ${GRADES[gi].name}! 🎉`;
+  const n=7+gi*4,pool=DANCES[cur.grade];
+  for(let i=0;i<n;i++){const t=document.createElement('div');t.className='disco-turtle dance-'+pick(pool);t.textContent=pick(['🐢','🐢','🐢','✨','🌟','🕺','💃']);
+    t.style.left=(4+Math.random()*88)+'%';t.style.top=(8+Math.random()*80)+'%';t.style.fontSize=(30+Math.random()*30)+'px';
+    t.style.animationDelay=(Math.random()*.5)+'s';o.appendChild(t);}
+  o.classList.remove('hidden');
+}
+$('btnDiscoGo').addEventListener('click',()=>{$('discoOverlay').classList.add('hidden');token++;renderTopics();show('topics');});
+
+/* ---------- navigation + toggles ---------- */
+$('btnStart').addEventListener('click',()=>{renderGrades();show('grades');});
+$('btnGradesBack').addEventListener('click',()=>{renderHome();show('home');});
+$('btnTopicsBack').addEventListener('click',()=>{renderGrades();show('grades');});
+$('btnStudyBack').addEventListener('click',()=>{token++;clearSpot();renderTopics();show('topics');});
+const chk=$('chkHideKnown');
+chk.addEventListener('change',()=>{
+  if(chk.checked){session.hideKnown=true;rebuildQueue();nextCard();}
+  else{chk.checked=true;$('confirmModal').classList.remove('hidden');}
+});
+$('btnCancelShowAll').addEventListener('click',()=>{$('confirmModal').classList.add('hidden');chk.checked=true;});
+$('btnConfirmShowAll').addEventListener('click',()=>{$('confirmModal').classList.add('hidden');chk.checked=false;session.hideKnown=false;rebuildQueue();nextCard();});
+$('btnReset').addEventListener('click',()=>$('resetModal').classList.remove('hidden'));
+$('btnCancelReset').addEventListener('click',()=>$('resetModal').classList.add('hidden'));
+$('btnConfirmReset').addEventListener('click',()=>{state={progress:{}};saveState();$('resetModal').classList.add('hidden');renderHome();show('home');});
+
+if('speechSynthesis' in window){try{speechSynthesis.getVoices();}catch(e){}}
+window.__espanol={WORDS,TOPICS,GRADES,distractors,getState:()=>state};
+renderHome();
+})();
+</script>
+</body>
+</html>

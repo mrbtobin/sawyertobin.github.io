@@ -286,6 +286,7 @@ button{font-family:var(--font-body); cursor:pointer;}
   50%{transform:scale(1.07); box-shadow:0 0 0 8px rgba(47,143,91,0.22), 0 0 34px 12px rgba(47,143,91,0.7);}
   100%{transform:scale(1);}
 }
+.card-stage.spot{z-index:45;}
 .dim-scrim{
   position:fixed; inset:0; background:rgba(10,22,17,0.62); z-index:40;
   animation: scrim-fade-in 0.25s ease; cursor:pointer;
@@ -783,6 +784,8 @@ document.getElementById("btnHome").addEventListener("click", () => {
   showScreen("home");
 });
 document.getElementById("btnBackToCats").addEventListener("click", () => {
+  document.querySelectorAll(".dim-scrim").forEach(n => n.remove());
+  document.getElementById("cardStage").classList.remove("spot");
   renderCategories();
   showScreen("categories");
 });
@@ -896,6 +899,8 @@ function updateStudyProgressLine(){
 }
 
 function nextCard(){
+  document.querySelectorAll(".dim-scrim").forEach(n => n.remove());
+  document.getElementById("cardStage").classList.remove("spot");
   updateStudyProgressLine();
 
   if(session.pos >= session.queue.length){
@@ -1016,7 +1021,7 @@ function handleAnswer(q, chosenIdx, btnEl, optionsEl){
         clearTimeout(advanceTimer);
         advanceOrCheckCategory(q);
       };
-      const scrim = document.querySelector("#cardStage .dim-scrim");
+      const scrim = document.querySelector(".dim-scrim");
       const flashcard = document.getElementById("flashcard");
       if(scrim) scrim.addEventListener("click", dismissHandler, { once: true });
       if(flashcard) flashcard.addEventListener("click", dismissHandler, { once: true });
@@ -1032,7 +1037,10 @@ function spotlightCorrectOption(optionsEl, wrongBtnEl){
   const scrim = document.createElement("div");
   scrim.className = "dim-scrim";
   scrim.innerHTML = `<span class="tap-hint">Tap to continue</span>`;
-  stage.appendChild(scrim);
+  // Append to .app (not the 3D-perspective stage, which would shrink the fixed overlay to card size,
+  // and not <body>, which would sit above .app's stacking layer and dim the card too).
+  document.querySelector(".app").appendChild(scrim);
+  stage.classList.add("spot");
   if(flashcard) flashcard.classList.add("spotlighted");
 
   const btns = Array.from(optionsEl.querySelectorAll(".option-btn"));
