@@ -260,83 +260,111 @@
 </div>
 
 
-<!-- Lettuce cursor: a lettuce trails the mouse; sit still and hungry turtles bound in to munch (up to 4) -->
+<!-- Garden cursor: stay still 4s and a sprout grows where you point; it trails you 2s behind, digging up dirt.
+     Let it catch up and rest 3s and a lettuce wiggles up in its place. Rest more and hungry turtles bound in (up to 4). -->
 <style>
-  .lt-lettuce, .lt-turtle { position: fixed; left: 0; top: 0; pointer-events: none; z-index: 9999; will-change: transform; user-select: none; line-height: 1; }
-  .lt-lettuce { font-size: 30px; filter: drop-shadow(0 3px 2px rgba(0,0,0,.18)); }
+  .lt-plant, .lt-turtle { position: fixed; left: 0; top: 0; pointer-events: none; z-index: 9999; will-change: transform; user-select: none; line-height: 1; }
+  .lt-plant { font-size: 30px; transform-origin: 50% 100%; filter: drop-shadow(0 3px 2px rgba(0,0,0,.18)); }
+  .lt-plant.sprout { font-size: 26px; }
   .lt-turtle { font-size: 34px; filter: drop-shadow(0 4px 3px rgba(0,0,0,.2)); }
-  .lt-crumb { position: fixed; left: 0; top: 0; pointer-events: none; z-index: 9998; width: 5px; height: 5px; border-radius: 50%; background: #7cb342; }
+  .lt-clod { position: fixed; left: 0; top: 0; pointer-events: none; z-index: 9998; border-radius: 45% 55% 50% 40%; }
 </style>
 <script>
 (() => {
   try { if (matchMedia('(pointer: coarse)').matches || matchMedia('(prefers-reduced-motion: reduce)').matches) return; } catch (e) { return; }
-  const MAX = 4, FIRST = 2000, NEXT = 2600;           // ms of stillness before the 1st turtle, then each next one
-  const lettuce = document.createElement('div');
-  lettuce.className = 'lt-lettuce'; lettuce.textContent = '\u{1F96C}'; lettuce.setAttribute('aria-hidden', 'true');
-  lettuce.style.opacity = '0';
-  document.body.appendChild(lettuce);
-  let mx = innerWidth / 2, my = innerHeight / 2, lx = mx, ly = my, lastMove = performance.now(), inside = false, bite = 0;
+  const SPROUT_AFTER = 4000, FOLLOW_DELAY = 2000, LETTUCE_AFTER = 3000, TURTLE_FIRST = 2000, TURTLE_NEXT = 2600, MAX_TURTLES = 4;
+  const OFF_X = 16, OFF_Y = 26;                        // plant base sits just below-right of the pointer, so it never blocks a click
+  let mx = -1, my = -1, inside = false, lastMove = performance.now();
+  const trail = [];                                     // pointer history, so the plant can follow 2 s behind
+  let stage = 'none', plant = null, px = 0, py = 0, grow = 0, matchedSince = 0, lastClod = 0, bite = 1;
   const turtles = [];
-  const SLOTS = [[-1, 0.15], [1, 0.1], [-0.6, 0.85], [0.65, 0.9]];   // where each turtle sits around the lettuce
+  const SLOTS = [[-1, -0.35], [1, -0.4], [-0.6, 0.25], [0.65, 0.3]];
   addEventListener('mousemove', (e) => {
-    mx = e.clientX + 16; my = e.clientY + 14;        // sit just below-right of the pointer so it never blocks a click
-    lastMove = performance.now();
-    if (!inside) { inside = true; lettuce.style.opacity = '1'; }
+    mx = e.clientX + OFF_X; my = e.clientY + OFF_Y; lastMove = performance.now(); inside = true;
+    if (plant) plant.style.opacity = '1';
   }, { passive: true });
-  document.addEventListener('mouseleave', () => { inside = false; lettuce.style.opacity = '0'; });
-  function spawn(now) {
-    const side = Math.floor(Math.random() * 4), W = innerWidth, H = innerHeight;
-    const x = side === 0 ? -50 : side === 1 ? W + 50 : Math.random() * W;
-    const y = side === 2 ? -50 : side === 3 ? H + 50 : Math.random() * H;
-    const el = document.createElement('div');
-    el.className = 'lt-turtle'; el.textContent = '\u{1F422}'; el.setAttribute('aria-hidden', 'true');
-    document.body.appendChild(el);
-    turtles.push({ el, x, y, gx: lx, gy: ly, slot: SLOTS[turtles.length], lag: 120 + Math.random() * 520, react: now,
-      speed: 0.045 + Math.random() * 0.04, phase: Math.random() * 6.28, hopRate: 70 + Math.random() * 40, face: x < lx ? -1 : 1, munch: 0 });
-  }
-  function crumb(x, y) {
-    const c = document.createElement('div'); c.className = 'lt-crumb'; document.body.appendChild(c);
-    const vx = (Math.random() - 0.5) * 2.2, start = performance.now();
+  document.addEventListener('mouseleave', () => { inside = false; });
+  const rand = (a, b) => a + Math.random() * (b - a);
+  function clod(x, y, burst) {
+    const c = document.createElement('div'); c.className = 'lt-clod';
+    const size = rand(3, burst ? 7 : 6); c.style.width = size + 'px'; c.style.height = size * rand(0.7, 1) + 'px';
+    c.style.background = ['#6d4c41', '#795548', '#5d4037', '#8d6e63'][Math.floor(Math.random() * 4)];
+    document.body.appendChild(c);
+    const vx = rand(-1.6, 1.6) * (burst ? 1.6 : 1), up = rand(14, burst ? 34 : 24), start = performance.now(), life = rand(450, 700);
     (function fall(now) {
-      const t = (now - start) / 600; if (t >= 1) { c.remove(); return; }
-      c.style.transform = `translate(${x + vx * t * 30}px, ${y + 40 * t * t - 10 * t}px)`; c.style.opacity = String(1 - t);
+      const t = (now - start) / life; if (t >= 1) { c.remove(); return; }
+      c.style.transform = `translate(${(x + vx * t * 26).toFixed(1)}px, ${(y - up * t + 46 * t * t).toFixed(1)}px) rotate(${(t * 220 * vx).toFixed(0)}deg)`;
+      c.style.opacity = String(1 - t * t);
       requestAnimationFrame(fall);
     })(start);
   }
+  const burst = (n) => { for (let i = 0; i < n; i++) clod(px + rand(-8, 8), py - 2, true); };
+  function makePlant(kind) {
+    if (!plant) { plant = document.createElement('div'); plant.setAttribute('aria-hidden', 'true'); document.body.appendChild(plant); }
+    plant.className = 'lt-plant' + (kind === 'sprout' ? ' sprout' : '');
+    plant.textContent = kind === 'sprout' ? '\u{1F331}' : '\u{1F96C}';
+    stage = kind; grow = 0; matchedSince = 0; burst(kind === 'sprout' ? 6 : 10);
+  }
+  function delayedTarget(now) {
+    while (trail.length > 2 && trail[1].t <= now - FOLLOW_DELAY) trail.shift();
+    return trail.length ? trail[0] : { x: mx, y: my };
+  }
+  function spawnTurtle(now) {
+    const side = Math.floor(Math.random() * 4), W = innerWidth, H = innerHeight;
+    const x = side === 0 ? -50 : side === 1 ? W + 50 : Math.random() * W, y = side === 2 ? -50 : side === 3 ? H + 50 : Math.random() * H;
+    const el = document.createElement('div'); el.className = 'lt-turtle'; el.textContent = '\u{1F422}'; el.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(el);
+    turtles.push({ el, x, y, gx: px, gy: py, slot: SLOTS[turtles.length], lag: rand(120, 640), react: now, speed: rand(0.045, 0.085),
+      phase: rand(0, 6.28), hopRate: rand(70, 110), face: x < px ? -1 : 1, munch: 0 });
+  }
   function tick(now) {
-    // lettuce trails the pointer
-    lx += (mx - lx) * 0.12; ly += (my - ly) * 0.12;
+    if (mx >= 0) trail.push({ t: now, x: mx, y: my });
     const idle = now - lastMove;
-    if (inside && turtles.length < MAX && idle > FIRST + turtles.length * NEXT) spawn(now);
-    let munchers = 0;
-    turtles.forEach((t) => {
-      // each turtle only notices where the lettuce went after its own random delay
-      if (now >= t.react) { t.gx = lx + t.slot[0] * 30; t.gy = ly + t.slot[1] * 26; t.react = now + t.lag; }
-      const dx = t.gx - t.x, dy = t.gy - t.y, d = Math.hypot(dx, dy);
-      let hop = 0, rot = 0, wig = 0;
-      if (d > 4) {
-        const step = Math.min(d, Math.max(1.6, d * t.speed));
-        t.x += dx / d * step; t.y += dy / d * step;
-        if (Math.abs(dx) > 2) t.face = dx > 0 ? -1 : 1;     // the emoji faces left, so flip when heading right
-        hop = Math.abs(Math.sin(now / t.hopRate + t.phase)) * Math.min(18, 5 + d * 0.25);   // frolicky bounding
-        rot = Math.sin(now / t.hopRate + t.phase) * 10;
-        t.munch = 0;
-      } else if (idle > 400) {
-        munchers++; t.munch += 1;
-        wig = Math.sin(now / 75 + t.phase) * 2.2;            // nibble, nudging back and forth
-        rot = Math.sin(now / 110 + t.phase) * 7;
-        if (t.munch % 70 === 35 && Math.random() < 0.7) crumb(lx + 8, ly + 10);
-        t.face = t.gx < lx ? -1 : 1;                          // face the lettuce
-      }
-      t.el.style.transform = `translate(${(t.x + wig - 17).toFixed(1)}px, ${(t.y - hop - 17).toFixed(1)}px) scaleX(${t.face}) rotate(${rot.toFixed(1)}deg)`;
-    });
-    // the lettuce shrinks a little while it's being eaten and springs back when you move
-    bite += ((munchers ? 1 - 0.05 * munchers : 1) - bite) * 0.05;
-    const wob = munchers ? Math.sin(now / 90) * 4 : 0;
-    lettuce.style.transform = `translate(${(lx - 15).toFixed(1)}px, ${(ly - 15).toFixed(1)}px) scale(${bite.toFixed(3)}) rotate(${wob.toFixed(1)}deg)`;
+    // 1. stay still 4 s: a sprout pops out of the ground right where you are
+    if (stage === 'none' && inside && mx >= 0 && idle > SPROUT_AFTER) { px = mx; py = my; trail.length = 0; trail.push({ t: now, x: mx, y: my }); makePlant('sprout'); }
+    let moving = false, munchers = 0;
+    if (plant) {
+      // 2. follow the pointer's path 2 s behind, wiggling and kicking up dirt
+      const tg = delayedTarget(now);
+      const dx = tg.x - px, dy = tg.y - py, d = Math.hypot(dx, dy);
+      if (d > 0.6) { const k = Math.min(1, 0.14); px += dx * k; py += dy * k; }
+      moving = d > 1.5;
+      if (moving && now - lastClod > 70) { lastClod = now; clod(px + rand(-6, 6), py - 2, false); if (d > 25) clod(px + rand(-6, 6), py - 2, false); }
+      const atCursor = Math.hypot(mx - px, my - py) < 6 && idle > FOLLOW_DELAY;
+      if (atCursor && !moving) { if (!matchedSince) matchedSince = now; } else matchedSince = 0;
+      // 3. sprout caught up and resting 3 s: a lettuce wiggles up in its place
+      if (stage === 'sprout' && matchedSince && now - matchedSince > LETTUCE_AFTER) makePlant('lettuce');
+      grow = Math.min(1, grow + 0.035);
+      const rise = 1 - Math.pow(1 - grow, 3);              // ease out of the ground
+      const wig = (grow < 1 ? Math.sin(now / 45) * 14 * (1 - grow) : 0) + (moving ? Math.sin(now / 60) * 12 : 0);
+      // 4. lettuce at rest: hungry turtles bound in, one at a time
+      const restMs = matchedSince ? now - matchedSince : 0;
+      if (stage === 'lettuce' && inside && turtles.length < MAX_TURTLES && restMs > TURTLE_FIRST + turtles.length * TURTLE_NEXT) spawnTurtle(now);
+      turtles.forEach((t) => {
+        if (now >= t.react) { t.gx = px + t.slot[0] * 30; t.gy = py - 14 + t.slot[1] * 26; t.react = now + t.lag; }
+        const tdx = t.gx - t.x, tdy = t.gy - t.y, td = Math.hypot(tdx, tdy);
+        let hop = 0, rot = 0, nib = 0;
+        if (td > 4) {
+          const step = Math.min(td, Math.max(1.6, td * t.speed)); t.x += tdx / td * step; t.y += tdy / td * step;
+          if (Math.abs(tdx) > 2) t.face = tdx > 0 ? -1 : 1;
+          hop = Math.abs(Math.sin(now / t.hopRate + t.phase)) * Math.min(18, 5 + td * 0.25);
+          rot = Math.sin(now / t.hopRate + t.phase) * 10; t.munch = 0;
+        } else if (!moving) {
+          munchers++; t.munch += 1;
+          nib = Math.sin(now / 75 + t.phase) * 2.2; rot = Math.sin(now / 110 + t.phase) * 7;
+          if (t.munch % 70 === 35 && Math.random() < 0.7) { clod(px + rand(-6, 6), py - 16, false); }
+          t.face = t.gx < px ? -1 : 1;
+        }
+        t.el.style.transform = `translate(${(t.x + nib - 17).toFixed(1)}px, ${(t.y - hop - 17).toFixed(1)}px) scaleX(${t.face}) rotate(${rot.toFixed(1)}deg)`;
+      });
+      bite += ((munchers ? 1 - 0.05 * munchers : 1) - bite) * 0.05;
+      const chew = munchers ? Math.sin(now / 90) * 4 : 0;
+      const sz = stage === 'sprout' ? 26 : 30;
+      plant.style.transform = `translate(${(px - sz / 2).toFixed(1)}px, ${(py - sz).toFixed(1)}px) scale(${(rise * bite).toFixed(3)}) rotate(${(wig + chew).toFixed(1)}deg)`;
+    }
     requestAnimationFrame(tick);
   }
-  bite = 1; requestAnimationFrame(tick);
+  requestAnimationFrame(tick);
 })();
 </script>
 </body>
