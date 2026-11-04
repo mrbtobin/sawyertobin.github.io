@@ -1,0 +1,2181 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Grid Lab</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}img{max-width:100%}/* Layout: one-column mobile app; wide screens split map | panel. Look: black field, white type, one electric-lime accent; Manrope + Space Mono labels. */
+:root {
+  --bg: #000000; --paper: #0d0d0b; --ink: #ffffff; --ink-2: #a3a39c; --rule: #32332b; --grid: #121210;
+  --copper: #e1ff29; --lime: #e1ff29; --on-lime: #000000; --blue: #7aa7ff; --teal: #2fe0d0; --violet: #b89cff; --ok: #1aff71; --warn: #e0ff29; --bad: #ff4066; --pass: #1aff71; --fail: #ff4066;
+  --plan: #2c8bff; --plan-edge: #24bcff; --manage: #c169ff; --operate: #09ffa6; --lime-ink: #e1ff29; --plan-bg: #141940; --manage-bg: #1a1620; --operate-bg: #12241e; --lime-bg: #1c2008;
+  --streak: 255,255,255;
+  --c-sun: #e1ff29; --c-metro: #9d8cff; --c-wind: #2fe0d0; --c-iso: #a3a39c; --chip: #1b1c17;
+  --shadow: 0 0 0 1px rgba(255,255,255,.02), 0 18px 40px -24px rgba(0,0,0,.9);
+  --h-1: #3a3b33; --h-2: #2a2b24; --h-3: #1d1e19; --h-edge: #55574b; --h-line: #a3a39c; --h-solar: #7aa7ff; --h-screen: #2fe0d0;
+  --h-1: #2f2f2b; --h-2: #1c1c19; --h-3: #121210; --h-edge: #45463d; --h-w1: #f2f2ee; --h-w2: #cfcfc8; --h-tile: #121210; --h-tile-side: #070706; --h-tile-edge: #2c2d26; --h-rim: #e1ff29;
+  --h-hub: #1a1f05; --h-hubedge: #e1ff29; --h-flow: #e1ff29; --h-flow2: #2fe0d0; --h-spoke: #3a3b33;
+  color-scheme: dark;
+  --f-display: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-body: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "Space Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) {
+  --bg: #ffffff; --paper: #f6f6f3; --ink: #000000; --ink-2: #5b5c53; --rule: #e5e7eb; --grid: #f3f3ef;
+  --copper: #5f6f00; --lime: #e1ff29; --on-lime: #000000; --blue: #2457c5; --teal: #0d8f84; --violet: #6a4fd1; --ok: #0f9e47; --warn: #8fa300; --bad: #df2a50; --pass: #0f9e47; --fail: #df2a50;
+  --plan: #1766d6; --plan-edge: #0e8fd1; --manage: #8b3fd9; --operate: #00976a; --lime-ink: #5f6f00; --plan-bg: #eef3ff; --manage-bg: #f6efff; --operate-bg: #eafaf3; --lime-bg: #f8ffd6;
+  --streak: 0,0,0;
+  --c-sun: #7f9600; --c-metro: #5b48d6; --c-wind: #0d8f84; --c-iso: #5b5c53; --chip: #ececE6;
+  --shadow: 0 1px 0 rgba(0,0,0,.04), 0 14px 30px -22px rgba(0,0,0,.35);
+  --h-1: #ffffff; --h-2: #e7e8e1; --h-3: #cfd1c6; --h-edge: #a7a99c; --h-line: #5b5c53; --h-solar: #2457c5; --h-screen: #8fe7de;
+  --h-w1: #ffffff; --h-w2: #e2e3dc; --h-tile: #f4f4ef; --h-tile-side: #dfe0d8; --h-tile-edge: #c9cbbf; --h-rim: #9bb800;
+  --h-hub: #f2ffb0; --h-hubedge: #8aa300; --h-flow: #7f9600; --h-flow2: #0d8f84; --h-spoke: #d7d9ce;
+  color-scheme: light; } }
+:root[data-theme="light"] {
+  --bg: #ffffff; --paper: #f6f6f3; --ink: #000000; --ink-2: #5b5c53; --rule: #e5e7eb; --grid: #f3f3ef;
+  --copper: #5f6f00; --lime: #e1ff29; --on-lime: #000000; --blue: #2457c5; --teal: #0d8f84; --violet: #6a4fd1; --ok: #0f9e47; --warn: #8fa300; --bad: #df2a50; --pass: #0f9e47; --fail: #df2a50;
+  --plan: #1766d6; --plan-edge: #0e8fd1; --manage: #8b3fd9; --operate: #00976a; --lime-ink: #5f6f00; --plan-bg: #eef3ff; --manage-bg: #f6efff; --operate-bg: #eafaf3; --lime-bg: #f8ffd6;
+  --streak: 0,0,0;
+  --c-sun: #7f9600; --c-metro: #5b48d6; --c-wind: #0d8f84; --c-iso: #5b5c53; --chip: #ececE6;
+  --shadow: 0 1px 0 rgba(0,0,0,.04), 0 14px 30px -22px rgba(0,0,0,.35);
+  --h-1: #ffffff; --h-2: #e7e8e1; --h-3: #cfd1c6; --h-edge: #a7a99c; --h-line: #5b5c53; --h-solar: #2457c5; --h-screen: #8fe7de;
+  --h-w1: #ffffff; --h-w2: #e2e3dc; --h-tile: #f4f4ef; --h-tile-side: #dfe0d8; --h-tile-edge: #c9cbbf; --h-rim: #9bb800;
+  --h-hub: #f2ffb0; --h-hubedge: #8aa300; --h-flow: #7f9600; --h-flow2: #0d8f84; --h-spoke: #d7d9ce;
+  color-scheme: light; }
+
+html, body { min-height: 100%; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.5;
+  background-image: radial-gradient(var(--grid) 1px, transparent 1.4px);
+  background-size: 24px 24px; -webkit-tap-highlight-color: transparent;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); }
+* { box-sizing: border-box; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible, a:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 0 48px; }
+
+/* top bar */
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--paper); border-bottom: 1px solid var(--rule); }
+.top-in { max-width: 1180px; margin: 0 auto; display: flex; align-items: center; gap: 10px; min-height: 52px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.brand { font-family: var(--f-display); font-weight: 800; font-size: 22px; letter-spacing: .02em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; background: none; border: 0; padding: 0; }
+.brand svg { width: 22px; height: 22px; }
+.top .sp { flex: 1; }
+.iconbtn { border: 1px solid var(--rule); background: var(--paper); border-radius: 8px; min-width: 38px; height: 38px; padding: 0 10px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-size: 13px; }
+.iconbtn:hover { border-color: var(--ink-2); }
+
+h1, h2, h3 { font-family: var(--f-display); text-transform: uppercase; letter-spacing: .01em; line-height: 1.02; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(32px, 8vw, 72px); font-weight: 800; overflow-wrap: anywhere; }
+h2 { font-size: 30px; font-weight: 800; }
+h3 { font-size: 21px; font-weight: 700; }
+.eyebrow { font-family: var(--f-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); }
+.muted { color: var(--ink-2); }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+p { margin: 0; max-width: 65ch; }
+
+/* home */
+.hero { padding-block: 28px 18px; display: grid; gap: 14px; }
+.hero h1 span { color: var(--copper); }
+.hero p { font-size: 17px; }
+.disclaim { font-size: 12px; color: var(--ink-2); border-left: 2px solid var(--rule); padding-left: 10px; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-top: 8px; }
+.tile { text-align: left; background: var(--paper); border: 1px solid var(--rule); border-radius: 12px; padding: 16px; display: grid; gap: 8px; box-shadow: var(--shadow); min-width: 0; }
+.tile:hover { border-color: var(--ink-2); }
+.tile .k { font-family: var(--f-mono); font-size: 11px; color: var(--copper); letter-spacing: .1em; text-transform: uppercase; }
+.tile h3 { font-size: 26px; }
+.tile.lab { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.tile.lab .k { color: var(--c-sun); }
+.tile.lab .muted { color: color-mix(in srgb, var(--paper) 72%, transparent); }
+.bar { height: 6px; border-radius: 3px; background: var(--chip); overflow: hidden; }
+.bar > i { display: block; height: 100%; background: var(--ok); width: 0; transition: width .4s; }
+
+/* deck list */
+.section-h { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; padding-block: 22px 12px; }
+.decks { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px; }
+.deck { text-align: left; background: var(--paper); border: 1px solid var(--rule); border-radius: 12px; padding: 14px 14px 12px; display: grid; gap: 6px; position: relative; overflow: hidden; min-width: 0; }
+.deck::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--dc); }
+.deck .row { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.deck:hover { border-color: var(--ink-2); }
+
+/* flashcards */
+.fc-wrap { display: grid; gap: 14px; max-width: 640px; margin: 0 auto; padding-top: 18px; }
+.fc-meta { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.card { background: var(--paper); border: 1px solid var(--rule); border-radius: 16px; min-height: 290px; padding: 22px; display: grid; align-content: center; gap: 12px; box-shadow: var(--shadow); text-align: left; width: 100%; position: relative; }
+.card .term { font-family: var(--f-display); font-size: clamp(32px, 7vw, 46px); font-weight: 800; text-transform: uppercase; line-height: 1; }
+.card .def { font-size: 17px; }
+.card .note { font-size: 14px; color: var(--copper); border-top: 1px dashed var(--rule); padding-top: 10px; }
+.card .hint { position: absolute; right: 14px; bottom: 10px; font-family: var(--f-mono); font-size: 11px; color: var(--ink-2); }
+.btnrow { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn { border: 1px solid var(--ink); background: var(--ink); color: var(--paper); border-radius: 10px; padding: 11px 16px; font-weight: 600; min-height: 44px; }
+.btn.ghost { background: transparent; color: var(--ink); border-color: var(--rule); }
+.btn.ok { background: var(--ok); border-color: var(--ok); color: #fff; }
+.btn.warnb { background: transparent; border-color: var(--warn); color: var(--warn); }
+.btn.danger { background: transparent; border-color: var(--bad); color: var(--bad); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn.grow { flex: 1; }
+.toggle { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; }
+.toggle input { width: 18px; height: 18px; accent-color: var(--ok); }
+
+/* quiz */
+.q-opts { display: grid; gap: 8px; }
+.q-opt { text-align: left; border: 1px solid var(--rule); background: var(--paper); border-radius: 10px; padding: 12px 14px; min-height: 48px; }
+.q-opt:hover:not(:disabled) { border-color: var(--ink-2); }
+.q-opt.right { border-color: var(--ok); background: color-mix(in srgb, var(--ok) 14%, var(--paper)); }
+.q-opt.wrong { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 12%, var(--paper)); }
+.q-prompt { font-size: 18px; }
+.q-prompt.big { font-family: var(--f-display); font-size: 34px; font-weight: 800; text-transform: uppercase; line-height: 1.02; }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chipbtn { border: 1px solid var(--rule); background: var(--paper); border-radius: 999px; padding: 6px 12px; font-size: 13px; min-height: 34px; }
+.chipbtn.on { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+/* prep */
+.prep { display: grid; gap: 10px; max-width: 760px; }
+details.pq { background: var(--paper); border: 1px solid var(--rule); border-radius: 12px; padding: 0; }
+details.pq summary { cursor: pointer; list-style: none; padding: 14px 16px; font-weight: 700; display: flex; justify-content: space-between; gap: 10px; }
+details.pq summary::after { content: "+"; font-family: var(--f-mono); color: var(--ink-2); }
+details.pq[open] summary::after { content: "\2212"; }
+details.pq div { padding: 0 16px 16px; }
+
+/* ===== lab ===== */
+.levels { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; }
+.lvl { text-align: left; background: var(--paper); border: 1px solid var(--rule); border-radius: 12px; padding: 16px; display: grid; gap: 8px; min-width: 0; }
+.lvl:hover { border-color: var(--ink-2); }
+.lvl .n { font-family: var(--f-display); font-size: 54px; font-weight: 800; line-height: .9; color: var(--copper); }
+.stars { font-family: var(--f-mono); letter-spacing: 2px; color: var(--warn); }
+.howto { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-top: 14px; }
+.howto > div { border-top: 2px solid var(--ink); padding-top: 8px; font-size: 14px; }
+.howto b { display: block; font-family: var(--f-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-2); margin-bottom: 2px; }
+
+.game { display: grid; gap: 12px; padding-top: 12px; }
+.ghead { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.ghead .ttl { flex: 1; min-width: 0; }
+.ghead h3 { font-size: clamp(17px, 4.6vw, 22px); }
+.clock { font-family: var(--f-mono); font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; padding: 4px 10px; border-radius: 8px; background: var(--paper); border: 1px solid var(--rule); }
+.clock.low { color: var(--bad); border-color: var(--bad); }
+.tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
+.tab { flex: 0 0 auto; border: 1px solid var(--rule); background: var(--paper); border-radius: 10px; padding: 7px 12px 7px 10px; display: flex; align-items: center; gap: 8px; min-height: 44px; font-weight: 600; font-size: 14px; }
+.tab .sw { width: 10px; height: 10px; border-radius: 3px; background: var(--tc); flex: none; }
+.tab .st { font-family: var(--f-mono); font-size: 10px; font-weight: 500; color: var(--ink-2); letter-spacing: .04em; text-transform: uppercase; }
+.tab.on { border-color: var(--tc); box-shadow: inset 0 -3px 0 var(--tc); }
+.tab .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--dc, var(--rule)); }
+.split { display: grid; gap: 12px; grid-template-columns: 1fr; }
+@media (min-width: 920px) { .split { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); align-items: start; } .mapbox { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 64px); } }
+.mapbox { background: var(--paper); border: 1px solid var(--rule); border-radius: 14px; overflow: hidden; min-width: 0; }
+.maphead { display: flex; gap: 8px; align-items: center; padding: 10px 12px; border-bottom: 1px solid var(--rule); flex-wrap: wrap; }
+.maphead .who { font-weight: 700; display: flex; align-items: center; gap: 6px; flex: 1; min-width: 120px; font-size: 14px; }
+.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.seg button { border: 0; background: transparent; padding: 6px 10px; font-size: 12px; font-weight: 600; min-height: 34px; }
+.seg button.on { background: var(--ink); color: var(--paper); }
+svg.map { display: block; width: 100%; height: auto; touch-action: manipulation; user-select: none; }
+.map .ln { fill: none; stroke-linecap: round; }
+.map .hit { stroke: transparent; stroke-width: 22; fill: none; cursor: pointer; }
+.map .flow { fill: none; stroke-dasharray: 2 10; stroke-linecap: round; animation: flow linear infinite; opacity: .9; pointer-events: none; }
+@keyframes flow { to { stroke-dashoffset: -24; } }
+@media (prefers-reduced-motion: reduce) { .map .flow { animation: none; } }
+.map .bus { cursor: pointer; }
+.map text { font-family: var(--f-mono); }
+.legend { display: flex; gap: 12px; flex-wrap: wrap; padding: 8px 12px 10px; font-size: 11px; color: var(--ink-2); font-family: var(--f-mono); border-top: 1px solid var(--rule); }
+.legend i { display: inline-block; width: 16px; height: 4px; border-radius: 2px; vertical-align: middle; margin-right: 4px; }
+.metrics { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); border-top: 1px solid var(--rule); }
+.metrics > div { padding: 8px 10px; border-right: 1px solid var(--rule); min-width: 0; }
+.metrics > div:last-child { border-right: 0; }
+.metrics b { display: block; font-family: var(--f-mono); font-size: 16px; font-variant-numeric: tabular-nums; }
+.metrics span { font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); }
+
+.panel { display: grid; gap: 10px; min-width: 0; }
+.box { background: var(--paper); border: 1px solid var(--rule); border-radius: 12px; padding: 12px 14px; display: grid; gap: 8px; min-width: 0; }
+.box h4 { margin: 0; font-family: var(--f-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); font-weight: 600; display: flex; justify-content: space-between; gap: 8px; }
+.brief { border-left: 4px solid var(--tc); }
+.budget { display: grid; gap: 4px; }
+.budget .bar > i { background: var(--tc); }
+.budget .bar.over > i { background: var(--bad); }
+.diff { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; font-family: var(--f-mono); font-size: 12.5px; }
+.diff li { display: flex; gap: 8px; align-items: center; padding: 6px 8px; border-radius: 6px; background: var(--chip); min-width: 0; }
+.diff li .tx { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.diff li.add { box-shadow: inset 3px 0 0 var(--ok); }
+.diff li.mod { box-shadow: inset 3px 0 0 var(--warn); }
+.diff li.del { box-shadow: inset 3px 0 0 var(--bad); }
+.diff li .x { border: 0; background: transparent; color: var(--ink-2); padding: 2px 6px; font-size: 16px; line-height: 1; min-height: 28px; }
+.diff li .c { color: var(--ink-2); white-space: nowrap; }
+.checks { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; font-size: 13.5px; }
+.checks li { display: grid; grid-template-columns: 20px 1fr; gap: 6px; align-items: start; }
+.checks .ic { font-family: var(--f-mono); font-weight: 700; }
+.checks .pass .ic { color: var(--ok); } .checks .fail .ic { color: var(--bad); } .checks .wait .ic { color: var(--warn); }
+.viol { margin: 2px 0 0; padding-left: 16px; font-size: 12.5px; color: var(--ink-2); }
+.viol li { display: list-item; }
+.issue { border: 1px dashed var(--warn); border-radius: 10px; padding: 10px; display: grid; gap: 8px; font-size: 13.5px; background: color-mix(in srgb, var(--warn) 8%, var(--paper)); }
+.cof { display: flex; gap: 8px; align-items: center; font-size: 13px; flex-wrap: wrap; }
+.cof .tx { flex: 1; min-width: 160px; }
+.small { font-size: 12.5px; }
+.log { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; font-size: 13px; max-height: 260px; overflow: auto; }
+.log li { display: grid; grid-template-columns: auto 1fr; gap: 8px; }
+.log .v { font-family: var(--f-mono); font-size: 11px; padding: 2px 6px; border-radius: 4px; background: var(--chip); color: var(--ink); height: fit-content; }
+
+/* sheets / modals */
+.scrim { position: fixed; inset: 0; background: rgba(8,14,22,.45); z-index: 20; display: flex; align-items: flex-end; justify-content: center; }
+@media (min-width: 720px) { .scrim { align-items: center; } }
+.sheet { background: var(--paper); color: var(--ink); width: min(560px, 100%); max-height: 86vh; overflow: auto; border-radius: 16px 16px 0 0; padding: 18px max(16px, env(safe-area-inset-right, 0px)) calc(18px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); display: grid; gap: 12px; box-shadow: var(--shadow); }
+@media (min-width: 720px) { .sheet { border-radius: 16px; padding: 22px; } }
+.sheet .opt { text-align: left; border: 1px solid var(--rule); background: var(--bg); border-radius: 10px; padding: 12px; display: grid; gap: 2px; min-height: 48px; }
+.sheet .opt:hover:not(:disabled) { border-color: var(--ink-2); }
+.sheet .opt b { display: flex; justify-content: space-between; gap: 8px; }
+.sheet .opt:disabled { opacity: .5; }
+.kv { display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; font-size: 13.5px; }
+.kv dt { color: var(--ink-2); } .kv dd { margin: 0; font-family: var(--f-mono); }
+.outcome { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px; }
+.outcome > div { background: var(--bg); border-radius: 10px; padding: 10px; }
+.outcome b { font-family: var(--f-mono); font-size: 20px; display: block; }
+.good { color: var(--ok); } .badc { color: var(--bad); } .warnc { color: var(--warn); }
+.score { display: grid; gap: 4px; font-size: 14px; margin: 0; padding: 0; list-style: none; }
+.score li { display: flex; justify-content: space-between; gap: 10px; border-bottom: 1px dashed var(--rule); padding-block: 4px; }
+.score li span:last-child { font-family: var(--f-mono); }
+.bigstars { font-size: 34px; letter-spacing: 6px; color: var(--warn); font-family: var(--f-mono); }
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 30; background: var(--ink); color: var(--paper); padding: 10px 14px; border-radius: 10px; font-size: 14px; max-width: min(520px, calc(100% - 32px)); box-shadow: var(--shadow); }
+.foot { margin-top: 30px; font-size: 12px; color: var(--ink-2); display: grid; gap: 4px; }
+.foot a { color: var(--ink-2); }
+@media (max-width: 600px) { .ghead .ttl { flex-basis: calc(100% - 52px); } .ghead .clock { margin-right: auto; } }
+
+/* ===== hero diagram ===== */
+.hero-fig { display: grid; gap: 12px; background: var(--paper); border: 1px solid var(--rule); border-radius: 16px; padding: 10px; box-shadow: var(--shadow); }
+@media (min-width: 980px) { .hero-fig { grid-template-columns: minmax(0, 1.7fr) minmax(280px, 1fr); align-items: center; padding: 14px; } }
+.hero-svg { min-width: 0; }
+svg.hero-map { display: block; width: 100%; height: auto; user-select: none; -webkit-user-select: none; }
+.hero-map text { font-family: var(--f-mono); }
+.hero-map .tile-l { fill: var(--ink); font-weight: 700; letter-spacing: .04em; paint-order: stroke; stroke: var(--paper); stroke-width: 3px; }
+.hero-map .hub-t { fill: var(--ink); font-family: var(--f-display); font-weight: 800; text-transform: uppercase; letter-spacing: .02em; }
+.hero-map .hub-l { fill: var(--ink-2); letter-spacing: .12em; }
+.hero-map .spoke { stroke: var(--h-spoke); stroke-width: 3; fill: none; stroke-linecap: round; }
+.hero-map .spoke.data { stroke: var(--copper); stroke-dasharray: 3 6; stroke-width: 2; opacity: .7; }
+.hero-map .spoke-on { fill: none; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; opacity: .55; }
+.hero-map .spoke-on.data { stroke-dasharray: 4 6; stroke-width: 3; }
+.hero-map .hnode { cursor: pointer; transition: opacity .25s, transform .25s; outline: none; }
+.hero-map .hnode .tile-top { transition: stroke-width .2s; }
+.hero-map .hnode:hover .tile-top, .hero-map .hnode:focus-visible .tile-top { stroke-width: 3; }
+.hero-map .hnode.on .tile-top { stroke-width: 3.5; }
+.hero-map .hnode.on { filter: drop-shadow(0 4px 10px color-mix(in srgb, var(--h-flow) 45%, transparent)); }
+.hero-map.picked .hnode.dim { opacity: .38; }
+.hero-map .pt { pointer-events: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .hero-map:not(.picked) .spoke { }
+  .hero-map:not(.picked) .spoke.data { stroke-dasharray: 3 6; }
+}
+@keyframes heroIdle { to { stroke-dashoffset: 28; } }
+.hero-card { display: grid; gap: 10px; padding: 6px 6px 8px; border-left: 4px solid var(--ec, var(--rule)); padding-left: 14px; min-width: 0; }
+.hero-card.idle { border-left-color: var(--copper); }
+.hero-card h3 { font-size: 28px; }
+.hero-card p { font-size: 15px; }
+.hc-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.hc-dl { display: grid; gap: 4px; margin: 0; font-size: 14px; }
+.hc-dl dt { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); margin-top: 4px; }
+.hc-dl dd { margin: 0; }
+.hc-links { display: grid; gap: 6px; }
+.hero-key { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; color: var(--ink-2); }
+.hero-key i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -2px; }
+.hero-key i.dash { height: 0; border-top: 2px dashed var(--copper); border-radius: 0; vertical-align: 3px; }
+
+.review { display: grid; gap: 8px; }
+.review h4 { margin: 6px 0 0; font-family: var(--f-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); font-weight: 600; }
+.rv-co { border-left: 3px solid var(--tc); padding-left: 10px; font-size: 14px; }
+.rv-co ul, .notes { margin: 4px 0 0; padding-left: 18px; font-size: 13.5px; display: grid; gap: 3px; }
+.notes li::marker { color: var(--copper); }
+.chipbtn.untried { cursor: default; border-style: dashed; color: var(--ink-2); }
+.skill { display: grid; gap: 2px; background: var(--bg); border-radius: 10px; padding: 10px 12px; }
+.skill b { font-family: var(--f-display); font-size: 24px; text-transform: uppercase; letter-spacing: .02em; }
+.notes.try li::marker { content: '\2192  '; color: var(--ok); }
+
+.diff li { position: relative; }
+.infowrap { position: relative; display: inline-flex; }
+.info { width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--ink-2); background: var(--paper); color: var(--ink-2); font: 700 12px/1 var(--f-mono); font-style: italic; display: inline-flex; align-items: center; justify-content: center; padding: 0; }
+.info:hover, .info:focus-visible { border-color: var(--blue); color: var(--blue); }
+.tip { display: none; position: absolute; right: -6px; top: calc(100% + 8px); z-index: 8; width: min(300px, calc(100vw - 72px)); background: var(--ink); color: var(--paper); border-radius: 10px; padding: 10px 12px; font: 13px/1.45 var(--f-body); box-shadow: var(--shadow); white-space: normal; }
+.tip::before { content: ""; position: absolute; right: 12px; top: -6px; border: 6px solid transparent; border-top: 0; border-bottom-color: var(--ink); }
+.tip b { display: block; font-size: 13.5px; margin-bottom: 2px; }
+.tip .tg { display: block; font: 600 10px/1.4 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; margin-top: 6px; color: color-mix(in srgb, var(--paper) 65%, transparent); }
+.infowrap:hover .tip, .info:focus + .tip { display: block; }
+
+/* proposed changes on the map */
+.map .pg-glow { opacity: .5; pointer-events: none; }
+.map .pg-breathe { opacity: .45; pointer-events: none; }
+.map .pg-core { opacity: .22; pointer-events: none; }
+.map .pg-ring, .map .pg-badge { pointer-events: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .map .pg-glow { animation: pgPulse 1.8s ease-in-out infinite; }
+  .map .pg-core { animation: pgPulse 2.4s ease-in-out infinite; }
+}
+@keyframes pgPulse { 0%, 100% { opacity: .18; } 50% { opacity: .72; } }
+@keyframes pgDlr { 0%, 100% { stroke-width: var(--w0); } 50% { stroke-width: var(--w1); } }
+
+/* ===== skin: black field, lime accent, Manrope sentence-case headings, Space Mono labels ===== */
+body { font-size: 15.5px; }
+h1, h2, h3 { text-transform: none; letter-spacing: -.02em; line-height: 1.12; font-weight: 500; }
+h1 { font-size: clamp(34px, 7vw, 64px); font-weight: 400; letter-spacing: -.03em; }
+h1 span { color: var(--copper); }
+h2 { font-size: clamp(28px, 4vw, 38px); font-weight: 500; }
+h3 { font-size: 21px; font-weight: 600; }
+.eyebrow, .tile .k, .box h4, .review h4, .hc-dl dt, .howto b, .tip .tg, .metrics span, .tab .st { font-family: var(--f-mono); font-weight: 400; letter-spacing: .08em; }
+.brand { font-family: var(--f-mono); font-weight: 700; font-size: 16px; letter-spacing: .32em; text-transform: uppercase; }
+.brand svg { color: var(--lime); }
+.top { background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom-color: var(--rule); }
+body::before { background: var(--bg); }
+.iconbtn { border-radius: 999px; border-color: var(--rule); background: transparent; padding: 0 14px; font-weight: 600; }
+.iconbtn:hover { border-color: var(--copper); color: var(--copper); }
+.btn { border-radius: 999px; background: var(--lime); border-color: var(--lime); color: var(--on-lime); font-weight: 600; padding: 11px 20px; }
+.btn:hover:not(:disabled) { filter: brightness(1.05); }
+.btn.ghost { background: transparent; color: var(--ink); border-color: var(--rule); }
+.btn.ghost:hover:not(:disabled) { border-color: var(--copper); color: var(--copper); filter: none; }
+.btn.ok { background: var(--lime); border-color: var(--lime); color: var(--on-lime); }
+.btn.warnb { border-radius: 999px; }
+.btn.danger { border-radius: 999px; background: transparent; }
+.chipbtn { border-radius: 999px; }
+.chipbtn.on { background: var(--lime); color: var(--on-lime); border-color: var(--lime); }
+.tile, .deck, .lvl, .box, .mapbox, .card, details.pq, .hero-fig, .q-opt, .sheet .opt { border-radius: 18px; }
+.tile, .deck, .lvl, .box, .mapbox, .card, details.pq, .hero-fig { background: var(--paper); border-color: var(--rule); }
+.tile h3 { font-size: 26px; font-weight: 500; }
+.tile.lab { background: var(--lime); color: var(--on-lime); border-color: var(--lime); }
+.tile.lab .k { color: var(--on-lime); opacity: .7; }
+.tile.lab .muted { color: rgba(0,0,0,.68); }
+.tile.lab .stars { color: var(--on-lime); }
+.tile:hover, .deck:hover, .lvl:hover { border-color: var(--copper); }
+.bar > i { background: var(--lime); }
+.card .term { font-family: var(--f-display); text-transform: none; font-weight: 500; letter-spacing: -.02em; line-height: 1.08; }
+.q-prompt.big { font-family: var(--f-display); text-transform: none; font-weight: 500; letter-spacing: -.02em; }
+.lvl .n { font-family: var(--f-mono); font-weight: 400; color: var(--copper); }
+.howto > div { border-top-color: var(--copper); }
+.tab { border-radius: 999px; padding: 6px 14px 6px 12px; }
+.tab.on { box-shadow: inset 0 0 0 1px var(--tc); }
+.seg { border-radius: 999px; }
+.seg button.on { background: var(--lime); color: var(--on-lime); }
+.clock { border-radius: 999px; font-family: var(--f-mono); }
+.scrim { background: rgba(0,0,0,.6); }
+.sheet { background: var(--paper); border: 1px solid var(--rule); }
+.hero-map .hub-t { font-family: var(--f-display); text-transform: none; font-weight: 600; letter-spacing: -.01em; }
+.hero-map .tile-l { font-family: var(--f-mono); font-weight: 400; letter-spacing: .06em; stroke: var(--paper); }
+.skill b { font-family: var(--f-display); text-transform: none; font-size: 26px; font-weight: 500; letter-spacing: -.02em; }
+.disclaim { border-left-color: var(--copper); }
+.toast { background: var(--lime); color: var(--on-lime); border-radius: 999px; padding: 10px 18px; font-weight: 600; }
+.foot { border-top: 1px solid var(--rule); padding-top: 16px; }
+.unofficial { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); border: 1px solid var(--rule); border-radius: 999px; padding: 3px 10px; white-space: nowrap; }
+@media (max-width: 560px) { .unofficial { display: none; } }
+.brand { white-space: nowrap; }
+.brand svg { color: var(--copper); }
+@media (max-width: 420px) { .brand { letter-spacing: .18em; font-size: 14px; } .top-in { gap: 6px; } .top .iconbtn { padding: 0 11px; } }
+
+/* hero: black slabs with lime under-glow, Make / Move / Use grouping */
+h1, h2 { font-weight: 300; }
+.hero-map .rim { opacity: .55; transition: opacity .25s, stroke-width .25s; }
+.hero-map .hnode:hover .rim, .hero-map .hnode:focus-visible .rim { opacity: .75; }
+.hero-map .hnode.on .rim { opacity: 1; stroke-width: 3.4; }
+.hero-map .hnode.on { filter: none; }
+.hero-map .hnode .tile-top { stroke: var(--h-tile-edge); }
+.hero-map .hnode.on .tile-top { stroke: var(--h-rim); stroke-width: 1.4; }
+.hero-map .spoke { stroke: var(--h-spoke); }
+.hero-map .spoke-on { opacity: .9; filter: url(#hglow); }
+.hero-map .hub-rim { opacity: .85; }
+.hero-map.picked .hnode.dim { opacity: .3; }
+.hero-card { border-left: 0; padding-left: 6px; }
+.mmu-on { display: inline-flex; align-items: center; gap: 8px; color: var(--copper); }
+.mmu-on i { width: 9px; height: 9px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 10px var(--lime); }
+.mmu { display: grid; gap: 8px; }
+.mmu > div { display: grid; gap: 1px; }
+.mmu .eyebrow { color: var(--ink); }
+.hero-key i { background: var(--copper); height: 3px; vertical-align: 3px; border-radius: 2px; }
+.hero-key i.dash { background: none; }
+/* lime circular expanders, like the site's team cards */
+details.pq summary::after { content: "+"; width: 30px; height: 30px; border-radius: 50%; background: var(--lime); color: var(--on-lime); display: inline-flex; align-items: center; justify-content: center; font: 400 20px/1 var(--f-body); flex: none; }
+details.pq[open] summary::after { content: "\2212"; }
+details.pq summary { align-items: center; font-weight: 600; }
+.info { border-color: var(--copper); color: var(--copper); font-style: normal; }
+
+/* shooting-star flow on lines */
+.map .star { fill: none; stroke: #ffffff; stroke-linecap: round; pointer-events: none; animation-name: star; animation-timing-function: linear; animation-iteration-count: infinite; }
+.map .star.tail { stroke-width: 1; opacity: .38; }
+.map .star.head { stroke-width: 1.6; opacity: .95; }
+@keyframes star { from { stroke-dashoffset: var(--o0); } to { stroke-dashoffset: var(--o1); } }
+:root[data-theme="light"] .map .star { stroke: #000; }
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) .map .star { stroke: #000; } }
+/* dynamic line rating: hairline of change colour that swells 10% of the line width per side */
+.map .dlr-ring, .map .pg-glow-dlr { pointer-events: none; }
+.map .dlr-ring { opacity: .95; }
+@media (prefers-reduced-motion: no-preference) {
+  .map .dlr-ring { animation: dlrSwell 2.8s ease-in-out infinite; }
+  .map .pg-glow.pg-glow-dlr { animation: pgPulse 1.8s ease-in-out infinite, dlrSwell 2.8s ease-in-out infinite; }
+}
+@keyframes dlrSwell { 0%, 100% { stroke-width: var(--w0); } 50% { stroke-width: var(--w1); } }
+
+.hero-map .hstar { fill: none; stroke: var(--ink); stroke-linecap: round; pointer-events: none; animation: star linear infinite; }
+.hero-map .hstar.tail { stroke-width: 1; opacity: .35; } .hero-map .hstar.head { stroke-width: 1.6; opacity: .9; }
+.hero-map.picked .hstar { display: none; }
+
+/* edge-glow cards: tinted panel, coloured rim, brightest along the bottom edge */
+.glow { position: relative; border: 1px solid color-mix(in srgb, var(--gc) 75%, transparent) !important;
+  background: linear-gradient(165deg, var(--gbg) 0%, color-mix(in srgb, var(--gbg) 55%, var(--bg)) 100%) !important;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--gc2) 18%, transparent), 0 10px 30px -14px color-mix(in srgb, var(--gc2) 70%, transparent), inset 0 -2px 0 var(--gc2);
+  transition: transform .25s ease, box-shadow .25s ease; }
+.glow:hover { transform: translateY(-3px); box-shadow: 0 0 0 1px color-mix(in srgb, var(--gc2) 35%, transparent), 0 16px 38px -12px color-mix(in srgb, var(--gc2) 85%, transparent), inset 0 -2px 0 var(--gc2); }
+.glow .k, .glow .n { color: var(--gc) !important; opacity: 1 !important; font-weight: 700; letter-spacing: .14em; }
+.glow h3 { color: var(--ink); }
+.tile.lab.glow { color: var(--ink); }
+.tile.lab.glow .muted { color: var(--ink-2); }
+.tile.lab.glow .stars { color: var(--lime-ink); }
+.box.brief.glow { box-shadow: 0 10px 30px -18px color-mix(in srgb, var(--gc) 70%, transparent), inset 0 -2px 0 var(--gc); border-left-width: 1px !important; }
+.box.brief.glow h4 span:first-child { color: var(--gc); }
+.deck::before { box-shadow: 0 0 12px var(--dc); }
+.section-h h2 { color: var(--ink-2); font-weight: 300; }
+.tab.on { box-shadow: inset 0 0 0 1px var(--tc), 0 0 16px -4px var(--tc); }
+@media (prefers-reduced-motion: reduce) { .glow, .glow:hover { transition: none; transform: none; } }
+/* light theme: vivid yellow as a highlighter behind the key word (lime text would be unreadable on white) */
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) h1 span { color: var(--on-lime); background: var(--lime); padding: 0 .12em; border-radius: .12em; box-decoration-break: clone; -webkit-box-decoration-break: clone; } }
+:root[data-theme="light"] h1 span { color: var(--on-lime); background: var(--lime); padding: 0 .12em; border-radius: .12em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+
+.lvl-group { display: grid; gap: 10px; margin-bottom: 18px; }
+.lvl-group > .eyebrow { font-weight: 700; letter-spacing: .14em; }
+.seg .seglab { font-family: var(--f-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); padding: 0 6px 0 12px; display: inline-flex; align-items: center; }
+
+.mapwrap, .hero-svg { position: relative; }
+canvas.flowc { position: absolute; left: 0; top: 0; pointer-events: none; }
+.box.cluster { border-color: color-mix(in srgb, var(--lime) 55%, var(--rule)); }
+</style></head>
+<body><header class="top"><div class="top-in">
+<button class="brand" data-go="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 2 5 22M12 2l7 20M7.5 15h9M9 10h6M4 6h16"/></svg>Grid Lab</button><span class="unofficial">Unofficial study tool</span><span class="sp"></span>
+<button class="iconbtn" data-go="learn">Study</button><button class="iconbtn" data-go="quiz">Quiz</button><button class="iconbtn" data-go="lab">Lab</button>
+</div></header>
+<main id="app"></main>
+<script>// ===== Grid Lab engine: tiny DC power flow + N-1 + git-style model versioning =====
+const ENGINE = (() => {
+  // Map coordinates are in a 400x300 viewBox
+  const BUSES = [
+    { id: 1, name: 'North Hydro', short: 'HYD', x: 50,  y: 48,  lab: [-10, 28, 'start', 1],  load: 0,   gens: [{ type: 'hydro', mw: 380 }] },
+    { id: 2, name: 'Ridge',       short: 'RDG', x: 200, y: 42,  lab: [14, -6, 'start', -1], load: 30,  gens: [] },
+    { id: 3, name: 'Desert Flats',short: 'DSF', x: 352, y: 58,  lab: [10, 28, 'end', 1],  load: 0,   gens: [] },
+    { id: 4, name: 'Central',     short: 'CEN', x: 112, y: 160, lab: [-14, 4, 'end', 1], load: 60,  gens: [] },
+    { id: 5, name: 'Metro',       short: 'MET', x: 252, y: 160, lab: [16, 4, 'start', 1], load: 430, gens: [] },
+    { id: 6, name: 'Port',        short: 'PRT', x: 50,  y: 278, lab: [-10, 26, 'start', 1], load: 20,  gens: [{ type: 'gas', mw: 400 }] },
+    { id: 7, name: 'Valley',      short: 'VAL', x: 196, y: 288, lab: [0, 26, "middle", 1], load: 140, gens: [] },
+    { id: 8, name: 'Tech Park',   short: 'TEK', x: 352, y: 270, lab: [10, 28, 'end', 1], load: 40,  gens: [] },
+  ];
+  // x = reactance (relative); rating = MW (normal). length km.
+  const LINES = [
+    { id: 'L1',  a: 1, b: 2, x: 0.10, rating: 350, km: 75 },
+    { id: 'L2',  a: 1, b: 4, x: 0.10, rating: 350, km: 60 },
+    { id: 'L3',  a: 2, b: 3, x: 0.10, rating: 150, km: 75 },
+    { id: 'L4',  a: 2, b: 5, x: 0.09, rating: 320, km: 60 },
+    { id: 'L5',  a: 4, b: 5, x: 0.08, rating: 360, km: 60 },
+    { id: 'L6',  a: 4, b: 6, x: 0.10, rating: 300, km: 65 },
+    { id: 'L7',  a: 6, b: 7, x: 0.10, rating: 310, km: 70 },
+    { id: 'L8',  a: 5, b: 7, x: 0.10, rating: 200, km: 60 },
+    { id: 'L9',  a: 5, b: 8, x: 0.08, rating: 140, km: 65 },
+    { id: 'L10', a: 7, b: 8, x: 0.12, rating: 120, km: 75 },
+  ];
+  // Candidate new corridors (dashed on map)
+  const CORRIDORS = [
+    { id: 'C1', a: 3, b: 5, x: 0.10, rating: 300, km: 70,  cost: 85 },
+    { id: 'C2', a: 3, b: 8, x: 0.11, rating: 300, km: 90,  cost: 95 },
+    { id: 'C3', a: 4, b: 7, x: 0.10, rating: 250, km: 65,  cost: 70 },
+    { id: 'C4', a: 2, b: 4, x: 0.09, rating: 250, km: 60,  cost: 70 },
+  ];
+  const SCEN = {
+    peak:  { name: 'Summer peak · 5 pm', short: 'peak', load: 1.0, flatLoad: 1.0, solar: 0.8, wind: 0.25, batt: +1, dlr: 1.05, hydroMax: 1.0 },
+    night: { name: 'Windy spring night · 3 am', short: 'night', load: 0.5, flatLoad: 0.95, solar: 0.0, wind: 0.95, batt: -1, dlr: 1.15, hydroMax: 0.6 },
+  };
+  const LTE = 1.15; // long-term emergency rating multiplier during contingencies
+  const CO2 = { gas: 0.4 }; // t/MWh
+
+  const clone = (o) => JSON.parse(JSON.stringify(o));
+  function baseModel() {
+    const m = { buses: {}, lines: {} };
+    BUSES.forEach((b) => (m.buses[b.id] = { load: b.load, flat: 0, gens: clone(b.gens), batt: 0, cap: {} }));
+    LINES.forEach((l) => (m.lines[l.id] = { ...l, dlr: false, isNew: false, upgraded: 0 }));
+    return m;
+  }
+  // ---- operations (commits are lists of ops) ----
+  function lineLabel(id) {
+    const l = LINES.find((x) => x.id === id) || CORRIDORS.find((x) => x.id === id);
+    const A = BUSES.find((b) => b.id === l.a).name, B = BUSES.find((b) => b.id === l.b).name;
+    return `${A}–${B}`;
+  }
+  function opKey(op) {
+    if (op.op === 'upgrade' || op.op === 'dlr' || op.op === 'rerate' || op.op === 'derate') return 'line:' + op.line;
+    if (op.op === 'addLine') return 'line:' + op.line;
+    return null; // additive ops do not textually conflict
+  }
+  function opText(op) {
+    const bn = (id) => BUSES.find((b) => b.id === id).name;
+    switch (op.op) {
+      case 'addGen': return `+ ${op.mw} MW ${op.type} at ${bn(op.bus)}`;
+      case 'addFlatLoad': return `+ ${op.mw} MW data-center load at ${bn(op.bus)}`;
+      case 'retire': return `− retire ${op.mw} MW ${op.type} at ${bn(op.bus)}`;
+      case 'upgrade': return `~ rebuild ${lineLabel(op.line)} → ${op.to} MW`;
+      case 'rerate': return `~ re-rate ${lineLabel(op.line)} → ${op.to} MW`;
+      case 'derate': return `− derate ${lineLabel(op.line)} → ${op.to} MW`;
+      case 'dlr': return `~ dynamic line rating on ${lineLabel(op.line)}`;
+      case 'addLine': return `+ new line ${lineLabel(op.line)} (${CORRIDORS.find(c=>c.id===op.line).rating} MW)`;
+      case 'addBatt': return `+ ${op.mw} MW battery at ${bn(op.bus)}`;
+      case 'cap': return `~ export cap ${op.mw} MW on ${op.type} at ${bn(op.bus)}`;
+    }
+    return JSON.stringify(op);
+  }
+  function apply(m, op) {
+    switch (op.op) {
+      case 'addGen': m.buses[op.bus].gens.push({ type: op.type, mw: op.mw, owner: op.owner }); break;
+      case 'addFlatLoad': m.buses[op.bus].flat += op.mw; break;
+      case 'retire': {
+        const g = m.buses[op.bus].gens.find((g) => g.type === op.type);
+        if (g) g.mw = Math.max(0, g.mw - op.mw);
+        break;
+      }
+      case 'upgrade': case 'rerate': if (m.lines[op.line]) { m.lines[op.line].rating = op.to; m.lines[op.line].upgraded = 1; } break;
+      case 'derate': if (m.lines[op.line]) m.lines[op.line].rating = op.to; break;
+      case 'dlr': if (m.lines[op.line]) m.lines[op.line].dlr = true; break;
+      case 'addLine': { const c = CORRIDORS.find((c) => c.id === op.line); m.lines[c.id] = { ...c, dlr: false, isNew: true, upgraded: 0 }; break; }
+      case 'addBatt': m.buses[op.bus].batt += op.mw; break;
+      case 'cap': m.buses[op.bus].cap[op.type] = op.mw; break;
+    }
+    return m;
+  }
+  function build(opsList) { const m = baseModel(); opsList.forEach((op) => apply(m, op)); return m; }
+  function opCost(op) {
+    switch (op.op) {
+      case 'upgrade': { const l = LINES.find((x) => x.id === op.line) || CORRIDORS.find((x) => x.id === op.line); return Math.round(l.km * 0.45); }
+      case 'dlr': return 4;
+      case 'addLine': return CORRIDORS.find((c) => c.id === op.line).cost;
+      case 'addBatt': return Math.round(op.mw * 0.55);
+      case 'rerate': return 1;
+      default: return 0;
+    }
+  }
+
+  // ---- solver ----
+  function components(nodes, edges) {
+    const adj = {}; nodes.forEach((n) => (adj[n] = []));
+    edges.forEach((e) => { adj[e.a].push(e.b); adj[e.b].push(e.a); });
+    const seen = {}, comps = [];
+    nodes.forEach((n) => {
+      if (seen[n]) return; const c = []; const st = [n]; seen[n] = 1;
+      while (st.length) { const u = st.pop(); c.push(u); adj[u].forEach((v) => { if (!seen[v]) { seen[v] = 1; st.push(v); } }); }
+      comps.push(c);
+    });
+    return comps;
+  }
+  function solveLinear(A, b) {
+    const n = b.length; const M = A.map((r, i) => [...r, b[i]]);
+    for (let i = 0; i < n; i++) {
+      let p = i; for (let r = i + 1; r < n; r++) if (Math.abs(M[r][i]) > Math.abs(M[p][i])) p = r;
+      [M[i], M[p]] = [M[p], M[i]];
+      if (Math.abs(M[i][i]) < 1e-12) return null;
+      for (let r = 0; r < n; r++) if (r !== i) { const f = M[r][i] / M[i][i]; for (let c = i; c <= n; c++) M[r][c] -= f * M[i][c]; }
+    }
+    return M.map((r, i) => r[n] / r[i]);
+  }
+  // Dispatch + DC flow for a model under a scenario, with an optional outaged line.
+  let ACTIVE = SCEN;
+  const scen = (k) => ACTIVE[k] || SCEN[k];
+  function setScenarios(set) { ACTIVE = set || SCEN; }
+  // Playground: sun 0-3 sets time of day (and with it demand); wind 0-3 sets wind speed
+  function customScen(sun, wind) {
+    return { name: `Sun ${sun} · Wind ${wind}`, short: `sun ${sun}, wind ${wind}`,
+      load: [0.5, 0.75, 0.9, 1.0][sun], flatLoad: sun === 0 ? 0.95 : 1.0,
+      solar: [0, 0.3, 0.55, 0.8][sun], wind: [0, 0.3, 0.6, 0.95][wind],
+      batt: sun >= 2 ? +1 : -1, dlr: 1 + 0.05 * wind + (sun <= 1 ? 0.02 : 0), hydroMax: sun === 0 ? 0.6 : 1.0 };
+  }
+  function solve(m, scenKey, outLine) {
+    const S = scen(scenKey);
+    const nodes = Object.keys(m.buses).map(Number);
+    const edges = Object.values(m.lines).filter((l) => l.id !== outLine);
+    const comps = components(nodes, edges);
+    const main = comps.find((c) => c.includes(1)) || comps[0];
+    const res = { flows: {}, lostLoad: 0, unserved: 0, curtail: 0, gas: 0, clean: 0, inj: {}, islanded: [] };
+    comps.forEach((c) => { if (c !== main) c.forEach((n) => { const b = m.buses[n]; const ld = b.load * S.load + b.flat * S.flatLoad; if (ld > 0.1) res.lostLoad += ld; res.islanded.push(n); }); });
+    // dispatch in main component
+    let load = 0; const inj = {}; nodes.forEach((n) => (inj[n] = 0));
+    const ren = []; const disp = []; const battBus = [];
+    main.forEach((n) => {
+      const b = m.buses[n];
+      const ld = b.load * S.load + b.flat * S.flatLoad; inj[n] -= ld; load += ld;
+      // battery: + discharge at peak, - charge at night
+      if (b.batt) battBus.push({ n, mw: b.batt });
+      b.gens.forEach((g) => {
+        if (g.type === 'solar' || g.type === 'wind') {
+          let avail = g.mw * (g.type === 'solar' ? S.solar : S.wind);
+          if (b.cap[g.type] != null) { const cap = b.cap[g.type]; if (avail > cap) { res.curtail += avail - cap; avail = cap; } }
+          ren.push({ n, avail });
+        } else disp.push({ n, type: g.type, max: g.mw * (g.type === 'hydro' ? S.hydroMax : 1) });
+      });
+    });
+    let renTot = ren.reduce((s, r) => s + r.avail, 0);
+    // batteries: discharge at peak; at night charge only from spare supply
+    const dispMax = disp.reduce((s, d) => s + d.max, 0);
+    let spare = Math.max(0, renTot + dispMax - load);
+    battBus.forEach((bb) => {
+      if (S.batt > 0) { inj[bb.n] += bb.mw; load -= bb.mw; res.battMW = (res.battMW || 0) + bb.mw; }
+      else { const c = Math.min(bb.mw, spare); spare -= c; inj[bb.n] -= c; load += c; res.battMW = (res.battMW || 0) - c; }
+    });
+    let need = load;
+    let renUse = Math.min(renTot, Math.max(0, need));
+    if (renTot > renUse) res.curtail += renTot - renUse;
+    const rf = renTot > 0 ? renUse / renTot : 0;
+    ren.forEach((r) => (inj[r.n] += r.avail * rf));
+    res.clean = renUse;
+    need -= renUse;
+    ['hydro', 'gas'].forEach((t) => disp.filter((d) => d.type === t).forEach((d) => { const u = Math.max(0, Math.min(d.max, need)); inj[d.n] += u; need -= u; if (t === 'gas') res.gas += u; if (t === 'hydro') res.clean += u; }));
+    if (need > 0.5) { res.unserved = need; // shed at load buses proportionally (keep balance)
+      const lb = main.filter((n) => inj[n] < 0); const tot = lb.reduce((s, n) => s - inj[n], 0);
+      lb.forEach((n) => (inj[n] += need * (-inj[n] / tot)));
+    }
+    res.inj = inj;
+    // DC flow on main component
+    const idx = main.filter((n) => n !== main[0]);
+    const slack = main.includes(1) ? 1 : main[0];
+    const ord = main.filter((n) => n !== slack);
+    const pos = {}; ord.forEach((n, i) => (pos[n] = i));
+    const B = ord.map(() => ord.map(() => 0));
+    edges.forEach((l) => {
+      if (!main.includes(l.a)) return;
+      const y = 1 / l.x;
+      if (l.a !== slack) B[pos[l.a]][pos[l.a]] += y;
+      if (l.b !== slack) B[pos[l.b]][pos[l.b]] += y;
+      if (l.a !== slack && l.b !== slack) { B[pos[l.a]][pos[l.b]] -= y; B[pos[l.b]][pos[l.a]] -= y; }
+    });
+    const th = solveLinear(B, ord.map((n) => inj[n])) || ord.map(() => 0);
+    const theta = { [slack]: 0 }; ord.forEach((n, i) => (theta[n] = th[i]));
+    edges.forEach((l) => {
+      if (!main.includes(l.a)) { res.flows[l.id] = 0; return; }
+      res.flows[l.id] = (theta[l.a] - theta[l.b]) / l.x;
+    });
+    return res;
+  }
+  function limit(l, scenKey, contingency) {
+    let r = l.rating * (l.dlr ? scen(scenKey).dlr : 1);
+    return contingency ? r * LTE : r;
+  }
+  // Full study: both scenarios, base case + every single-line outage (N-1)
+  function study(m) {
+    const out = { violations: [], loading: {}, worst: {}, metrics: {} };
+    Object.keys(ACTIVE).forEach((sk) => {
+      const base = solve(m, sk, null);
+      out.loading[sk] = {}; out.worst[sk] = {};
+      Object.values(m.lines).forEach((l) => {
+        const pct = Math.abs(base.flows[l.id]) / limit(l, sk, false);
+        out.loading[sk][l.id] = { pct, mw: base.flows[l.id] };
+        out.worst[sk][l.id] = { pct: Math.abs(base.flows[l.id]) / limit(l, sk, true) * LTE, by: null };
+        if (pct > 1.0001) out.violations.push({ kind: 'overload', scen: sk, line: l.id, pct, cont: null });
+      });
+      if (base.unserved > 0.5) out.violations.push({ kind: 'adequacy', scen: sk, mw: base.unserved });
+      out.metrics[sk] = { gas: base.gas, clean: base.clean, curtail: base.curtail, co2: base.gas * CO2.gas, unserved: base.unserved };
+      Object.values(m.lines).forEach((o) => {
+        const r = solve(m, sk, o.id);
+        if (r.lostLoad > 0.5) out.violations.push({ kind: 'island', scen: sk, cont: o.id, mw: r.lostLoad });
+        if (r.unserved > 0.5 && base.unserved <= 0.5) out.violations.push({ kind: 'adequacyN1', scen: sk, cont: o.id, mw: r.unserved });
+        Object.values(m.lines).forEach((l) => {
+          if (l.id === o.id) return;
+          const lim = limit(l, sk, true);
+          const pct = Math.abs(r.flows[l.id] || 0) / lim;
+          const disp = pct * LTE; // show relative to normal rating for map
+          if (disp > out.worst[sk][l.id].pct) out.worst[sk][l.id] = { pct: disp, by: o.id };
+          if (pct > 1.0001) out.violations.push({ kind: 'overload', scen: sk, line: l.id, pct, cont: o.id });
+        });
+      });
+    });
+    // collapse duplicate overloads: keep worst per line/scenario
+    const keep = {}; const rest = [];
+    out.violations.forEach((v) => {
+      if (v.kind !== 'overload') { rest.push(v); return; }
+      const k = v.scen + v.line + (v.cont ? 'c' : 'b');
+      if (!keep[k] || keep[k].pct < v.pct) keep[k] = v;
+    });
+    out.violations = [...rest.filter((v, i, a) => a.findIndex((w) => w.kind === v.kind && w.scen === v.scen && w.cont === v.cont) === i), ...Object.values(keep)];
+    return out;
+  }
+  function vText(v) {
+    const sc = scen(v.scen).short;
+    if (v.kind === 'overload') return v.cont
+      ? `${lineLabel(v.line)} hits ${Math.round(v.pct * 100)}% of its emergency rating if ${lineLabel(v.cont)} trips (${sc})`
+      : `${lineLabel(v.line)} overloaded at ${Math.round(v.pct * 100)}% (${sc}, all lines in)`;
+    if (v.kind === 'adequacy') return `Not enough supply: ${Math.round(v.mw)} MW short (${sc})`;
+    if (v.kind === 'adequacyN1') return `${Math.round(v.mw)} MW short if ${lineLabel(v.cont)} trips (${sc})`;
+    if (v.kind === 'island') return `Losing ${lineLabel(v.cont)} strands ${Math.round(v.mw)} MW of customers (${sc})`;
+    return '';
+  }
+  return { BUSES, LINES, CORRIDORS, SCEN, LTE, setScenarios, customScen, scen, baseModel, build, apply, study, solve, opKey, opText, opCost, lineLabel, vText, clone };
+})();
+if (typeof module !== 'undefined') module.exports = ENGINE;
+
+// ===== Study decks =====
+// Each card: t = term, d = definition, n = optional "why it matters" note, s = optional source tag
+const DECKS = [
+  {
+    id: 'tap101', name: 'Tapestry 101', blurb: 'Who they are, how they talk about the work', color: 'var(--lime-ink)',
+    cards: [
+      { t: 'Tapestry', d: 'Alphabet’s moonshot for the electric grid. It started at X, the Moonshot Factory, and now describes itself as a group within Google building "the AI-powered electric grid."', n: 'Tagline on its site: "The grid made visible."' },
+      { t: 'Mission', d: 'Make the grid visible to everyone who plans, builds, operates or manages it, so everyone can get reliable, affordable, clean energy.' },
+      { t: 'Google Maps for electrons', d: 'Tapestry’s favorite analogy: one shared, layered map of the grid that everyone can navigate, in place of dozens of siloed databases.' },
+      { t: 'Unified grid model', d: 'The core bet. Combine grid data that is siloed across dozens of organizations and tools into one high-fidelity model that planners, operators and developers can all work from.', n: 'Modelweaver is the version-control layer for this model.' },
+      { t: 'Three model layers', d: 'Page Crahan described the model in layers: location (where assets are), time (when each fact was observed and whether it is still current) and physics (power flow and related math).' },
+      { t: 'Fit for purpose', d: 'Tapestry’s rule of thumb: build only as much model detail as the decision at hand needs, rather than a millisecond model of every node.' },
+      { t: 'Human in the loop', d: 'Tools surface insights and draft answers. Grid engineers make the final call. Crahan: people deciding about the grid will "not compromise reliability, period."' },
+      { t: 'Page Crahan', d: 'General Manager of Tapestry. Previously ran go-to-market and commercial work at several start-ups, and co-founded and co-led Clarus Power.' },
+      { t: 'Andy Ott', d: 'Tapestry’s Director of Technical Operations. Former President and CEO of PJM Interconnection.', n: 'He is a big reason PJM trusts Tapestry with its interconnection process.' },
+      { t: 'Cat Wong', d: 'Head of Power Systems and Technical Operations. She co-wrote the HyperQ "field notes" on PJM’s Cycle 1.' },
+      { t: 'Leo Casey', d: 'Tapestry’s Chief Scientist. He led the grid-forming inverter work with CSIRO.' },
+      { t: 'Product lines', d: 'GridAware (map and inspect assets), Grid Planning Tool (long-range simulation for transmission and distribution) and Grid Operations Tool (real-time supply and demand balancing). HyperQ (interconnection review) is newer.' },
+      { t: '"Tapestry, not a thread"', d: 'One of Tapestry’s stated values: work across many disciplines, such as software, power systems, ML and design, and weave them together.' },
+      { t: 'Partner footprint', d: 'Partners in the U.S. (PJM, AES), U.K. (NESO), Chile (CEN), New Zealand (Vector and four more utilities), Australia (CSIRO) and Brazil (City of Rio). X also lists Cassava Technologies in South Africa.' },
+      { t: 'Why it matters (their stats)', d: 'Tapestry’s pitch numbers: outages have doubled globally, new energy sources take about 6 years to connect, and the grid is about 25% of global emissions.' },
+    ],
+  },
+  {
+    id: 'projects', name: 'Projects & partners', blurb: 'What they’ve actually shipped, with numbers', color: 'var(--plan)',
+    cards: [
+      { t: 'HyperQ', d: 'An agentic AI tool built on Google Gemini. It reads interconnection applications, some up to 6,000 pages, checks them against PJM’s tariff rules and drafts readiness reports with page-level citations. PJM engineers make the final determination.' },
+      { t: 'HyperQ in PJM Cycle 1', d: '811 generation applications (about 220 GW, more than PJM’s ~180 GW installed fleet). It ran 9,312 parallel reviews. The median was 6 min 15 s per application, 99% finished in under an hour, and that is 20x+ faster than a 4-hour manual baseline.' },
+      { t: 'HyperQ’s four site-control checks', d: 'Term (is the lease long enough), Conveyance (is the chain of title unbroken), Exclusivity (no conflicting landowner rights) and Minimum acreage (is the site big enough).' },
+      { t: 'How HyperQ was built', d: 'Ten months with PJM turning tariff rules into deterministic instructions, tested on 234 historical queue submissions. It runs in an isolated U.S. perimeter (VPC Service Controls) for PII and CEII custody.', n: 'Your security background maps directly to this.' },
+      { t: 'HyperQ roadmap', d: 'Audit single-line diagrams and equipment parameters, migrate to Google’s Agent Development Kit, build the "Unified Model Manager," and let developers pre-validate before they submit.' },
+      { t: 'PJM partnership', d: 'Announced April 2025 as a multi-year effort. It unifies dozens of PJM databases and tools into one model of PJM’s network and adds a secure platform where planners and developers work together.', n: 'PJM is the largest U.S. grid operator: 13 states plus DC, about 65–67 million people.' },
+      { t: 'CEN (Chile)', d: 'Chile’s national grid operator, and the first national system operator to use the Grid Planning Tool. Chile’s grid runs about 3,100 km, long and narrow, with load in the middle and solar and wind at the ends.' },
+      { t: 'Grid Planning Tool results at CEN', d: '86% faster: 10 hydro-thermal (PLP) simulations went from 120 hours to 16. It runs 30 simulations at once instead of one per server, and a five-scenario analysis dropped from a week to a day.' },
+      { t: 'CEN planning workflow', d: 'Build future scenarios, then run them in parallel (for example, low wind during a heat wave). Find reliability issues, test mitigations (new lines, batteries, GETs) and compare on cost, reliability and carbon.', n: 'This is exactly the loop in the Grid Lab sim.' },
+      { t: 'GraphCast for Chile', d: 'Tapestry and Google DeepMind fine-tuned GraphCast, DeepMind’s global weather model, for Chilean wind farms. It was up to 15% more accurate than ECMWF’s HRES model for medium-range wind.' },
+      { t: 'GridAware', d: 'Merges street-view, satellite, drone, helicopter and field-crew imagery of poles and transformers into one view, then uses computer vision to flag defects such as sagging lines. Partners supply the imagery; Tapestry doesn’t fly drones.' },
+      { t: 'Vector (New Zealand)', d: 'Auckland’s distribution utility and the first scaled distribution deployment. Results: 221% more network visibility, and pole inspections down from 30–45 min to 5–7 min. A Kawau Island survey dropped from about 320 person-hours to about 4 hours of helicopter imagery.' },
+      { t: 'GPT-D', d: 'Grid Planning Tool for Distribution. Vector was the first utility to integrate it. It runs parallel long-range scenarios with automated N-1 contingency analysis.' },
+      { t: 'New Zealand consortium', d: 'In November 2025, Northpower, Orion, Unison and WEL Networks joined Vector and shared network data with Tapestry. Together they serve about a quarter of New Zealand.' },
+      { t: 'NESO Grand Optimiser (U.K.)', d: 'Work with Great Britain’s system operator to design a full balancing optimization framework (energy, reserve and ancillary-service solvers working together). It is part of NESO’s Volta AI program.' },
+      { t: 'CSIRO inverter (Australia)', d: 'A laptop-sized grid-forming inverter prototype that uses silicon carbide. It costs about 50% less to produce, with no loss in efficiency, and showed grid models could be transferred to physical inverters.' },
+      { t: 'AES', d: 'Working with Tapestry since 2021, starting with virtualizing Midwest distribution grids. Together they published a 20-year framework for a semi-autonomous, agent-driven grid.' },
+      { t: 'Rio de Janeiro', d: 'Tapestry works with the city, Light SA, Axia Energia and Elea Data Centers on an "AI City" in the Olympic Park area, which needs power for more than two dozen new data centers.' },
+    ],
+  },
+  {
+    id: 'weaver', name: 'Modelweaver: Git for the grid', blurb: 'The vocabulary of your actual role', color: 'var(--manage)',
+    cards: [
+      { t: 'Modelweaver', d: 'Tapestry’s collaborative grid-model versioning product, as the recruiter described it ("like Git for grid changes"). Public postings call the team Grid Model Management and describe "Git for the Grid": versioning, comparing, branching, merging and collaborating on large-scale models.', n: 'The name itself isn’t in any public material, so let them explain it.' },
+      { t: 'Single source of truth', d: 'The goal of grid model management: consolidate large, fragmented grid models into one consistent, reliable source of truth that every product and partner trusts.' },
+      { t: 'Base case', d: 'The reference network model that all proposed changes are layered onto. In Git terms, it’s main.' },
+      { t: 'Project (model change set)', d: 'A bundle of incremental model changes for one real-world project, such as "add 300 MW solar plus a new 345 kV line," each with an in-service date. It’s the grid version of a commit or pull request.' },
+      { t: 'In-service date', d: 'When a change becomes physically real. The model has to answer "what does the grid look like on June 1, 2029?", so every change is time-bound.' },
+      { t: 'Case build', d: 'Assembling a simulation-ready study case for a chosen date from the base case, active projects, load and generation profiles and rating sets. Doing this by hand takes planners days.' },
+      { t: 'Study case', d: 'A complete, ready-to-solve model for a specific date and condition, such as summer peak 2030. It’s what power-flow and contingency tools actually run on.' },
+      { t: 'Branch', d: 'An isolated copy of the model where one company or planner tries changes without disturbing anyone else’s work.' },
+      { t: 'Diff', d: 'The element-level differences between two model versions: added line, changed rating, retired unit. Reviewers approve diffs rather than whole models.' },
+      { t: 'Merge conflict', d: 'Two branches changed the same grid element in different ways. For example, two companies both propose rebuilding the same line to different ratings, and someone has to decide.' },
+      { t: 'Interaction conflict', d: 'Changes that touch different elements but break the grid together. Each one passes its studies alone, and the combination overloads a line. Git can’t catch this. Only re-running the physics on the merged model can.', n: 'This is a teaching label in the Grid Lab, not an official industry term.' },
+      { t: 'Sync / rebase', d: 'Replay your branch on top of the latest main and re-run the studies, because someone else’s merge may have changed the results.' },
+      { t: 'Validation on ingest', d: 'Automated quality checks as data comes in: completeness, impossible values (such as zero impedance), bad topology and edits outside a submitter’s permitted area.' },
+      { t: 'Approval workflow', d: 'Submitted changes go through review levels before other users can see them. It’s the grid version of code review.' },
+      { t: 'Audit trail', d: 'A log of who changed what, when, and who approved it. Utilities need it for NERC MOD-032 compliance and regulatory scrutiny.' },
+      { t: 'Profiles', d: 'Scenario data sets layered on a model, such as load and generation by season and hour, device controls and interchange schedules.' },
+      { t: 'Rating sets', d: 'Collections of branch limits (MW/MVA) for different seasons or conditions. Swap the rating set, and the same flows can pass or fail.' },
+      { t: 'Knowledge graph / graph DB', d: 'The grid is naturally a graph: buses are nodes and lines and transformers are edges. The Grid Model Management posting asks for graph-database and semantic-tech experience.' },
+      { t: 'Geospatial layer', d: 'Ties the electrical model to real-world location (GIS) so a pole in a GridAware photo is the same object as a branch in the planning model.' },
+      { t: 'Siemens PSS®MOD', d: '"Model On Demand," the incumbent. It’s a web platform where utilities and ISOs submit time-bound projects onto shared base cases, with validation, approvals, audit trails and case assembly.', n: 'Know the competition: Modelweaver is the modern, AI-ready take on this.' },
+    ],
+  },
+  {
+    id: 'formats', name: 'Grid data & standards', blurb: 'The file formats and rulebooks you’ll hear', color: 'var(--plan-edge)',
+    cards: [
+      { t: 'CIM', d: 'Common Information Model (IEC 61970/61968). The standard semantic model for describing grid equipment and topology. Tapestry’s pipelines convert industry formats into CIM.' },
+      { t: 'CGMES', d: 'Common Grid Model Exchange Standard. ENTSO-E’s CIM-based profile that European operators use to exchange and merge grid models.' },
+      { t: 'UCAIug', d: 'The UCA International Users Group, which hosts the CIM Users Group. Tapestry is a listed member company.' },
+      { t: 'PSS®E', d: 'Siemens’ dominant transmission planning simulator. Its files: RAW (network), SAV (saved case), DYR (dynamics), SEQ (sequence/short-circuit data), IDEV (change scripts) and PRJ (projects in PSS®MOD).' },
+      { t: 'PSLF', d: 'GE Vernova’s positive-sequence load flow software, widely used in the western U.S. (WECC). Another format Tapestry has to ingest.' },
+      { t: 'IDEV / change file', d: 'A script of edits (add bus, change rating, and so on) that a transmission owner sends to update a shared case. It’s literally a patch file for the grid.' },
+      { t: 'Single-line diagram (SLD)', d: 'The simplified schematic of a substation or plant, with one line per three-phase circuit. HyperQ’s next step is auditing SLDs in applications.' },
+      { t: 'Bus-branch vs node-breaker', d: 'Planning models collapse a substation to a few buses (bus-branch). Operations (EMS) models keep every breaker and switch (node-breaker). Reconciling the two is a classic model-management pain.' },
+      { t: 'Topology', d: 'How everything is connected: which lines join which buses, and which breakers are open or closed. Bad topology makes a model unsolvable or silently wrong.' },
+      { t: 'CEII', d: 'Critical Energy/Electric Infrastructure Information. Sensitive grid details protected under U.S. federal rules. Multi-company model sharing needs strict access control.', n: 'Security TPM credibility point.' },
+      { t: 'NERC MOD-032', d: 'The NERC reliability standard that requires transmission owners, generator owners and others to provide modeling data to planners for building interconnection-wide cases.' },
+      { t: 'MMWG', d: 'The Multiregional Modeling Working Group, which assembles Eastern Interconnection power-flow cases from many utilities’ submissions. It’s a giant, slow merge process today.' },
+      { t: 'Model on Demand vs files', d: 'The old way is emailing RAW and IDEV files, with spreadsheets tracking versions. The new way is a database with projects, validation and history. CEN made exactly this move with Tapestry.' },
+    ],
+  },
+  {
+    id: 'power', name: 'Power systems basics', blurb: 'Enough physics to follow the engineers', color: 'var(--operate)',
+    cards: [
+      { t: 'Bus', d: 'A node in the grid model, usually a substation voltage level, where lines, generators and loads connect.' },
+      { t: 'Branch', d: 'An element connecting two buses: a transmission line or a transformer. Each has an impedance and a thermal rating.' },
+      { t: 'MW vs MVAR vs MVA', d: 'MW is real power (does work), MVAR is reactive power (supports voltage) and MVA is the combined apparent power that equipment ratings are written in.' },
+      { t: 'Power flow (load flow)', d: 'Solving how power splits across every line, given generation and load. Electricity follows physics (impedance), not contracts, so a new plant changes flows everywhere.' },
+      { t: 'DC power flow', d: 'A fast linear approximation of power flow that ignores losses and voltage. It’s great for screening thousands of cases. The Grid Lab sim uses it.' },
+      { t: 'N-1 contingency', d: 'The core reliability test: the grid must stay within limits after losing any single element, such as one line or one generator. Planners test every one.' },
+      { t: 'Normal vs emergency rating', d: 'Lines have a normal (continuous) limit and higher short- or long-term emergency limits allowed briefly after a contingency. In the sim, emergency is 115% of normal.' },
+      { t: 'Thermal overload', d: 'Too much current heats a conductor, so it sags, can contact trees and can fail. Most planning violations are thermal overloads.' },
+      { t: 'Short circuit study', d: 'Checks that breakers can interrupt fault currents. New generation raises fault duty nearby.' },
+      { t: 'Transient stability', d: 'Whether generators stay synchronized in the seconds after a disturbance. It needs dynamic models (DYR files).' },
+      { t: 'Economic dispatch', d: 'Choosing which generators run, cheapest first, to meet load within grid limits. Congestion forces more expensive dispatch.' },
+      { t: 'Congestion & curtailment', d: 'When lines can’t carry cheap power to load, cheaper (often renewable) output gets curtailed, meaning thrown away, and costlier plants run instead.' },
+      { t: 'Dynamic line rating (DLR)', d: 'Rating a line by real-time weather rather than a conservative fixed number. Wind cools conductors, so windy hours can add 10–30% capacity. AES and Tapestry use it.' },
+      { t: 'GETs', d: 'Grid-enhancing technologies: DLR, advanced power-flow control and topology optimization. They squeeze more out of existing wires, cheaply and quickly.' },
+      { t: 'Grid-forming vs grid-following', d: 'Most inverters follow the grid’s voltage and frequency. Grid-forming inverters set them, providing stability and even black-start ability. That’s the subject of the CSIRO prototype.' },
+      { t: 'DER / behind the meter', d: 'Distributed energy resources (rooftop solar, home batteries, EVs) on the customer side of the meter. They’re mostly invisible to planners.' },
+      { t: 'Capacity factor', d: 'Actual output divided by nameplate. In the sim, solar delivers 80% at a summer 5 pm peak and 0% at 3 am, and wind is the reverse.' },
+      { t: 'Hydro-thermal optimization', d: 'Long-term scheduling of hydro reservoirs against thermal plants under uncertain rainfall. It’s central to Chile’s planning (PLP model), and drought makes it harder.' },
+    ],
+  },
+  {
+    id: 'planning', name: 'Planning & interconnection', blurb: 'How new power actually gets connected', color: 'var(--warn)',
+    cards: [
+      { t: 'Interconnection queue', d: 'The line of generation and storage projects waiting for permission to connect. The U.S. total is roughly 2,300 GW, mostly solar and batteries, and the typical wait is years.' },
+      { t: 'Cluster study', d: 'Studying a batch of queued projects together rather than one at a time, then assigning shared network upgrades across the cluster.' },
+      { t: 'First-ready, first-served', d: 'The FERC Order 2023 reform that replaced "first-come, first-served." Projects must prove readiness, such as site control and deposits, to advance. That’s the review HyperQ automates.' },
+      { t: 'FERC Order 2023', d: 'The 2023 federal rule that overhauled generator interconnection: cluster studies, readiness requirements, deadlines with penalties for late studies, and more.' },
+      { t: 'Site control', d: 'Proof that a developer has legal rights to the land for its project (leases, deeds, options). HyperQ checked 4,581 site-control documents in Cycle 1.' },
+      { t: 'OATT', d: 'Open Access Transmission Tariff. The rulebook each grid operator files with FERC that governs interconnection and transmission service.' },
+      { t: 'Network upgrades', d: 'Grid reinforcements (rebuilt lines, new substations) needed so a new project doesn’t overload anything. Who pays is the cost allocation fight.' },
+      { t: 'Cost allocation', d: 'Deciding who pays for shared upgrades: the triggering developer, a cluster, or all ratepayers. In the sim, you can co-fund shared lines between companies.' },
+      { t: 'GIA', d: 'Generator Interconnection Agreement, the contract that lets a project connect after studies. PJM had about 50 GW of signed GIAs not yet built in 2025.' },
+      { t: 'ISO / RTO', d: 'Independent System Operator or Regional Transmission Organization. It runs the grid and markets for a region (PJM, CAISO, ERCOT, MISO) but usually owns no wires.' },
+      { t: 'TO / GO', d: 'Transmission Owner and Generator Owner, the companies that own the wires and the plants. Each submits model data and changes for its own equipment.' },
+      { t: 'RTEP', d: 'PJM’s Regional Transmission Expansion Plan, the annual process that identifies needed transmission upgrades using built-out study cases.' },
+      { t: 'Planning vs operations', d: 'Planning looks 1–20+ years ahead using models. Operations runs the grid minute to minute. Tapestry’s tools increasingly connect the two.' },
+      { t: 'Resource adequacy', d: 'Having enough supply to meet peak demand plus a reserve margin. Data-center load growth is stressing it.' },
+      { t: 'Load growth', d: 'The 2020s shift from flat demand to rapid growth, driven by AI data centers, industry and electrification. Data centers draw almost flat load 24/7.' },
+      { t: 'Remedial action / export cap', d: 'Rather than paying for a full upgrade, a project can agree to limit or automatically trip output under certain conditions. It’s cheaper and faster, but energy gets curtailed.' },
+    ],
+  },
+];
+
+// Not quizzed: interview prep prompts
+const PREP = [
+  { q: 'Why Tapestry?', a: 'Personal: regular outages in my Burlingame neighborhood, and I’m planning solar and backup power, so I feel the "visibility gap" as a customer. Professional: it’s the rare software program whose output is physical. Better models mean projects get built sooner and lights stay on. That real-world impact is what I’ve chased my whole career.' },
+  { q: '"You don’t have an energy background."', a: 'My pattern is walking into a domain where everyone knows more than me and becoming useful fast: medical education, museums, security at Asana (where I was the first and for years only Security TPM), general-contracting my own home addition, building a haunted house. I learn by building a model of the system. To prep for this call, I built a grid-change simulator with power flow, N-1 and merge conflicts.' },
+  { q: 'Your GC project as an analogy', a: 'As my own GC I sequenced plumbers, electricians and roofers to inspections and deadlines, with each trade’s work depending on someone else’s. That’s the same shape as interconnection: dependent projects, gated reviews, and a shared physical system where one party’s change breaks another’s plan.' },
+  { q: 'How would you run the Modelweaver program?', a: 'First 30 days: shadow power-systems specialists and partner planners, and map today’s path from submission to case build to study. By 60: agree on milestones along ingest → validate → version → diff/merge → multi-party collaboration, with UAT owned by power-systems experts. By 90: a delivery cadence (sprints, release trains) and success metrics such as hours to build a case, validation errors caught at ingest, merge conflicts resolved, and time from developer change to approved model.' },
+  { q: 'Git ↔ grid cheat sheet', a: 'main = base case · commit/PR = project with an in-service date · CI = power-flow + N-1 studies · code review = approval workflow · merge conflict = two parties editing the same line · interaction conflict = changes that pass alone but fail together · release = a case series (e.g., the 2030 summer peak case) · permissions = CEII and per-company areas.' },
+  { q: 'Security angle', a: 'Multi-party model sharing is a security problem as much as a data problem: CEII, per-company permissions, audit trails for MOD-032, and isolated perimeters like the VPC Service Controls HyperQ runs in. Five years of Security TPM work means I’ll ask the right questions early rather than at launch review.' },
+  { q: 'Scrum and process fit', a: 'The TPM posting asks for stand-ups, retros, sprint planning, backlog management and taking programs from prototype to enterprise scale. I’ve been scrum master for backend teams at Asana and Evernote, ran annual and capacity planning, and helped take Slack and Asana public.' },
+  { q: 'Questions to ask the hiring manager', a: '1) Who is Modelweaver’s first real user: PJM planners, developers, or Tapestry’s own products? 2) Is the unit of change a whole project (like a PSS®E PRJ) or element-level edits? 3) How do you detect conflicts that only show up in the physics? 4) How do the 5–6 TPMs divide the work, by product or by partner? 5) How does Modelweaver relate to the Unified Model Manager and HyperQ? 6) What would make my first six months a clear success?' },
+];
+
+// Simulation levels. co: per-level company overrides (mw = project size, issue: false = clean import)
+const LEVELS = [
+  { id: 1, group: 'One firm', name: 'First connection', sub: 'A 200 MW solar farm, one fix', timer: 0, companies: ['sun'],
+    co: { sun: { mw: 200, budget: 90, issue: false } }, stars: [180, 260, 300],
+    intro: 'Sunfield Renewables wants to connect 200 MW of solar at Desert Flats. The only line out is too small. Find one upgrade that makes every study pass, stay on budget, then merge to main.' },
+  { id: 2, group: 'One firm', name: 'Bigger farm', sub: '300 MW and a data error', timer: 0, companies: ['sun'],
+    co: { sun: { mw: 300, budget: 110 } }, stars: [190, 270, 310],
+    intro: 'Sunfield is connecting 300 MW now, and its model import failed validation. One fix isn’t enough anymore: watch the Worst outage view. Choose between delivering every MW and staying on budget.' },
+  { id: 3, group: 'One firm', name: 'Moving target', sub: '350 MW, a deadline and a retirement', timer: 240, companies: ['sun'],
+    co: { sun: { mw: 350, budget: 125 } }, stars: [220, 310, 360], events: [{ at: 100, kind: 'retire', mw: 100 }],
+    intro: 'Sunfield wants 350 MW connected inside a four-minute filing window. Partway through, the grid operator retires 100 MW at Port and pushes that change to main. Sync, re-test and still merge on time.' },
+  { id: 4, group: 'Two firms', name: 'Neighbors', sub: 'Solar plus a small data center', timer: 0, companies: ['sun', 'metro'],
+    co: { sun: { mw: 200, budget: 90, issue: false }, metro: { mw: 100, budget: 30, issue: false } }, stars: [290, 420, 480],
+    intro: 'Sunfield adds 200 MW of solar while Metro serves a 100 MW data center. Metro’s budget is tiny. Can it pass on its own, or does it depend on what Sunfield merges first?' },
+  { id: 5, group: 'Two firms', name: 'Shared line', sub: 'Solar meets a 200 MW data center', timer: 300, companies: ['sun', 'metro'],
+    co: { sun: { mw: 300, budget: 110 }, metro: { mw: 200, budget: 90 } }, stars: [340, 490, 560],
+    intro: 'Metro must serve a 200 MW data center and Sunfield is connecting 300 MW of solar. Metro can’t pass until someone adds supply. Look for one shared line that helps both, and co-fund it.' },
+  { id: 6, group: 'Two firms', name: 'Derated', sub: 'A line loses capacity mid-cycle', timer: 360, companies: ['sun', 'metro'],
+    co: { sun: { mw: 300, budget: 110 }, metro: { mw: 200, budget: 90 } }, stars: [340, 490, 560], events: [{ at: 150, kind: 'derate', line: 'L4', to: 260 }],
+    intro: 'Same two firms, but halfway through, an inspection finds a clearance problem on Ridge–Metro and the operator derates it to 260 MW. Plans that passed this morning stop passing. Re-plan together.' },
+  { id: 7, group: 'Three firms', name: 'Three’s company', sub: 'Solar, a data center and wind', timer: 0, companies: ['sun', 'metro', 'wind'],
+    co: { sun: { mw: 200, budget: 90, issue: false }, metro: { mw: 100, budget: 35, issue: false }, wind: { mw: 200, budget: 35, issue: false } }, stars: [380, 540, 630],
+    intro: 'Three small projects with small budgets. One well-placed line can serve all three. Find it, and split its cost.' },
+  { id: 8, group: 'Three firms', name: 'Retirement', sub: 'Plus wind, plus a plant retirement', timer: 420, companies: ['sun', 'metro', 'wind'],
+    co: { sun: { mw: 300, budget: 110 }, metro: { mw: 200, budget: 90 }, wind: { mw: 250, budget: 60 } }, stars: [450, 600, 690], events: [{ at: 150, kind: 'retire', mw: 100 }],
+    intro: 'Northwind adds 250 MW of wind at Ridge. Midway through, the grid operator retires 100 MW at Port and pushes it to main, putting every open branch behind. Sync, re-test and merge all three.' },
+  { id: 9, group: 'Three firms', name: 'Peak build-out', sub: 'Bigger projects, a bigger retirement', timer: 480, companies: ['sun', 'metro', 'wind'],
+    co: { sun: { mw: 350, budget: 130 }, metro: { mw: 250, budget: 100 }, wind: { mw: 300, budget: 70 } }, stars: [550, 760, 860], events: [{ at: 200, kind: 'retire', mw: 150 }],
+    intro: 'Every project is bigger and 150 MW of gas retires mid-cycle. Expect to need more than one new corridor, and to share most of the cost.' },
+  { id: 10, group: 'Playground', name: 'Playground', sub: 'No clock, no end. Set the sun and wind yourself.', timer: 0, companies: ['sun', 'metro', 'wind'], playground: true,
+    co: { sun: { mw: 300, budget: 300, issue: false }, metro: { mw: 200, budget: 300, issue: false }, wind: { mw: 250, budget: 300, issue: false } }, stars: [0, 0, 0],
+    intro: 'All three firms, generous budgets, no clock and no final score. Set Sun 0–3 (night to sunny afternoon; demand rises with it) and Wind 0–3. Studies check the conditions you set, plus every single-line outage.' },
+];
+const COMPANIES = {
+  sun:   { id: 'sun',   name: 'Sunfield Renewables', short: 'Sunfield', role: 'Participant · Developer', color: 'var(--c-sun)', budget: 110, deadline: 1.0,
+           project: [{ op: 'addGen', bus: 3, type: 'solar', mw: 300 }], home: 3,
+           goal: 'Connect 300 MW of solar at Desert Flats', issue: { text: 'Inverter step-up transformer imported with impedance = 0 (impossible value).', wait: 12 } },
+  metro: { id: 'metro', name: 'Metro Power & Light', short: 'Metro', role: 'Operator · Utility', color: 'var(--c-metro)', budget: 90, deadline: 0.85,
+           project: [{ op: 'addFlatLoad', bus: 8, mw: 200 }], home: 8,
+           goal: 'Serve a 200 MW data center at Tech Park, 24/7', issue: { text: 'Data-center substation mapped to bus "TEKPK_138", which doesn’t exist in the base case.', wait: 15 } },
+  wind:  { id: 'wind',  name: 'Northwind Energy', short: 'Northwind', role: 'Participant · Developer', color: 'var(--c-wind)', budget: 40, deadline: 0.9,
+           project: [{ op: 'addGen', bus: 2, type: 'wind', mw: 250 }], home: 2,
+           goal: 'Connect 250 MW of wind at Ridge', issue: { text: 'Wind farm rating set missing its winter ratings.', wait: 12 } },
+};
+
+// ===== Electron streaks: each starts as a dot, accelerates along its line and stretches into a head with a fading tail =====
+const FLOW = (() => {
+  const layers = new Set();
+  const reduced = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
+  let running = false;
+  // spec: { x1, y1, x2, y2, rate (0..1 how busy), seed }
+  function attach(svgEl, specs, opts = {}) {
+    if (!svgEl || reduced()) return null;
+    const host = svgEl.parentElement;
+    host.style.position = 'relative';
+    const cv = document.createElement('canvas');
+    cv.className = 'flowc';
+    cv.setAttribute('aria-hidden', 'true');
+    host.appendChild(cv);
+    const vb = svgEl.viewBox.baseVal;
+    const parts = [];
+    specs.forEach((sp, i) => {
+      const len = Math.hypot(sp.x2 - sp.x1, sp.y2 - sp.y1);
+      const n = sp.rate > 0.6 ? 2 : 1;
+      for (let k = 0; k < n; k++) {
+        const r = rnd(sp.seed * 13 + k * 7 + i);
+        parts.push({ sp, len, dur: (opts.dur || 1.6) * (1.25 - 0.55 * sp.rate) * (0.85 + 0.3 * r), gap: (opts.gap || 1.2) * (0.4 + r) * (1.4 - sp.rate), start: performance.now() / 1000 - r * 3 - k * 1.1 });
+      }
+    });
+    const L = { svgEl, cv, vb, parts, opts };
+    layers.add(L);
+    if (!running) { running = true; requestAnimationFrame(frame); }
+    return L;
+  }
+  function rnd(x) { const s = Math.sin(x * 12.9898) * 43758.5453; return s - Math.floor(s); }
+  function color() { const v = getComputedStyle(document.documentElement).getPropertyValue('--streak').trim(); return v || '255,255,255'; }
+  function frame() {
+    const now = performance.now() / 1000;
+    const rgb = color();
+    layers.forEach((L) => {
+      if (!document.body.contains(L.svgEl)) { layers.delete(L); return; }
+      const rect = L.svgEl.getBoundingClientRect();
+      if (!rect.width) return;
+      if (L.opts.hide && L.opts.hide(L.svgEl)) { L.cv.getContext('2d').clearRect(0, 0, L.cv.width, L.cv.height); return; }
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      const W = Math.round(rect.width * dpr), H = Math.round(rect.height * dpr);
+      if (L.cv.width !== W || L.cv.height !== H) { L.cv.width = W; L.cv.height = H; L.cv.style.width = rect.width + 'px'; L.cv.style.height = rect.height + 'px'; }
+      const ctx = L.cv.getContext('2d');
+      ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, W, H);
+      const s = (rect.width / L.vb.width) * dpr;
+      ctx.setTransform(s, 0, 0, s, -L.vb.x * s, -L.vb.y * s);
+      ctx.lineCap = 'round';
+      ctx.save();
+      if (L.opts.holes && L.opts.holes.length) { // streaks pass *under* labels and substations
+        ctx.beginPath(); ctx.rect(L.vb.x, L.vb.y, L.vb.width, L.vb.height);
+        L.opts.holes.forEach(([x, y, w, h]) => ctx.rect(x, y, w, h));
+        ctx.clip('evenodd');
+      }
+      L.parts.forEach((p) => {
+        const cyc = p.dur + p.gap; let t = ((now - p.start) % cyc + cyc) % cyc;
+        if (t > p.dur) return; t /= p.dur;
+        const { x1, y1, x2, y2 } = p.sp; const ux = (x2 - x1) / p.len, uy = (y2 - y1) / p.len;
+        // accelerate: distance grows with t^2.4, so speed (and the tail) grows from zero
+        const e = 2.4; const d = p.len * Math.pow(t, e); const v = e * Math.pow(t, e - 1);
+        const tail = Math.min(L.opts.maxTail || 46, v * p.len * 0.16);
+        const fadeIn = Math.min(1, t / 0.12), fadeOut = t > 0.82 ? Math.max(0, 1 - (t - 0.82) / 0.18) : 1;
+        const a = fadeIn * fadeOut;
+        const hx = x1 + ux * d, hy = y1 + uy * d;
+        if (tail < 1.2) { // still a dot, gathering itself
+          ctx.fillStyle = `rgba(${rgb},${0.9 * a})`; ctx.beginPath(); ctx.arc(hx, hy, 1.1, 0, Math.PI * 2); ctx.fill(); return;
+        }
+        const tx = hx - ux * tail, ty = hy - uy * tail;
+        const g = ctx.createLinearGradient(tx, ty, hx, hy);
+        g.addColorStop(0, `rgba(${rgb},0)`); g.addColorStop(0.7, `rgba(${rgb},${0.45 * a})`); g.addColorStop(1, `rgba(${rgb},${0.95 * a})`);
+        ctx.strokeStyle = g; ctx.lineWidth = L.opts.width || 1.3;
+        ctx.beginPath(); ctx.moveTo(tx, ty); ctx.lineTo(hx, hy); ctx.stroke();
+        ctx.fillStyle = `rgba(${rgb},${a})`; ctx.beginPath(); ctx.arc(hx, hy, (L.opts.width || 1.3) * 0.75, 0, Math.PI * 2); ctx.fill();
+      });
+      ctx.restore();
+    });
+    if (layers.size) requestAnimationFrame(frame); else running = false;
+  }
+  return { attach };
+})();
+
+// ===== Interactive "multidirectional grid" hero =====
+const HERO = (() => {
+  const NODES = {
+    gen:   { name: 'Power generation', era: 'old', deck: 'power',
+      what: 'Big central plants: gas, nuclear, hydro, coal. Operators can turn them up or down on command. In the old grid, all power started here and only flowed downhill.',
+      model: 'A generator attached to a bus, with max MW, cost and dynamic data. A retirement is a model change too, like the Port gas unit in Level 3.',
+      tap: 'Central plants are a shrinking part of new supply. In PJM’s queue (January 2025) there were about 79 GW of solar and 37 GW of storage, against about 4 GW of gas. Chile’s planning centers on hydro-thermal optimization.',
+      links: [['trans', 'out']] },
+    trans: { name: 'Transmission', era: 'old', deck: 'planning',
+      what: 'High-voltage lines (roughly 115–765 kV) that move bulk power long distances. Transmission owners own them, and an ISO/RTO such as PJM, CEN or NESO operates them.',
+      model: 'Branches with impedance and thermal ratings, studied with power flow and N-1 contingency checks in tools like PSS®E and PSLF.',
+      tap: 'Tapestry’s first scaled tools are here: the Grid Planning Tool at CEN (a 3,100 km grid), the unified model and HyperQ at PJM, and the Grand Optimiser with NESO.',
+      links: [['gen', 'in'], ['sub', 'out'], ['solar', 'in'], ['dc', 'out']] },
+    sub:   { name: 'Substation', era: 'old', deck: 'formats',
+      what: 'Where voltage gets stepped down, circuits get switched and faults get cleared. Substations are becoming digital, full of sensors and smart relays.',
+      model: 'One or a few buses in a planning model (bus-branch). The operations model keeps every breaker (node-breaker). Keeping the two in sync is a core model-management problem.',
+      tap: 'HyperQ’s next step is auditing single-line diagrams, the substation schematics that come with every interconnection request.',
+      links: [['trans', 'in'], ['dist', 'out'], ['storage', 'both'], ['dc', 'out']] },
+    dist:  { name: 'Distribution', era: 'old', deck: 'projects',
+      what: 'The local network of poles, wires and pole-top transformers that feeds neighborhoods. The local utility owns it. It’s far less mapped and measured than transmission.',
+      model: 'Often lives in GIS rather than a planning case, and now needs real modeling because rooftop solar, batteries and EVs push power both ways.',
+      tap: 'GridAware maps poles and wires from street, drone and helicopter imagery. GPT-D runs N-1 planning studies for Vector in Auckland.',
+      links: [['sub', 'in'], ['homes', 'both'], ['ev', 'both'], ['storage', 'both'], ['solar', 'in']] },
+    homes: { name: 'Homes & buildings', era: 'cust', deck: 'power',
+      what: 'Homes, offices and factories. Many now make power too, with rooftop solar, batteries and smart thermostats, so flow on a neighborhood line can reverse at noon.',
+      model: 'Aggregated as load at a bus, with seasonal and hourly profiles. Equipment behind the meter is mostly invisible to planners.',
+      tap: 'Load forecasting is part of Tapestry’s intelligence engine. Customers feel the "visibility gap" as outages, which have doubled globally by Tapestry’s count.',
+      links: [['dist', 'both']] },
+    dc:    { name: 'Data centers', era: 'cust', deck: 'planning',
+      what: 'AI-era loads of hundreds of MW each, drawing almost the same power 24/7 and often connecting straight to transmission. They’re the biggest driver of today’s load growth.',
+      model: 'A large new load with an in-service date, which triggers adequacy and N-1 studies. That’s Metro’s branch in Level 2.',
+      tap: 'Rio’s "AI City" plans for more than two dozen data centers. Auckland has several new ones, with at least ten more planned. Google’s own demand is part of why Tapestry exists.',
+      links: [['trans', 'in'], ['sub', 'in'], ['storage', 'both']] },
+    solar: { name: 'Wind & solar', era: 'new', deck: 'projects',
+      what: 'Decentralized, weather-driven generation, from utility-scale farms on transmission to community solar on distribution. Output swings by hour and season.',
+      model: 'A generator with capacity-factor profiles (solar ~0 at night, wind often strongest then). Each one starts as an interconnection request.',
+      tap: 'HyperQ reviewed 811 applications (~220 GW) in PJM’s Cycle 1. In Chile, a fine-tuned GraphCast forecasts wind up to 15% better than ECMWF’s HRES.',
+      links: [['trans', 'out'], ['dist', 'out'], ['storage', 'out']] },
+    storage: { name: 'Storage', era: 'new', deck: 'power',
+      what: 'Batteries that charge on surplus and discharge at peak. A battery is a load one hour and a generator the next.',
+      model: 'Both a load and a generator, plus state of charge and dispatch assumptions for each scenario.',
+      tap: 'Chile uses Tapestry’s planning models to decide where to install batteries. PJM’s queue held about 37 GW of storage in early 2025.',
+      links: [['solar', 'in'], ['sub', 'both'], ['dist', 'both'], ['dc', 'both']] },
+    ev:    { name: 'EV charging', era: 'cust', deck: 'planning',
+      what: 'Car, bus and truck fleets charging on the distribution grid. Big, movable, peaky loads, and in the future vehicle-to-grid makes them a source too.',
+      model: 'Load-growth profiles at distribution buses, and the reason distribution planning now needs real power-flow studies.',
+      tap: 'Distribution planning with GPT-D at Vector, where New Zealand expects electricity demand to rise 82% over 25 years.',
+      links: [['dist', 'both']] },
+    plan:  { name: 'Network planning', era: 'plan', deck: 'weaver',
+      what: 'Planners at ISOs, utilities and developers. Every change gets studied before it’s built. Today that means emailed files, spreadsheets and days of work just to build a study case.',
+      model: 'They’re the users of the model. They propose changes, run power flow and N-1, review diffs and approve merges.',
+      tap: 'Modelweaver is built for this desk: branch the shared model, study your change, sync when main moves, resolve conflicts and merge.',
+      links: [['hub', 'both'], ['gen', 'both'], ['trans', 'both'], ['sub', 'both'], ['dist', 'both'], ['homes', 'both'], ['dc', 'both'], ['solar', 'both'], ['storage', 'both'], ['ev', 'both']], data: true },
+    hub:   { name: 'One shared grid model', era: 'hub', deck: 'weaver',
+      what: 'Power now flows in every direction, and changes come from thousands of owners at once. Electricity follows physics, not ownership, so everyone’s plans interact.',
+      model: 'Tapestry calls this a knowledge graph for the grid: a unifying data model that weaves together trillions of data points, layered as location (where assets are), time (when each fact was true) and physics (how power flows).',
+      tap: 'Modelweaver adds Git to that model, so all of these parties can propose, test and merge changes against one source of truth.',
+      links: [['gen', 'both'], ['trans', 'both'], ['sub', 'both'], ['dist', 'both'], ['homes', 'both'], ['dc', 'both'], ['solar', 'both'], ['storage', 'both'], ['ev', 'both'], ['plan', 'both']], data: true },
+  };
+  const MMU = { gen: 'make', solar: 'make', trans: 'move', sub: 'move', dist: 'move', storage: 'move', homes: 'use', dc: 'use', ev: 'use', plan: 'plan', hub: 'hub' };
+  const MMU_NAME = { make: 'Make', move: 'Move', use: 'Use', plan: 'Plan', hub: 'The model' };
+  const ERA = { old: ['Classic one-way grid', 'var(--blue)'], cust: ['Customers and new loads', 'var(--violet)'], new: ['New, decentralized supply', 'var(--teal)'], plan: ['Planning', 'var(--copper)'], hub: ['The model', 'var(--copper)'] };
+  const LAYOUT = {
+    wide: { vb: [0, 0, 820, 540], a: 60, ha: 118, lab: 15, pos: {
+      gen: [95, 262], trans: [215, 190], sub: [345, 122], dist: [500, 92], homes: [650, 128], dc: [752, 226],
+      plan: [710, 350], ev: [590, 438], storage: [440, 462], solar: [282, 432], hub: [420, 290] } },
+    narrow: { vb: [0, 0, 420, 530], a: 46, ha: 86, lab: 13, pos: {
+      gen: [62, 92], trans: [170, 52], sub: [300, 76], dist: [360, 178], homes: [362, 300], dc: [210, 152],
+      plan: [58, 300], ev: [330, 420], storage: [206, 470], solar: [80, 430], hub: [210, 312] } },
+  };
+  const PAR = (k) => `fill:var(--h-${k})`;
+  // ---------- isometric helpers ----------
+  const P = (x, y) => `${x.toFixed(1)},${y.toFixed(1)}`;
+  function diamond(cx, cy, a, fill, extra = '') {
+    const b = a / 2;
+    return `<polygon points="${P(cx, cy - b)} ${P(cx + a, cy)} ${P(cx, cy + b)} ${P(cx - a, cy)}" fill="${fill}" ${extra}/>`;
+  }
+  // prism with base centre c, width along +x iso axis, depth along -x iso axis
+  function prism(cx, cy, w, d, h, tint) {
+    const pt = (sx, sy, z = 0) => [cx + sx * w / 2 - sy * d / 2, cy + sx * w / 4 + sy * d / 4 - z];
+    const F = pt(1, 1), R = pt(1, -1), L = pt(-1, 1), B = pt(-1, -1);
+    const up = (p) => [p[0], p[1] - h];
+    const poly = (ps, f) => `<polygon points="${ps.map((p) => P(p[0], p[1])).join(' ')}" style="fill:${f}" stroke="var(--h-edge)" stroke-width=".6" stroke-linejoin="round"/>`;
+    return poly([L, F, up(F), up(L)], tint ? `color-mix(in srgb, ${tint} 30%, var(--h-2))` : 'var(--h-2)')
+      + poly([F, R, up(R), up(F)], tint ? `color-mix(in srgb, ${tint} 30%, var(--h-3))` : 'var(--h-3)')
+      + poly([up(B), up(R), up(F), up(L)], tint ? `color-mix(in srgb, ${tint} 22%, var(--h-1))` : 'var(--h-1)');
+  }
+  const ln = (x1, y1, x2, y2, w = 1.4, c = 'var(--h-line)') => `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${c}" stroke-width="${w}" stroke-linecap="round"/>`;
+  function tower(x, y, h) {
+    const t = y - h;
+    return ln(x - h * .22, y, x, t) + ln(x + h * .22, y, x, t) + ln(x - h * .16, y - h * .3, x + h * .16, y - h * .3, 1) + ln(x - h * .3, t + h * .22, x + h * .3, t + h * .22, 1.6) + ln(x - h * .22, t + h * .42, x + h * .22, t + h * .42, 1.4)
+      + ln(x - h * .19, y - h * .14, x + h * .1, y - h * .5, .8) + ln(x + h * .19, y - h * .14, x - h * .1, y - h * .5, .8);
+  }
+  function panel(x, y, s) { // dark solar panel parallelogram
+    return `<polygon points="${P(x - s, y)} ${P(x, y - s / 2)} ${P(x + s * .7, y - s * .15)} ${P(x - s * .3, y + s * .35)}" fill="var(--h-solar)" stroke="var(--h-edge)" stroke-width=".5"/>`;
+  }
+  function turbine(x, y, h, spin) {
+    const hx = x, hy = y - h; const r = h * .42;
+    const blades = [0, 120, 240].map((a) => { const t = (a - 90) * Math.PI / 180; return `<line x1="${hx}" y1="${hy}" x2="${(hx + r * Math.cos(t)).toFixed(1)}" y2="${(hy + r * Math.sin(t)).toFixed(1)}" stroke="var(--h-w1)" stroke-width="${(h * .05).toFixed(1)}" stroke-linecap="round"/>`; }).join('');
+    return ln(x, y, hx, hy, h * .05, 'var(--h-w2)') + `<g>${blades}${spin ? `<animateTransform attributeName="transform" type="rotate" from="0 ${hx} ${hy}" to="360 ${hx} ${hy}" dur="5s" repeatCount="indefinite"/>` : ''}</g><circle cx="${hx}" cy="${hy}" r="${(h * .05).toFixed(1)}" fill="var(--h-3)"/>`;
+  }
+  function glyph(id, cx, cy, k, spin) {
+    const s = (v) => v * k;
+    switch (id) {
+      case 'gen': {
+        const tx = cx - s(22), ty = cy + s(2);
+        const tw = s(14), th = s(36);
+        const tw2 = `<path d="M${tx - tw},${ty} Q${tx - tw * .55},${ty - th * .55} ${tx - tw * .7},${ty - th} L${tx + tw * .7},${ty - th} Q${tx + tw * .55},${ty - th * .55} ${tx + tw},${ty} Z" style="fill:var(--h-w2)" stroke="var(--h-edge)" stroke-width=".6"/><ellipse cx="${tx}" cy="${ty - th}" rx="${tw * .7}" ry="${tw * .28}" style="fill:var(--h-3)" stroke="var(--h-edge)" stroke-width=".6"/>`;
+        return tw2 + prism(cx + s(12), cy + s(4), s(30), s(18), s(18)) + prism(cx + s(24), cy - s(6), s(5), s(5), s(38));
+      }
+      case 'trans': return tower(cx - s(18), cy + s(8), s(46)) + tower(cx + s(16), cy - s(6), s(46))
+        + `<path d="M${cx - s(18) - s(13)},${cy + s(8) - s(36)} Q${cx},${cy - s(30)} ${cx + s(16) - s(13)},${cy - s(6) - s(36)} M${cx - s(18) + s(13)},${cy + s(8) - s(36)} Q${cx + s(4)},${cy - s(26)} ${cx + s(16) + s(13)},${cy - s(6) - s(36)}" fill="none" stroke="var(--h-line)" stroke-width=".8"/>`;
+      case 'sub': return prism(cx - s(20), cy - s(2), s(12), s(14), s(26)) + ln(cx - s(2), cy - s(8), cx - s(2), cy - s(40), 1.4) + ln(cx + s(14), cy - s(16), cx + s(14), cy - s(46), 1.4) + ln(cx - s(6), cy - s(36), cx + s(18), cy - s(44), 1.2)
+        + prism(cx + s(10), cy + s(8), s(20), s(14), s(14)) + `<circle cx="${cx + s(6)}" cy="${cy - s(12)}" r="${s(3)}" style="fill:var(--h-3)"/><circle cx="${cx + s(14)}" cy="${cy - s(8)}" r="${s(3)}" style="fill:var(--h-3)"/>`;
+      case 'dist': {
+        let g = '';
+        [[-26, 6], [0, -6], [26, -18]].forEach(([dx, dy], i) => { const x = cx + s(dx), y = cy + s(dy); g += ln(x, y, x, y - s(34), 1.6) + ln(x - s(8), y - s(30), x + s(8), y - s(34), 1.2); if (i === 1) g += prism(x + s(5), y - s(18), s(5), s(5), s(7)); });
+        g += `<path d="M${cx - s(32)},${cy - s(26)} Q${cx - s(14)},${cy - s(30)} ${cx - s(6)},${cy - s(38)} Q${cx + s(12)},${cy - s(42)} ${cx + s(20)},${cy - s(50)}" fill="none" stroke="var(--h-line)" stroke-width=".8"/>`;
+        return g;
+      }
+      case 'homes': {
+        const house = (x, y, w, h) => prism(x, y, w, w * .8, h) + `<polygon points="${P(x - w * .4 - w * .5 * .8 * .5, y + w * .1 - h)} ${P(x - w * .1, y - h - w * .5)} ${P(x + w * .55, y - h - w * .2)} ${P(x + w * .5, y - h + w * .25)}" style="fill:var(--h-3)" stroke="var(--h-edge)" stroke-width=".6"/>`;
+        return prism(cx + s(18), cy - s(10), s(18), s(16), s(46)) + house(cx - s(14), cy + s(2), s(18), s(12)) + panel(cx - s(14), cy - s(22), s(8)) + house(cx + s(10), cy + s(14), s(14), s(10));
+      }
+      case 'dc': {
+        let g = prism(cx, cy + s(2), s(44), s(22), s(18));
+        for (let i = 0; i < 4; i++) g += prism(cx - s(14) + s(10) * i, cy - s(17) + s(5) * i, s(6), s(8), s(5));
+        return g;
+      }
+      case 'solar': return panel(cx - s(20), cy + s(8), s(11)) + panel(cx - s(6), cy + s(15), s(11)) + panel(cx - s(30), cy, s(11)) + turbine(cx + s(18), cy - s(2), s(52), spin) + prism(cx - s(16), cy - s(12), s(14), s(10), s(12));
+      case 'storage': return prism(cx - s(18), cy - s(2), s(16), s(18), s(22)) + prism(cx, cy + s(7), s(16), s(18), s(22)) + prism(cx + s(18), cy + s(16) - s(18), s(16), s(18), s(18));
+      case 'ev': return prism(cx - s(18), cy - s(8), s(34), s(14), s(16)) + prism(cx + s(16), cy + s(6), s(18), s(12), s(8)) + prism(cx + s(18), cy + s(4), s(9), s(9), s(6))
+        + prism(cx + s(2), cy - s(14), s(4), s(4), s(18)) + prism(cx + s(28), cy - s(4), s(4), s(4), s(18));
+      case 'plan': {
+        const g = prism(cx - s(4), cy + s(6), s(34), s(20), s(10));
+        // a study sheet floating above, checked off: green pass, red fail
+        const dx0 = cx - s(14), dy0 = cy - s(44), dw = s(26), dh = s(34);
+        const ring = (x, y, ok) => `<circle cx="${x}" cy="${y}" r="${s(6)}" fill="var(--paper)" stroke="${ok ? 'var(--pass)' : 'var(--fail)'}" stroke-width="${s(1.8)}"/>` + (ok
+          ? `<path d="M${x - s(3)},${y} L${x - s(0.8)},${y + s(2.4)} L${x + s(3.2)},${y - s(2.4)}" fill="none" stroke="var(--pass)" stroke-width="${s(1.8)}" stroke-linecap="round" stroke-linejoin="round"/>`
+          : `<path d="M${x - s(2.4)},${y - s(2.4)} L${x + s(2.4)},${y + s(2.4)} M${x + s(2.4)},${y - s(2.4)} L${x - s(2.4)},${y + s(2.4)}" fill="none" stroke="var(--fail)" stroke-width="${s(1.8)}" stroke-linecap="round"/>`);
+        const sheet = `<path d="M${dx0},${dy0} h${dw - s(6)} l${s(6)},${s(6)} v${dh - s(6)} h${-dw} Z" fill="var(--paper)" stroke="var(--h-line)" stroke-width="${s(1.2)}"/>`
+          + `<rect x="${dx0 + s(3)}" y="${dy0 + s(7)}" width="${dw - s(6)}" height="${s(6)}" fill="none" stroke="var(--pass)" stroke-width="${s(1.2)}"/>`
+          + `<rect x="${dx0 + s(3)}" y="${dy0 + s(17)}" width="${s(9)}" height="${s(10)}" fill="none" stroke="var(--fail)" stroke-width="${s(1.2)}"/>`
+          + `<rect x="${dx0 + s(14)}" y="${dy0 + s(17)}" width="${s(9)}" height="${s(10)}" fill="none" stroke="var(--pass)" stroke-width="${s(1.2)}"/>`;
+        return g + sheet + ring(dx0 + dw + s(9), dy0 + s(10), true) + ring(dx0 + dw + s(9), dy0 + s(26), false);
+      }
+    }
+    return '';
+  }
+
+  let sel = null, layoutKey = null, host = null, onPick = null;
+  const reduced = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
+  function svg() {
+    const L = LAYOUT[layoutKey]; const pos = L.pos; const k = L.a / 60;
+    const [hx, hy] = pos.hub;
+    const spin = !reduced();
+    let s = `<svg class="hero-map" viewBox="${L.vb.join(' ')}" role="img" aria-label="A multidirectional grid: tap any part to see how it connects">`;
+    s += `<defs><filter id="hglow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="3.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>`;
+    // spokes (under tiles)
+    Object.keys(NODES).forEach((id) => {
+      if (id === 'hub') return; const [x, y] = pos[id];
+      s += `<path id="sp-${id}" class="spoke ${NODES[id].data ? 'data' : ''}" d="M${x},${y} L${hx},${hy}"/>`;
+    });
+    s += `<g id="hlspokes"></g>`;
+    // hub: three stacked layers
+    const layers = [['Physics', 22], ['Time', 11], ['Location', 0]];
+    layers.forEach(([nm, off], i) => {
+      s += diamond(hx, hy + off, L.ha, i === 2 ? 'var(--h-hub)' : 'var(--h-tile-side)', `stroke="var(--h-hubedge)" stroke-width="${i === 0 ? 2 : 1}" ${i === 0 ? 'filter="url(#hglow)" class="hub-rim"' : ''}`);
+    });
+    s += `<g class="hnode" data-n="hub" tabindex="0" role="button" aria-label="One shared grid model">${diamond(hx, hy, L.ha, 'transparent')}`;
+    s += `<text x="${hx}" y="${hy - L.lab * .4}" text-anchor="middle" class="hub-t" font-size="${L.lab * 1.35}">One shared</text><text x="${hx}" y="${hy + L.lab * 1.05}" text-anchor="middle" class="hub-t" font-size="${L.lab * 1.35}">grid model</text>`;
+    s += `<text x="${hx}" y="${hy + L.ha * .5 + 22 + L.lab * 1.1}" class="hub-l" font-size="${L.lab * .7}" text-anchor="middle">LOCATION · TIME · PHYSICS</text></g>`;
+    // nodes
+    Object.entries(NODES).forEach(([id, n]) => {
+      if (id === 'hub') return; const [x, y] = pos[id]; const c = ERA[n.era][1];
+      s += `<g class="hnode" data-n="${id}" tabindex="0" role="button" aria-label="${n.name}">`;
+      const d = 6 * k, b2 = L.a / 2;
+      s += diamond(x, y + d, L.a, 'var(--h-tile-side)');
+      s += `<polyline class="rim" points="${P(x - L.a, y + d)} ${P(x, y + d + b2)} ${P(x + L.a, y + d)}" fill="none" stroke="var(--h-rim)" stroke-width="2.4" stroke-linejoin="round" filter="url(#hglow)"/>`;
+      s += diamond(x, y, L.a, 'var(--h-tile)', `class="tile-top" stroke="var(--h-tile-edge)" stroke-width="1"`);
+      s += glyph(id, x, y, k, spin);
+      const SH = { gen: 'Generation', plan: 'Planning', homes: 'Buildings' };
+      s += `<text x="${x}" y="${y + L.a / 2 + L.lab + 6}" text-anchor="middle" class="tile-l" font-size="${L.lab}">${(layoutKey === 'narrow' && SH[id] ? SH[id] : n.name).toUpperCase()}</text></g>`;
+    });
+    s += `<g id="particles"></g></svg>`;
+    return s;
+  }
+  function highlight() {
+    const svgEl = host.querySelector('svg'); if (!svgEl) return;
+    const L = LAYOUT[layoutKey]; const pos = L.pos; const [hx, hy] = pos.hub;
+    svgEl.querySelectorAll('.hnode').forEach((g) => g.classList.toggle('on', g.dataset.n === sel));
+    svgEl.querySelectorAll('.hnode').forEach((g) => g.classList.toggle('dim', !!sel && g.dataset.n !== sel && g.dataset.n !== 'hub' && !(NODES[sel].links.some(([p]) => p === g.dataset.n))));
+    svgEl.classList.toggle('picked', !!sel);
+    const hl = svgEl.querySelector('#hlspokes'), pg = svgEl.querySelector('#particles');
+    hl.innerHTML = ''; pg.innerHTML = '';
+    if (!sel) return;
+    const n = NODES[sel]; const anim = !reduced();
+    const pathFor = (a, b) => {
+      const A = a === 'hub' ? [hx, hy] : pos[a], B = b === 'hub' ? [hx, hy] : pos[b];
+      if (a === 'hub' || b === 'hub') return `M${A[0]},${A[1]} L${B[0]},${B[1]}`;
+      return `M${A[0]},${A[1]} L${hx},${hy} L${B[0]},${B[1]}`;
+    };
+    let pi = 0;
+    n.links.forEach(([p, dir]) => {
+      const d = pathFor(sel, p); const id = 'hp' + (pi++);
+      const col = n.data || NODES[p].data ? 'var(--copper)' : 'var(--h-flow)';
+      hl.innerHTML += `<path id="${id}" d="${d}" class="spoke-on ${n.data ? 'data' : ''}" style="stroke:${col}"/>`;
+      if (!anim) return;
+      const dur = n.data ? 2.6 : 2;
+      const dirs = dir === 'both' ? ['out', 'in'] : [dir];
+      dirs.forEach((dd, j) => {
+        for (let q = 0; q < 3; q++) {
+          const begin = (-(q * dur / 3 + j * dur / 6)).toFixed(2);
+          pg.innerHTML += `<circle r="${n.data ? 3.2 : 4}" class="pt ${dd}" style="fill:${dd === 'in' && dir === 'both' ? 'var(--h-flow2)' : col}"><animateMotion dur="${dur}s" begin="${begin}s" repeatCount="indefinite" ${dd === 'in' ? 'keyPoints="1;0" keyTimes="0;1" calcMode="linear"' : ''}><mpath href="#${id}"/></animateMotion></circle>`;
+        }
+      });
+    });
+  }
+  function card() {
+    if (!sel) return `<div class="hero-card idle"><span class="eyebrow">How it fits together</span>
+      <p><b>Tap any tile.</b> The world makes, moves and uses electricity differently now. The classic grid ran one way, from big plants to transmission to substations to distribution to you. Now supply, storage and big new loads connect everywhere, so power moves in every direction. Everyone’s changes meet in one model.</p>
+      <div class="mmu">${['make', 'move', 'use', 'plan'].map((g) => `<div><span class="eyebrow">${MMU_NAME[g]}</span><span class="small muted">${Object.keys(MMU).filter((id) => MMU[id] === g).map((id) => NODES[id].name).join(' · ')}</span></div>`).join('')}</div>
+      <div class="hero-key"><span><i></i>Power</span><span><i class="dash"></i>Data, not power</span></div></div>`;
+    const n = NODES[sel]; const c = 'var(--copper)'; const eraName = MMU_NAME[MMU[sel]];
+    const deck = DECKS.find((d) => d.id === n.deck);
+    const arrow = { out: '→', in: '←', both: '⇄' };
+    return `<div class="hero-card" style="--ec:${c}">
+      <div class="hc-top"><span class="eyebrow mmu-on"><i></i>${eraName}</span><button class="iconbtn" id="heroClose" aria-label="Close">×</button></div>
+      <h3>${n.name}</h3>
+      <p>${n.what}</p>
+      <dl class="hc-dl"><dt>In the model</dt><dd>${n.model}</dd><dt>Tapestry tie-in</dt><dd>${n.tap}</dd></dl>
+      <div class="hc-links"><span class="eyebrow">${n.data ? 'Exchanges data with' : 'Power flows'}</span><div class="chips">${n.links.filter(([p]) => !(n.data && p === 'hub' && sel === 'plan') || true).map(([p, d]) => `<button class="chipbtn" data-hn="${p}">${n.data ? '⇄' : arrow[d]} ${NODES[p].name}</button>`).join('')}</div></div>
+      ${deck ? `<button class="btn ghost" data-go="deck-${deck.id}">Study: ${deck.name}</button>` : ''}
+    </div>`;
+  }
+  function pick(id) {
+    sel = sel === id ? null : id; highlight();
+    const c = host.querySelector('.hero-cardwrap'); c.innerHTML = card(); wireCard();
+    if (onPick) onPick(sel);
+  }
+  function wireCard() {
+    const x = host.querySelector('#heroClose'); if (x) x.onclick = () => pick(sel);
+    host.querySelectorAll('[data-hn]').forEach((b) => (b.onclick = () => { sel = null; pick(b.dataset.hn); }));
+  }
+  function heroFlow() {
+    const L = LAYOUT[layoutKey], [hx, hy] = L.pos.hub;
+    const specs = Object.keys(NODES).filter((id) => id !== 'hub' && !NODES[id].data).map((id, i) => {
+      const [x, y] = L.pos[id]; const out = i % 2 === 0;
+      return out ? { x1: hx, y1: hy, x2: x, y2: y, rate: 0.35, seed: i + 3 } : { x1: x, y1: y, x2: hx, y2: hy, rate: 0.35, seed: i + 3 };
+    });
+    FLOW.attach(host.querySelector('svg.hero-map'), specs, { dur: 2.2, gap: 2.2, maxTail: 40, hide: (svgEl) => svgEl.classList.contains('picked') });
+  }
+  function mount(el) {
+    host = el;
+    const key = () => (el.clientWidth < 620 ? 'narrow' : 'wide');
+    layoutKey = key();
+    el.innerHTML = `<div class="hero-fig"><div class="hero-svg">${svg()}</div><div class="hero-cardwrap">${card()}</div></div>`;
+    el.querySelector('.hero-svg').addEventListener('click', (e) => { const g = e.target.closest('.hnode'); if (g) pick(g.dataset.n); else if (sel) pick(sel); });
+    el.querySelector('.hero-svg').addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { const g = e.target.closest('.hnode'); if (g) { e.preventDefault(); pick(g.dataset.n); } } });
+    wireCard(); highlight(); heroFlow();
+    let t; const ro = () => { clearTimeout(t); t = setTimeout(() => { if (!host || !document.body.contains(host)) { window.removeEventListener('resize', ro); return; } if (key() !== layoutKey) { layoutKey = key(); host.querySelector('.hero-svg').innerHTML = svg(); highlight(); heroFlow(); } }, 150); };
+    window.addEventListener('resize', ro);
+  }
+  return { mount, NODES };
+})();
+
+// ===== Grid Lab app =====
+(() => {
+const E = ENGINE;
+const $ = (s, r = document) => r.querySelector(s);
+const app = $('#app');
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const store = {
+  get(k, d) { try { const v = localStorage.getItem('gridlab:' + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem('gridlab:' + k, JSON.stringify(v)); } catch (e) {} },
+};
+let known = store.get('known', {});      // { deckId: { idx: 1 } }
+let best = store.get('best', {});        // { quiz-deckId: n, lab-1: stars }
+const saveKnown = () => store.set('known', known);
+const saveBest = () => store.set('best', best);
+function toast(msg, ms = 2600) {
+  const t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role', 'status'); t.textContent = msg;
+  document.body.appendChild(t); setTimeout(() => t.remove(), ms);
+}
+const shuffle = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const deckPct = (d) => { const k = known[d.id] || {}; return Math.round(100 * Object.keys(k).length / d.cards.length); };
+const allCards = () => DECKS.flatMap((d) => d.cards.map((c, i) => ({ ...c, deck: d.id, i })));
+
+// ---------- router ----------
+let cleanup = null;
+function go(h) { if (location.hash !== '#' + h) location.hash = h; else route(); }
+function route() {
+  if (cleanup) { cleanup(); cleanup = null; }
+  const h = (location.hash || '#home').slice(1);
+  window.scrollTo(0, 0);
+  if (h === 'home' || !h) return home();
+  if (h === 'learn') return learn();
+  if (h.startsWith('deck-')) return deck(h.slice(5));
+  if (h === 'quiz' || h.startsWith('quiz-')) return quiz(h.slice(5) || null);
+  if (h === 'prep') return prep();
+  if (h === 'lab') return lab();
+  if (h.startsWith('play-')) return play(+h.slice(5));
+  home();
+}
+window.addEventListener('hashchange', route);
+document.addEventListener('click', (e) => { const a = e.target.closest('[data-go]'); if (a) { e.preventDefault(); go(a.dataset.go); } });
+
+// ---------- home ----------
+function home() {
+  const total = allCards().length;
+  const knownN = DECKS.reduce((s, d) => s + Object.keys(known[d.id] || {}).length, 0);
+  const stars = LEVELS.filter((L) => !L.playground).map((L) => best['lab-' + L.id] || 0).reduce((a, b) => a + b, 0);
+  app.innerHTML = `
+  <div class="wrap">
+    <section class="hero">
+      <div class="eyebrow">Manage • Plan • Operate · Interview prep</div>
+      <h1>Making every grid change <span>visible.</span></h1>
+      <div id="heroMount"></div>
+      <p>Grid Lab weaves together study cards, quizzes and a planning sim. Learn how the world makes, moves and uses electricity, then practice merging grid changes, electron by electron.</p>
+      <p class="disclaim">An unofficial study tool, not affiliated with Tapestry or Google. Facts come from Tapestry's public case studies, job postings and press coverage (2024–2026). The companies and the grid in the sim are fictional.</p>
+    </section>
+    <div class="tiles">
+      <button class="tile lab glow" style="--gc:var(--plan);--gc2:var(--plan-edge);--gbg:var(--plan-bg)" data-go="lab"><span class="k">Simulate</span><h3>Grid Lab</h3><span class="muted">Nine levels from one firm to three, plus a playground with adjustable sun and wind.</span><span class="stars">${stars}/27 ★</span></button>
+      <button class="tile glow" style="--gc:var(--manage);--gc2:var(--manage);--gbg:var(--manage-bg)" data-go="learn"><span class="k">Learn · ${knownN}/${total} known</span><h3>Study cards</h3><span class="muted">Six decks, from Tapestry 101 to interconnection.</span><div class="bar"><i style="width:${Math.round(100 * knownN / total)}%"></i></div></button>
+      <button class="tile glow" style="--gc:var(--operate);--gc2:var(--operate);--gbg:var(--operate-bg)" data-go="quiz"><span class="k">Test</span><h3>Quiz</h3><span class="muted">Ten questions, by deck or mixed.</span></button>
+      <button class="tile glow" style="--gc:var(--lime-ink);--gc2:var(--lime);--gbg:var(--lime-bg)" data-go="prep"><span class="k">Prepare</span><h3>Call prep</h3><span class="muted">Your story, the Git↔grid cheat sheet and questions to ask.</span></button>
+    </div>
+    ${foot()}
+  </div>`;
+  HERO.mount($('#heroMount'));
+}
+function foot() {
+  return `<div class="foot"><span>Sources: Tapestry case studies and field notes (tapestryenergy.com, x.company), Tapestry job postings on Greenhouse, Latitude Media, Utility Dive, the Volts podcast, Siemens PSS®MOD materials.</span>
+  <button class="iconbtn" id="resetAll" style="justify-self:start">Reset progress</button></div>`;
+}
+document.addEventListener('click', (e) => {
+  if (e.target.id === 'resetAll') {
+    if (e.target.dataset.armed) { known = {}; best = {}; saveKnown(); saveBest(); toast('Progress reset'); route(); }
+    else { e.target.dataset.armed = 1; e.target.textContent = 'Tap again to erase all progress'; }
+  }
+});
+
+// ---------- learn ----------
+function learn() {
+  app.innerHTML = `<div class="wrap">
+    <div class="section-h"><h2>Study cards</h2><span class="muted">Tap a deck. Mark cards known as you go.</span></div>
+    <div class="decks">${DECKS.map((d) => `
+      <button class="deck" style="--dc:${d.color}" data-go="deck-${d.id}">
+        <div class="row"><h3>${esc(d.name)}</h3><span class="mono small muted">${d.cards.length}</span></div>
+        <span class="muted small">${esc(d.blurb)}</span>
+        <div class="bar"><i style="width:${deckPct(d)}%"></i></div>
+      </button>`).join('')}
+    </div>
+    <div class="section-h"><button class="btn" data-go="quiz">Take a mixed quiz</button></div>
+  </div>`;
+}
+function deck(id) {
+  const d = DECKS.find((x) => x.id === id); if (!d) return learn();
+  let hide = store.get('hide', false), flipped = false;
+  let order = shuffle(d.cards.map((_, i) => i)), pos = 0;
+  const visible = () => order.filter((i) => !(hide && (known[id] || {})[i]));
+  function render() {
+    const vis = visible();
+    const k = known[id] || {};
+    if (!vis.length) {
+      app.innerHTML = `<div class="wrap"><div class="fc-wrap">
+        <button class="iconbtn" data-go="learn" style="justify-self:start">← Decks</button>
+        <div class="card"><div class="term">Deck cleared</div><p class="def">You've marked all ${d.cards.length} cards in ${esc(d.name)} as known.</p>
+        <div class="btnrow"><button class="btn" data-go="quiz-${id}">Quiz this deck</button><button class="btn ghost" id="showAll">Show all cards again</button></div></div></div></div>`;
+      $('#showAll').onclick = () => { hide = false; store.set('hide', false); pos = 0; render(); };
+      return;
+    }
+    if (pos >= vis.length) pos = 0;
+    const i = vis[pos], c = d.cards[i];
+    app.innerHTML = `<div class="wrap"><div class="fc-wrap">
+      <div class="fc-meta"><button class="iconbtn" data-go="learn">← Decks</button>
+        <span class="eyebrow">${esc(d.name)} · ${Object.keys(k).length}/${d.cards.length} known</span>
+        <label class="toggle"><input type="checkbox" id="hide" ${hide ? 'checked' : ''}> Hide known</label></div>
+      <div class="bar"><i style="width:${deckPct(d)}%"></i></div>
+      <button class="card" id="card" aria-live="polite">
+        <span class="eyebrow">${k[i] ? 'Known' : 'Card ' + (pos + 1) + ' of ' + vis.length}</span>
+        <span class="term">${esc(c.t)}</span>
+        ${flipped ? `<span class="def">${esc(c.d)}</span>${c.n ? `<span class="note">${esc(c.n)}</span>` : ''}` : ''}
+        <span class="hint">${flipped ? '' : 'Tap to reveal'}</span>
+      </button>
+      <div class="btnrow">
+        <button class="btn ghost grow" id="again">Still learning</button>
+        <button class="btn ok grow" id="got">Got it</button>
+      </div>
+      <div class="btnrow"><button class="btn ghost" data-go="quiz-${id}">Quiz this deck</button></div>
+    </div></div>`;
+    $('#card').onclick = () => { flipped = !flipped; render(); };
+    $('#hide').onchange = (e) => { hide = e.target.checked; store.set('hide', hide); pos = 0; render(); };
+    $('#again').onclick = () => { if (known[id]) delete known[id][i]; saveKnown(); flipped = false; pos++; render(); };
+    $('#got').onclick = () => { (known[id] = known[id] || {})[i] = 1; saveKnown(); flipped = false; if (!hide) pos++; render(); };
+  }
+  render();
+}
+
+// ---------- quiz ----------
+function quiz(deckId) {
+  const pool = deckId ? DECKS.find((d) => d.id === deckId).cards.map((c, i) => ({ ...c, deck: deckId, i })) : allCards();
+  let qs = [], n = 0, right = 0, answered = false;
+  function setup() {
+    app.innerHTML = `<div class="wrap"><div class="fc-wrap">
+      <button class="iconbtn" data-go="home" style="justify-self:start">← Home</button>
+      <h2>Quiz</h2><p class="muted">Pick a deck, or mix them all. Ten questions.</p>
+      <div class="chips">${[{ id: '', name: 'Mixed' }, ...DECKS].map((d) => `<button class="chipbtn ${((deckId || '') === d.id) ? 'on' : ''}" data-go="${d.id ? 'quiz-' + d.id : 'quiz'}">${esc(d.name)}${best['quiz-' + (d.id || 'mixed')] != null ? ' · best ' + best['quiz-' + (d.id || 'mixed')] + '/10' : ''}</button>`).join('')}</div>
+      <button class="btn" id="start">Start ${deckId ? esc(DECKS.find((d) => d.id === deckId).name) : 'mixed'} quiz</button>
+    </div></div>`;
+    $('#start').onclick = start;
+  }
+  function start() {
+    qs = shuffle(pool).slice(0, 10).map((c) => {
+      const sameDeck = allCards().filter((x) => x.deck === c.deck && x.t !== c.t);
+      const others = shuffle(sameDeck).slice(0, 3);
+      const mode = Math.random() < 0.6 ? 'def2term' : 'term2def';
+      return { c, mode, opts: shuffle([c, ...others]) };
+    });
+    n = 0; right = 0; ask();
+  }
+  function ask() {
+    answered = false;
+    const q = qs[n];
+    const prompt = q.mode === 'def2term'
+      ? `<span class="eyebrow">Which term matches?</span><p class="q-prompt">${esc(q.c.d)}</p>`
+      : `<span class="eyebrow">What does this mean?</span><p class="q-prompt big">${esc(q.c.t)}</p>`;
+    app.innerHTML = `<div class="wrap"><div class="fc-wrap">
+      <div class="fc-meta"><button class="iconbtn" data-go="quiz">← Quiz menu</button><span class="eyebrow mono">Q${n + 1}/10 · ${right} right</span></div>
+      <div class="bar"><i style="width:${n * 10}%"></i></div>
+      <div class="card" style="min-height:0">${prompt}</div>
+      <div class="q-opts">${q.opts.map((o, i) => `<button class="q-opt" data-i="${i}">${esc(q.mode === 'def2term' ? o.t : o.d)}</button>`).join('')}</div>
+      <div id="fb"></div>
+    </div></div>`;
+    app.querySelectorAll('.q-opt').forEach((b) => (b.onclick = () => pick(+b.dataset.i)));
+  }
+  function pick(i) {
+    if (answered) return; answered = true;
+    const q = qs[n]; const ok = q.opts[i] === q.c; if (ok) right++;
+    app.querySelectorAll('.q-opt').forEach((b, j) => { b.disabled = true; if (q.opts[j] === q.c) b.classList.add('right'); else if (j === i) b.classList.add('wrong'); });
+    $('#fb').innerHTML = `<div class="box"><h4>${ok ? '<span class="good">Correct</span>' : '<span class="badc">Not quite</span>'}</h4>
+      <p><b>${esc(q.c.t)}</b>: ${esc(q.c.d)}</p>${q.c.n ? `<p class="small" style="color:var(--copper)">${esc(q.c.n)}</p>` : ''}
+      <button class="btn" id="next">${n === 9 ? 'See score' : 'Next question'}</button></div>`;
+    $('#next').onclick = () => { n++; n < 10 ? ask() : done(); };
+    $('#next').focus();
+  }
+  function done() {
+    const key = 'quiz-' + (deckId || 'mixed');
+    const isBest = best[key] == null || right > best[key];
+    if (isBest) { best[key] = right; saveBest(); }
+    app.innerHTML = `<div class="wrap"><div class="fc-wrap"><div class="card">
+      <span class="eyebrow">${deckId ? esc(DECKS.find((d) => d.id === deckId).name) : 'Mixed'} quiz</span>
+      <span class="term">${right}/10</span>
+      <p class="def">${right >= 9 ? 'Ready to talk shop.' : right >= 7 ? 'Solid. Run the cards you missed once more.' : 'Run through the study cards, then try again.'}${isBest ? ' New best.' : ''}</p>
+      <div class="btnrow"><button class="btn" id="again">Try again</button><button class="btn ghost" data-go="learn">Study cards</button></div>
+    </div></div></div>`;
+    $('#again').onclick = start;
+  }
+  setup();
+}
+
+// ---------- prep ----------
+function prep() {
+  app.innerHTML = `<div class="wrap">
+    <div class="section-h"><h2>Call prep</h2><span class="muted">For the hiring-manager conversation</span></div>
+    <div class="prep">${PREP.map((p, i) => `<details class="pq" ${i === 1 ? 'open' : ''}><summary>${esc(p.q)}</summary><div><p>${esc(p.a)}</p></div></details>`).join('')}</div>
+  </div>`;
+}
+
+// ---------- lab: level select ----------
+function lab() {
+  app.innerHTML = `<div class="wrap">
+    <div class="section-h"><h2>Grid Lab</h2><span class="muted">Version control for a small, fictional grid</span></div>
+    <div id="heroMount" style="margin-bottom:14px"></div>
+    ${['One firm', 'Two firms', 'Three firms', 'Playground'].map((grp, gi) => {
+      const G3 = [['--plan', '--plan-edge', '--plan-bg'], ['--manage', '--manage', '--manage-bg'], ['--operate', '--operate', '--operate-bg'], ['--lime-ink', '--lime', '--lime-bg']][gi];
+      return `<div class="lvl-group"><span class="eyebrow" style="color:var(${G3[0]})">${grp}</span><div class="levels">${LEVELS.filter((L) => L.group === grp).map((L) => `
+      <button class="lvl glow" style="--gc:var(${G3[0]});--gc2:var(${G3[1]});--gbg:var(${G3[2]})" data-go="play-${L.id}">
+        <span class="n">${L.playground ? '∞' : L.id}</span><h3>${esc(L.name)}</h3><span class="muted small">${esc(L.sub)}</span>
+        <span class="mono small">${L.playground ? 'Sun 0–3 · Wind 0–3' : L.timer ? 'Filing window ' + Math.floor(L.timer / 60) + ':' + String(L.timer % 60).padStart(2, '0') : 'Untimed'}</span>
+        ${L.playground ? '' : `<span class="stars">${'★'.repeat(best['lab-' + L.id] || 0)}${'☆'.repeat(3 - (best['lab-' + L.id] || 0))}</span>`}
+      </button>`).join('')}</div></div>`;
+    }).join('')}
+    <div class="howto">
+      <div><b>Main</b>The approved base case: an 8-substation grid with hydro, gas and a big city.</div>
+      <div><b>Branch</b>Each company works in its own branch. Tap lines, corridors and substations to propose upgrades.</div>
+      <div><b>Checks</b>Every edit re-runs a DC power flow for a summer peak and a windy night, plus every single-line outage (N-1).</div>
+      <div><b>Sync and merge</b>When main changes, branches fall behind. Sync, resolve conflicts, co-fund shared lines, then merge.</div>
+    </div>
+  </div>`;
+  HERO.mount($('#heroMount'));
+}
+
+// ---------- lab: game ----------
+let G = null;
+let flowSpecs = [], flowHoles = [];
+let CO = COMPANIES;
+const TYPE_WORD = { addGen: (p) => `Connect ${p.mw} MW of ${p.type} at ${E.BUSES.find((b) => b.id === p.bus).name}`, addFlatLoad: (p) => `Serve a ${p.mw} MW data center at ${E.BUSES.find((b) => b.id === p.bus).name}, 24/7` };
+function levelCompanies(L) {
+  const out = {};
+  L.companies.forEach((cid) => {
+    const base = COMPANIES[cid], o = (L.co || {})[cid] || {};
+    const project = base.project.map((p) => ({ ...p, mw: o.mw || p.mw }));
+    out[cid] = { ...base, budget: o.budget ?? base.budget, project, goal: TYPE_WORD[project[0].op](project[0]), issue: o.issue === false ? null : base.issue };
+  });
+  return out;
+}
+function play(levelId) {
+  const L = LEVELS.find((l) => l.id === levelId); if (!L) return lab();
+  CO = levelCompanies(L);
+  E.setScenarios(L.playground ? { custom: E.customScen(2, 1) } : null);
+  let uid = 0;
+  const tried = { ops: new Set(), views: new Set(['peak', 'normal']), conflicts: [], requests: {} };
+  const mk = (op, owner, locked) => { if (!locked && G) { tried.ops.add(op.op); tried.added = (tried.added || 0) + 1; } return { ...op, id: 'o' + (++uid), owner, locked: !!locked }; };
+  G = {
+    L, t: 0, paused: false, over: false, scen: L.playground ? 'custom' : 'peak', sun: 2, wind: 1, mode: 'normal', sel: L.companies[0],
+    main: { ver: 0, commits: [{ ver: 0, by: 'iso', msg: 'Base case: 2030 summer planning model', ops: [], t: 0 }] },
+    br: {}, ledger: [], patched: 0, forced: 0, events: (L.events || []).map((e) => ({ ...e, done: false })),
+    baseStudy: null, mk, tried, cluster: false,
+  };
+  L.companies.forEach((cid) => {
+    const C = CO[cid];
+    G.br[cid] = { ops: C.project.map((op) => mk(op, cid, true)), baseVer: 0, merged: false, mergedAt: null, late: false,
+      issue: C.issue ? { text: C.issue.text, state: 'open', until: 0, wait: C.issue.wait } : { state: 'fixed', none: true }, forced: false };
+  });
+  G.baseStudy = E.study(E.build([]));
+  renderGame();
+  showIntro();
+  const tick = setInterval(() => {
+    if (!G || G.over || G.paused || document.hidden) return;
+    G.t += 1;
+    let dirty = false;
+    Object.values(G.br).forEach((b) => { if (b.issue.state === 'waiting' && G.t >= b.issue.until) { b.issue.state = 'fixed'; dirty = true; toast('Corrected model file received'); } });
+    G.events.forEach((ev) => { if (!ev.done && G.t >= ev.at) { ev.done = true; fireEvent(ev); dirty = true; } });
+    if (L.timer && G.t >= L.timer) { finish('time'); return; }
+    if (dirty) renderGame(); else updateClock();
+  }, 1000);
+  cleanup = () => { clearInterval(tick); G = null; closeSheet(); };
+}
+function fireEvent(ev) {
+  if (ev.kind === 'retire') {
+    commit('iso', [{ op: 'retire', bus: 6, type: 'gas', mw: ev.mw }], `Grid operator: Port gas retirement (\u2212${ev.mw} MW)`);
+    toast(`Main changed: the grid operator retired ${ev.mw} MW at Port. Open branches are now behind.`, 4200);
+  }
+  if (ev.kind === 'derate') {
+    commit('iso', [{ op: 'derate', line: ev.line, to: ev.to }], `Grid operator: ${E.lineLabel(ev.line)} derated to ${ev.to} MW after inspection`);
+    toast(`Main changed: inspection derated ${E.lineLabel(ev.line)} to ${ev.to} MW. Open branches are now behind.`, 4200);
+  }
+}
+const mainOps = (ver = G.main.ver) => G.main.commits.filter((c) => c.ver <= ver).flatMap((c) => c.ops);
+// cluster preview: main plus every open branch together, the way a cluster study looks at a batch of projects
+function clusterOps(sel) { const open = G.L.companies.filter((c) => !G.br[c].merged); const order = sel !== 'main' && open.includes(sel) ? [...open.filter((c) => c !== sel), sel] : open; return [...mainOps(), ...order.flatMap((c) => G.br[c].ops)]; }
+const shownOps = (sel) => (G.cluster ? clusterOps(sel) : viewOps(sel));
+function viewOps(sel) { if (sel === 'main') return mainOps(); const b = G.br[sel]; return b.merged ? mainOps() : [...mainOps(b.baseVer), ...b.ops]; }
+const studyCache = new Map();
+function studyFor(ops) { const k = (G && G.L.playground ? `s${G.sun}w${G.wind}|` : '') + JSON.stringify(ops.map(({ id, owner, locked, ...o }) => o)); if (!studyCache.has(k)) { if (studyCache.size > 300) studyCache.clear(); studyCache.set(k, E.study(E.build(ops))); } return studyCache.get(k); }
+function commit(by, ops, msg) { G.main.ver += 1; G.main.commits.push({ ver: G.main.ver, by, ops, msg, t: G.t }); }
+function spend(cid) {
+  const own = [...G.main.commits.flatMap((c) => c.ops), ...(G.br[cid] && !G.br[cid].merged ? G.br[cid].ops : [])].filter((o) => o.owner === cid).reduce((s, o) => s + E.opCost(o), 0);
+  const paid = G.ledger.filter((l) => l.from === cid).reduce((s, l) => s + share(l), 0);
+  const got = G.ledger.filter((l) => l.to === cid).reduce((s, l) => s + share(l), 0);
+  return own + paid - got;
+}
+// a shared upgrade's cost splits evenly between its owner and every co-funder
+function share(l) { const o = findOp(l.opId); if (!o) return 0; const n = G.ledger.filter((x) => x.opId === l.opId).length; return E.opCost(o) / (n + 1); }
+function behind(cid) { const b = G.br[cid]; return !b.merged && b.baseVer < G.main.ver; }
+function conflictsFor(cid) {
+  const b = G.br[cid]; const newer = G.main.commits.filter((c) => c.ver > b.baseVer && c.by !== cid).flatMap((c) => c.ops);
+  const out = [];
+  b.ops.forEach((mine) => { const k = E.opKey(mine); if (!k) return; const theirs = newer.find((o) => E.opKey(o) === k); if (theirs) out.push({ mine, theirs }); });
+  return out;
+}
+function checksFor(cid) {
+  const b = G.br[cid]; const st = studyFor(viewOps(cid)); const C = CO[cid];
+  const phys = st.violations.filter((v) => v.kind === 'overload' && !v.cont || v.kind === 'adequacy');
+  const n1 = st.violations.filter((v) => !phys.includes(v));
+  const sp = spend(cid);
+  return {
+    st,
+    list: [
+      { k: 'data', label: 'Data validation (model import)', ok: b.issue.state === 'fixed' || b.issue.state === 'patched', wait: b.issue.state === 'waiting', note: b.issue.state === 'patched' ? 'patched with a typical value, not verified' : '' },
+      { k: 'sync', label: behind(cid) ? `Behind main by ${G.main.ver - b.baseVer} commit${G.main.ver - b.baseVer > 1 ? 's' : ''}` : 'Up to date with main', ok: !behind(cid) },
+      { k: 'flow', label: G.L.playground ? 'Power flow under these conditions, all lines in' : 'Power flow: peak and night, all lines in', ok: phys.length === 0, v: phys },
+      { k: 'n1', label: 'N-1: every single-line outage', ok: n1.length === 0, v: n1 },
+      { k: 'budget', label: `Budget: $${fmt(sp)}M of $${C.budget}M`, ok: sp <= C.budget + 0.01 },
+    ],
+  };
+}
+const fmt = (x) => (Math.round(x * 10) / 10).toString();
+const busName = (id) => E.BUSES.find((b) => b.id === id).name;
+function updateClock() {
+  const el = $('#clock'); if (!el || !G) return;
+  const cd = $('#issueCd'); if (cd) cd.textContent = Math.max(0, +cd.dataset.until - G.t) + 's';
+  const L = G.L;
+  if (L.timer) { const r = Math.max(0, L.timer - G.t); el.textContent = Math.floor(r / 60) + ':' + String(r % 60).padStart(2, '0'); el.classList.toggle('low', r <= 45); }
+  else el.textContent = Math.floor(G.t / 60) + ':' + String(G.t % 60).padStart(2, '0');
+  // deadlines
+  if (L.timer) L.companies.forEach((cid) => { const b = G.br[cid]; if (!b.merged && !b.late && G.t > L.timer * CO[cid].deadline) { b.late = true; toast(`${CO[cid].short} missed its filing deadline. It can still merge, but late.`); renderGame(); } });
+}
+
+function renderGame() {
+  if (!G) return;
+  const L = G.L, sel = G.sel;
+  const ops = shownOps(sel); const st = studyFor(ops);
+  const C = CO[sel];
+  const color = sel === 'main' ? 'var(--ink)' : C.color;
+  const tabs = ['main', ...L.companies].map((id) => {
+    if (id === 'main') return `<button class="tab ${sel === 'main' ? 'on' : ''}" style="--tc:var(--ink)" data-tab="main"><span class="sw"></span><span>main<br><span class="st">v${G.main.ver} · ${G.main.commits.length} commits</span></span></button>`;
+    const b = G.br[id], cc = CO[id];
+    let stt = 'open', dc = 'var(--warn)';
+    if (b.merged) { stt = 'merged'; dc = 'var(--ok)'; }
+    else if (behind(id)) { stt = 'behind'; dc = 'var(--bad)'; }
+    else { const ch = checksFor(id).list; if (ch.every((c) => c.ok)) { stt = 'ready'; dc = 'var(--ok)'; } else stt = ch.filter((c) => !c.ok).length + ' failing'; }
+    return `<button class="tab ${sel === id ? 'on' : ''}" style="--tc:${cc.color}" data-tab="${id}"><span class="sw"></span><span>${esc(cc.short)}<br><span class="st">${stt}${b.late && !b.merged ? ' · late' : ''}</span></span><span class="dot" style="--dc:${dc}"></span></button>`;
+  }).join('');
+  const m = st.metrics[G.scen];
+  app.innerHTML = `<div class="wrap"><div class="game">
+    <div class="ghead">
+      <button class="iconbtn" data-go="lab" aria-label="Back to levels">←</button>
+      <div class="ttl"><div class="eyebrow">Level ${L.id} · ${esc(L.name)}</div><h3>${esc(L.sub)}</h3></div>
+      <span class="clock" id="clock">0:00</span>
+      ${L.timer ? `<button class="iconbtn" id="pause">${G.paused ? 'Resume' : 'Pause'}</button>` : ''}
+      <button class="iconbtn" id="help">Brief</button>
+      <button class="iconbtn" id="hint">Hint</button>
+      <button class="iconbtn" id="restart">Restart</button>
+    </div>
+    <div class="tabs" role="tablist">${tabs}</div>
+    <div class="split">
+      <div class="mapbox">
+        <div class="maphead">
+          <span class="who"><span class="sw" style="width:10px;height:10px;border-radius:3px;background:${color};display:inline-block"></span>${sel === 'main' ? 'Viewing main' : 'Branch: ' + esc(C.short) + (G.br[sel].merged ? ' (merged)' : '')}</span>
+          ${L.playground ? `<div class="seg" role="group" aria-label="Sun level"><span class="seglab">Sun</span>${[0, 1, 2, 3].map((n) => `<button data-sun="${n}" class="${G.sun === n ? 'on' : ''}">${n}</button>`).join('')}</div><div class="seg" role="group" aria-label="Wind level"><span class="seglab">Wind</span>${[0, 1, 2, 3].map((n) => `<button data-wind="${n}" class="${G.wind === n ? 'on' : ''}">${n}</button>`).join('')}</div>` : `<div class="seg" role="group" aria-label="Scenario"><button data-scen="peak" class="${G.scen === 'peak' ? 'on' : ''}">Summer peak</button><button data-scen="night" class="${G.scen === 'night' ? 'on' : ''}">Windy night</button></div>`}
+          <div class="seg" role="group" aria-label="Contingency view"><button data-mode="normal" class="${G.mode === 'normal' ? 'on' : ''}">All lines in</button><button data-mode="n1" class="${G.mode === 'n1' ? 'on' : ''}">Worst outage</button></div>
+          ${L.companies.length > 1 ? `<div class="seg" role="group" aria-label="Which changes to show"><button data-cl="0" class="${G.cluster ? '' : 'on'}">${sel === 'main' ? 'Main only' : 'This branch'}</button><button data-cl="1" class="${G.cluster ? 'on' : ''}">All open branches</button></div>` : ''}
+        </div>
+        ${mapSVG(ops, st, sel)}
+        <div class="metrics">
+          <div><b>${Math.round(m.clean)}</b><span>Clean MW</span></div>
+          <div><b>${Math.round(m.gas)}</b><span>Gas MW</span></div>
+          <div><b class="${m.curtail > 0.5 ? 'warnc' : ''}">${Math.round(m.curtail)}</b><span>Curtailed</span></div>
+          <div><b>${Math.round(m.co2)}</b><span>CO₂ t/h</span></div>
+        </div>
+        <div class="legend"><span><i style="background:var(--ok)"></i>&lt;80%</span><span><i style="background:var(--warn)"></i>80–100%</span><span><i style="background:var(--bad)"></i>&gt;100% ${G.mode === 'n1' ? 'of emergency limit' : 'of rating'}</span><span><i style="background:var(--ink-2);height:2px"></i>dashed = buildable corridor</span></div>
+      </div>
+      <div class="panel">${G.cluster ? clusterBox(st) : ''}${sel === 'main' ? mainPanel(studyFor(viewOps('main'))) : branchPanel(sel)}</div>
+    </div>
+  </div></div>`;
+  updateClock();
+  FLOW.attach($('svg.map'), flowSpecs, { dur: 1.7, gap: 1.0, maxTail: 48, holes: flowHoles });
+  app.querySelectorAll('[data-tab]').forEach((b) => (b.onclick = () => { G.sel = b.dataset.tab; renderGame(); }));
+  const setPG = () => { E.setScenarios({ custom: E.customScen(G.sun, G.wind) }); G.tried.views.add('night'); renderGame(); };
+  app.querySelectorAll('[data-sun]').forEach((b) => (b.onclick = () => { G.sun = +b.dataset.sun; setPG(); }));
+  app.querySelectorAll('[data-wind]').forEach((b) => (b.onclick = () => { G.wind = +b.dataset.wind; setPG(); }));
+  app.querySelectorAll('[data-scen]').forEach((b) => (b.onclick = () => { G.scen = b.dataset.scen; G.tried.views.add(G.scen); renderGame(); }));
+  app.querySelectorAll('[data-cl]').forEach((b) => (b.onclick = () => { G.cluster = b.dataset.cl === '1'; G.tried.views.add('cluster'); renderGame(); }));
+  app.querySelectorAll('[data-mode]').forEach((b) => (b.onclick = () => { G.mode = b.dataset.mode; G.tried.views.add(G.mode); renderGame(); }));
+  app.querySelectorAll('[data-line]').forEach((el) => (el.onclick = () => lineSheet(el.dataset.line)));
+  app.querySelectorAll('[data-bus]').forEach((el) => { el.onclick = () => busSheet(+el.dataset.bus); el.onkeydown = (e) => { if (e.key === 'Enter') busSheet(+el.dataset.bus); }; });
+  const p = $('#pause'); if (p) p.onclick = () => { G.paused = !G.paused; renderGame(); };
+  $('#help').onclick = showIntro;
+  $('#hint').onclick = showHint;
+  $('#restart').onclick = () => {
+    const was = G.paused; G.paused = true;
+    openSheet(`<span class="eyebrow">Restart level ${G.L.id}</span><h3>Start over?</h3><p class="small">This clears every branch, merge and cost-sharing deal in this run and resets the clock.</p>
+      <div class="btnrow"><button class="btn ghost grow" id="rsNo">Keep playing</button><button class="btn danger grow" id="rsYes">Restart level</button></div>`);
+    $('#rsNo').onclick = () => { G.paused = was; closeSheet(); };
+    $('#rsYes').onclick = () => { closeSheet(); route(); };
+  };
+  wirePanel();
+}
+
+function loadColor(p, lim) { return p > lim ? 'var(--bad)' : p > 0.8 * lim ? 'var(--warn)' : 'var(--ok)'; }
+function mapSVG(ops, st, sel) {
+  const m = E.build(ops);
+  const ownOps = sel !== 'main' && !G.br[sel].merged ? G.br[sel].ops : [];
+  const otherOps = G.cluster ? G.L.companies.filter((c) => c !== sel && !G.br[c].merged).flatMap((c) => G.br[c].ops) : [];
+  const branchOps = [...ownOps, ...otherOps];
+  const colorOf = (list) => { const mine = list.find((o) => o.owner === sel); const o = mine || list[0]; return o && CO[o.owner] ? CO[o.owner].color : 'var(--ink)'; };
+  const pendingLines = new Set(branchOps.filter((o) => o.line).map((o) => o.line));
+  const pendOps = (lid) => branchOps.filter((o) => o.line === lid).map((o) => o.op);
+  const CC = sel !== 'main' ? CO[sel].color : 'var(--ink)';
+  const still = (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } })();
+  const badges = []; flowSpecs = []; flowHoles = E.BUSES.map((bd) => [bd.x - 12, bd.y - 12, 24, 24]);
+  const badge = (x, y, sym, label, bcol = CC) => badges.push(`<g class="pg-badge" aria-hidden="true"><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="8.5" fill="${bcol}" stroke="var(--paper)" stroke-width="1.6"/><text x="${x.toFixed(1)}" y="${(y + 4).toFixed(1)}" text-anchor="middle" font-size="12" font-weight="800" fill="var(--paper)">${sym}</text><title>${label}</title></g>`);
+  const B = (id) => E.BUSES.find((b) => b.id === id);
+  let s = `<svg class="map" viewBox="-4 -16 408 364" role="img" aria-label="Grid map">`;
+  // candidate corridors
+  E.CORRIDORS.forEach((c) => {
+    if (m.lines[c.id]) return; const a = B(c.a), b = B(c.b);
+    s += `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" class="ln" stroke="var(--ink-2)" stroke-width="1.5" stroke-dasharray="4 5" opacity=".7"/>`;
+    s += `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" class="hit" data-line="${c.id}"><title>${E.lineLabel(c.id)} corridor</title></line>`;
+  });
+  Object.values(m.lines).forEach((l) => {
+    const a = B(l.a), b = B(l.b);
+    const ld = G.mode === 'n1' ? st.worst[G.scen][l.id] : st.loading[G.scen][l.id];
+    const lim = G.mode === 'n1' ? E.LTE : 1;
+    const pct = ld ? ld.pct : 0;
+    const col = loadColor(pct, lim);
+    const w = 2 + l.rating / 70;
+    const flowMW = st.loading[G.scen][l.id] ? st.loading[G.scen][l.id].mw : 0;
+    const [p1, p2] = flowMW >= 0 ? [a, b] : [b, a];
+    const pend = pendingLines.has(l.id);
+    const lc = pend ? colorOf(branchOps.filter((o) => o.line === l.id)) : CC;
+    if (pend) {
+      const po = pendOps(l.id);
+      const L2 = `x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}"`;
+      const big = po.includes('upgrade') || po.includes('addLine');
+      if (big) { const gw = w + 14; s += `<line ${L2} class="ln pg-glow${l.dlr ? ' pg-glow-dlr' : ''}" stroke="${lc}" stroke-width="${gw}" style="--w0:${gw}px;--w1:${(gw + 2 * 0.1 * gw).toFixed(1)}px"/>`; }
+      const dx = b.x - a.x, dy = b.y - a.y, len = Math.hypot(dx, dy); let nx = -dy / len, ny = dx / len; if (ny > 0) { nx = -nx; ny = -ny; }
+      const mx0 = (a.x + b.x) / 2 + dx / len * 26, my0 = (a.y + b.y) / 2 + dy / len * 26;
+      badge(mx0 + nx * 15, my0 + ny * 15, po.includes('addLine') ? '+' : '~', po.includes('addLine') ? 'New line in this branch' : 'Modified line in this branch', lc);
+    }
+    const bigPend = pend && pendOps(l.id).some((o) => o === 'upgrade' || o === 'addLine');
+    if (l.dlr && !bigPend) s += `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" class="ln dlr-ring" stroke="${pend ? lc : 'var(--lime)'}" stroke-width="${w + 2}" style="--w0:${(w + 2).toFixed(1)}px;--w1:${(w + 2 * 0.1 * w + 2).toFixed(1)}px"/>`;
+    s += `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" class="ln" stroke="${col}" stroke-width="${w}"><title>${l.dlr ? 'Dynamic line rating: capacity flexes with the weather' : ''}</title></line>`;
+    if (Math.abs(flowMW) > 3) flowSpecs.push({ x1: p1.x, y1: p1.y, x2: p2.x, y2: p2.y, rate: Math.min(1, Math.abs(flowMW) / 200), seed: [...l.id].reduce((t, ch) => t + ch.charCodeAt(0), 0) });
+    const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+    const label = Math.round((G.mode === 'n1' ? pct / E.LTE : pct) * 100) + '%';
+    flowHoles.push([mx - 18, my - 9, 36, 17]);
+    s += `<rect x="${mx - 17}" y="${my - 8}" width="34" height="15" rx="3" fill="var(--paper)" stroke="${col}" stroke-width="1.2"/><text x="${mx}" y="${my + 3.4}" text-anchor="middle" font-size="9.5" font-weight="600" fill="var(--ink)">${label}</text>`;
+    s += `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" class="hit" data-line="${l.id}"><title>${E.lineLabel(l.id)}</title></line>`;
+  });
+  // pending substation changes: battery pulses + badges
+  E.BUSES.forEach((bd) => {
+    const bo = branchOps.filter((o) => o.bus === bd.id);
+    if (!bo.length) return;
+    const bc = colorOf(bo);
+    const batt = bo.filter((o) => o.op === 'addBatt').reduce((t, o) => t + o.mw, 0);
+    if (batt) {
+      const n = Math.min(4, Math.round(batt / 100)); const dur = 2.4;
+      for (let i = 0; i < n; i++) {
+        const begin = (-i * dur / n).toFixed(2);
+        s += still
+          ? `<circle cx="${bd.x}" cy="${bd.y}" r="${16 + i * 7}" fill="none" stroke="${bc}" stroke-width="2.5" opacity="${0.6 - i * 0.12}"/>`
+          : `<circle cx="${bd.x}" cy="${bd.y}" r="14" fill="none" stroke="${bc}" stroke-width="3" class="pg-ring"><animate attributeName="r" values="13;${22 + n * 7}" dur="${dur}s" begin="${begin}s" repeatCount="indefinite"/><animate attributeName="opacity" values=".85;0" dur="${dur}s" begin="${begin}s" repeatCount="indefinite"/><animate attributeName="stroke-width" values="4;1" dur="${dur}s" begin="${begin}s" repeatCount="indefinite"/></circle>`;
+      }
+      s += `<circle cx="${bd.x}" cy="${bd.y}" r="15" fill="${bc}" class="pg-core"/>`;
+    }
+    const add = bo.some((o) => ['addGen', 'addFlatLoad', 'addBatt'].includes(o.op));
+    badge(bd.x + 13, bd.y - 13, add ? '+' : '~', add ? 'Added at this substation in this branch' : 'Modified at this substation in this branch', bc);
+  });
+  // buses
+  E.BUSES.forEach((bd) => {
+    const b = m.buses[bd.id];
+    const tags = [];
+    b.gens.forEach((g) => { if (g.mw > 0) tags.push([g.type.toUpperCase() + ' ' + g.mw, { hydro: 'var(--blue)', gas: 'var(--ink-2)', solar: 'var(--c-sun)', wind: 'var(--c-wind)' }[g.type]]); });
+    if (b.batt) tags.push(['BATT ' + b.batt, 'var(--ok)']);
+    if (b.load) tags.push(['LOAD ' + b.load, 'var(--ink)']);
+    if (b.flat) tags.push(['DATA CTR ' + b.flat, 'var(--c-metro)']);
+    Object.entries(b.cap).forEach(([t, v]) => tags.push(['CAP ' + v, 'var(--bad)']));
+    const [dx, dy, anchor, dir] = bd.lab;
+    const ax = bd.x + dx, nameY = bd.y + dy;
+    s += `<g class="bus" data-bus="${bd.id}" tabindex="0" role="button" aria-label="${bd.name}">`;
+    s += `<circle cx="${bd.x}" cy="${bd.y}" r="18" fill="transparent"/>`;
+    s += `<rect x="${bd.x - 10}" y="${bd.y - 10}" width="20" height="20" rx="4" fill="var(--paper)" stroke="var(--ink)" stroke-width="2.4"/>`;
+    s += `<text x="${bd.x}" y="${bd.y + 3.5}" text-anchor="middle" font-size="9" font-weight="700" fill="var(--ink)">${bd.id}</text>`;
+    s += `<text x="${ax}" y="${nameY}" text-anchor="${anchor}" font-size="11.5" font-weight="700" fill="var(--ink)" stroke="var(--paper)" stroke-width="3" paint-order="stroke" style="font-family:var(--f-body)">${bd.name}</text>`;
+    tags.forEach(([txt, c], i) => {
+      const ty = dir > 0 ? nameY + 4 + i * 13 : nameY - 23 - i * 13;
+      const tw = txt.length * 5.6 + 8;
+      const tx = anchor === 'start' ? ax : anchor === 'end' ? ax - tw : ax - tw / 2;
+      s += `<rect x="${tx}" y="${ty}" width="${tw}" height="11.5" rx="2" fill="${c}"/><text x="${tx + 4}" y="${ty + 8.6}" font-size="8.3" fill="var(--paper)" font-weight="600">${txt}</text>`;
+    });
+    s += `</g>`;
+  });
+  return `<div class="mapwrap">` + s + badges.join('') + `</svg></div>`;
+}
+
+function clusterBox(st) {
+  const open = G.L.companies.filter((c) => !G.br[c].merged);
+  const v = st.violations;
+  return `<div class="box cluster"><h4><span>Cluster preview</span><span>${open.length} open branch${open.length === 1 ? '' : 'es'}</span></h4>
+    <p class="small">The map shows main plus every open branch (${open.map((c) => esc(CO[c].short)).join(', ') || 'none'}) as if they all merged together. It's a what-if, like a cluster study. Merging is still one branch at a time, and each branch's own checks are below.</p>
+    <ul class="checks"><li class="${v.length ? 'fail' : 'pass'}"><span class="ic">${v.length ? '✕' : '✓'}</span><span>${v.length ? `Together: ${v.length} violation${v.length > 1 ? 's' : ''}` : 'Together, every study passes'}${v.length ? `<ul class="viol">${v.slice(0, 4).map((x) => `<li>${esc(E.vText(x))}</li>`).join('')}${v.length > 4 ? `<li>+${v.length - 4} more</li>` : ''}</ul>` : ''}</span></li></ul></div>`;
+}
+function mainPanel(st) {
+  const bad = st.violations;
+  const log = [...G.main.commits].reverse().map((c) => `<li><span class="v" style="box-shadow:inset 3px 0 0 ${c.by === 'iso' ? 'var(--c-iso)' : CO[c.by].color}">v${c.ver}</span><span>${esc(c.msg)}${c.ops.length ? `<br><span class="small muted mono">${c.ops.map((o) => esc(E.opText(o))).join('<br>')}</span>` : ''}</span></li>`).join('');
+  return `
+    <div class="box"><h4><span>Main · approved model</span><span>v${G.main.ver}</span></h4>
+      <p class="small">Main is the shared, approved base case. You can't edit it directly. Each company proposes changes in its own branch, and a change lands here only by merging.</p>
+      <ul class="checks"><li class="${bad.length ? 'fail' : 'pass'}"><span class="ic">${bad.length ? '✕' : '✓'}</span><span>${bad.length ? bad.length + ' reliability violation' + (bad.length > 1 ? 's' : '') + ' on main' : 'Main passes every study'}${bad.length ? `<ul class="viol">${bad.slice(0, 6).map((v) => `<li>${esc(E.vText(v))}</li>`).join('')}</ul>` : ''}</span></li></ul>
+    </div>
+    <div class="box"><h4><span>Commit history</span></h4><ul class="log">${log}</ul></div>
+    ${ledgerBox()}`;
+}
+function ledgerBox() {
+  if (!G.ledger.length) return '';
+  return `<div class="box"><h4><span>Cost-sharing agreements</span><span>${G.ledger.length}</span></h4><ul class="log">${G.ledger.map((l) => `<li><span class="v">$${fmt(share(l))}M</span><span>${esc(CO[l.from].short)} → ${esc(CO[l.to].short)}: ${esc(l.label)}</span></li>`).join('')}</ul></div>`;
+}
+const OPINFO = {
+  addGen: { name: 'New generator (the company\u2019s project)', good: 'Adding clean supply. It cuts gas use and covers peak shortfalls if the grid can carry it to load.', bad: 'Anything on its own. New power has to flow somewhere, and it usually overloads the nearest lines first.', real: 'Each one starts as an interconnection request that waits in the queue for studies.' },
+  addFlatLoad: { name: 'New data-center load (the company\u2019s project)', good: 'Nothing. It\u2019s the demand you\u2019re here to serve, flat 24/7, so it stresses both scenarios.', bad: 'Ignoring supply. If nobody adds generation or storage, peak runs short.', real: 'Large loads now go through studies much like generators do.' },
+  retire: { name: 'Plant retirement', good: 'Cutting emissions and old costs.', bad: 'Peak supply and the lines that used to carry that plant\u2019s power the other way.', real: 'Grid operators can delay a retirement if the studies show reliability problems.' },
+  upgrade: { name: 'Rebuild (reconductor)', good: 'One line that\u2019s simply too small, overloaded with all lines in or during an outage, when the path itself is right.', bad: 'Problems where there\u2019s only one path. A bigger line is still lost if it trips. It\u2019s also slow and costly on long lines.', real: 'Takes years of permitting and outages to do. Cost scales with length.' },
+  dlr: { name: 'Dynamic line rating', good: 'Lines that overload only in cool or windy weather. Wind cools the wire, so a windy night gains about 15% capacity. It\u2019s cheap and fast.', bad: 'Hot, still summer peaks (only about +5%) and big gaps. It squeezes more out of a line; it doesn\u2019t double it.', real: 'A grid-enhancing technology. AES uses it, and FERC has pushed for wider adoption.' },
+  addLine: { name: 'New corridor', good: 'Outage (N-1) problems, because it adds a second path. Also moving lots of new power to load, and serving two companies at once.', bad: 'Tight budgets and quick fixes. It also reshuffles flows everywhere, so check other lines afterward.', real: 'The slowest option in reality (siting, permits, landowners). Cost allocation is where the fights happen.' },
+  addBatt: { name: 'Battery', good: 'Peak supply shortfalls, and shaving peak flow into a congested load pocket.', bad: 'Night problems (it charges then, which adds load) and overloads at the generator end of a line.', real: 'Fast to build. Planners need assumptions about when it charges and discharges in each scenario.' },
+  cap: { name: 'Export cap', good: 'Getting a project connected cheaply and quickly when the grid can only take part of its output.', bad: 'Clean-energy goals. The capped energy is thrown away, and it can\u2019t fix problems unrelated to that plant.', real: 'Like a provisional or limited interconnection, or a runback scheme, that a developer accepts while upgrades wait.' },
+};
+function branchPanel(cid) {
+  const b = G.br[cid], C = CO[cid];
+  const sp = spend(cid);
+  const deadline = G.L.timer ? Math.round(G.L.timer * C.deadline) : 0;
+  if (b.merged) {
+    return `<div class="box brief glow" style="--tc:${C.color};--gc:${C.color};--gc2:${C.color};--gbg:var(--paper)"><h4><span>${esc(C.name)} · ${esc(C.role)}</span><span class="good">Merged</span></h4>
+      <p>${esc(C.goal)}. Merged to main at ${Math.floor(b.mergedAt / 60)}:${String(b.mergedAt % 60).padStart(2, '0')}${b.late ? ' (late)' : ''}${b.forced ? ', with violations accepted' : ''}.</p>
+      <p class="small mono">Spent $${fmt(sp)}M of $${C.budget}M</p></div>${cofundBox(cid)}${ledgerBox()}`;
+  }
+  const ck = checksFor(cid);
+  const conf = behind(cid) ? conflictsFor(cid) : [];
+  const physFail = ck.list.filter((c) => !c.ok && ['flow', 'n1', 'budget'].includes(c.k));
+  const gateFail = ck.list.filter((c) => !c.ok && ['data', 'sync'].includes(c.k));
+  const allOk = ck.list.every((c) => c.ok);
+  const diff = b.ops.map((o) => {
+    const cls = o.op === 'retire' ? 'del' : ['upgrade', 'dlr', 'cap', 'rerate'].includes(o.op) ? 'mod' : 'add';
+    const cost = E.opCost(o);
+    const tip = OPINFO[o.op];
+    return `<li class="${cls}"><span class="tx">${esc(E.opText(o))}</span>${tip ? `<span class="infowrap"><button class="info" aria-label="What this is good for" aria-describedby="tip-${o.id}">i</button><span class="tip" role="tooltip" id="tip-${o.id}"><b>${esc(tip.name)}</b><span class="tg">Good for</span>${esc(tip.good)}<span class="tg">Not good for</span>${esc(tip.bad)}<span class="tg">In real life</span>${esc(tip.real)}</span></span>` : ''}${cost ? `<span class="c">$${cost}M</span>` : ''}${o.locked ? '<span class="c" title="The company\'s own project">project</span>' : `<button class="x" data-rm="${o.id}" aria-label="Remove change">×</button>`}</li>`;
+  }).join('');
+  const issue = b.issue;
+  const issueHTML = issue.state === 'open' ? `<div class="issue"><b>Validation failed on import</b><span>${esc(issue.text)}</span>
+      <div class="btnrow"><button class="btn ghost" id="reqfix">Request corrected file (~${issue.wait}s)</button><button class="btn warnb" id="patch">Patch with a typical value</button></div></div>`
+    : issue.state === 'waiting' ? `<div class="issue"><b>Waiting on ${esc(C.short)}</b><span>Corrected file due in <span class="mono" id="issueCd" data-until="${issue.until}">${Math.max(0, issue.until - G.t)}s</span>. Keep working on upgrades in the meantime.</span></div>` : '';
+  return `
+    <div class="box brief glow" style="--tc:${C.color};--gc:${C.color};--gc2:${C.color};--gbg:var(--paper)">
+      <h4><span>${esc(C.name)} · ${esc(C.role)}</span>${deadline ? `<span class="${b.late ? 'badc' : ''}">due ${Math.floor(deadline / 60)}:${String(deadline % 60).padStart(2, '0')} left</span>` : ''}</h4>
+      <p><b>${esc(C.goal)}.</b></p>
+      <div class="budget"><div class="bar ${sp > C.budget ? 'over' : ''}"><i style="width:${Math.min(100, 100 * sp / C.budget)}%"></i></div><span class="small mono">$${fmt(sp)}M of $${C.budget}M budget</span></div>
+      ${issueHTML}
+    </div>
+    ${behind(cid) ? `<div class="box" style="border-color:var(--bad)"><h4><span class="badc">Main has moved</span><span>${G.main.ver - b.baseVer} new</span></h4>
+      <p class="small">Your branch was tested against main v${b.baseVer}. Sync to replay your changes on v${G.main.ver} and re-run every study.${conf.length ? ` <b>${conf.length} conflict${conf.length > 1 ? 's' : ''}</b> to resolve.` : ''}</p>
+      <button class="btn" id="sync">Sync with main</button></div>` : ''}
+    <div class="box"><h4><span>Changes in this branch</span><span>diff vs main</span></h4>
+      <ul class="diff">${diff}</ul>
+      <p class="small muted">Tap a line, a dashed corridor or a substation on the map to propose a change.</p></div>
+    <div class="box"><h4><span>Checks</span><span>${ck.list.filter((c) => c.ok).length}/${ck.list.length} passing</span></h4>
+      <ul class="checks">${ck.list.map((c) => `<li class="${c.ok ? 'pass' : c.wait ? 'wait' : 'fail'}"><span class="ic">${c.ok ? '✓' : c.wait ? '…' : '✕'}</span><span>${esc(c.label)}${c.note ? ` <span class="warnc small">(${esc(c.note)})</span>` : ''}${c.v && c.v.length ? `<ul class="viol">${c.v.slice(0, 5).map((v) => `<li>${esc(E.vText(v))}</li>`).join('')}${c.v.length > 5 ? `<li>+${c.v.length - 5} more</li>` : ''}</ul>` : ''}</span></li>`).join('')}</ul>
+      <div class="btnrow">
+        <button class="btn grow" id="merge" ${allOk ? '' : 'disabled'}>Merge to main</button>
+        ${!allOk && !gateFail.length && physFail.length ? `<button class="btn danger" id="force">Merge anyway</button>` : ''}
+      </div>
+      ${!allOk && gateFail.length ? `<p class="small muted">Fix data validation and sync with main before merging.</p>` : ''}
+    </div>
+    ${cofundBox(cid)}
+    ${ledgerBox()}`;
+}
+function cofundBox(cid) {
+  // line works owned by other companies (merged or in open branches) this company hasn't co-funded
+  const cands = [];
+  G.main.commits.forEach((c) => c.ops.forEach((o) => { if (o.owner && o.owner !== 'iso' && o.owner !== cid && ['addLine', 'upgrade', 'addBatt', 'dlr'].includes(o.op)) cands.push({ o, where: 'main' }); }));
+  G.L.companies.forEach((other) => { if (other === cid || G.br[other].merged) return; G.br[other].ops.forEach((o) => { if (['addLine', 'upgrade', 'addBatt', 'dlr'].includes(o.op)) cands.push({ o, where: CO[other].short + '’s branch' }); }); });
+  const open = cands.filter(({ o }) => !G.ledger.some((l) => l.opId === o.id && l.from === cid));
+  if (!open.length) return '';
+  return `<div class="box"><h4><span>Shared upgrades you could co-fund</span></h4>
+    <p class="small muted">Electricity doesn't respect ownership. If another company's line also carries your power, offer to share its cost. The cost splits evenly among everyone who pays.</p>
+    ${open.map(({ o, where }) => `<div class="cof"><span class="tx small"><b>${esc(E.opText(o))}</b><br><span class="muted">${esc(CO[o.owner].short)} · ${esc(where)} · $${E.opCost(o)}M</span></span><button class="btn ghost" data-cofund="${o.id}">Pay a share ($${fmt(E.opCost(o) / (G.ledger.filter((x) => x.opId === o.id).length + 2))}M)</button></div>`).join('')}
+  </div>`;
+}
+function findOp(id) {
+  for (const c of G.main.commits) for (const o of c.ops) if (o.id === id) return o;
+  for (const b of Object.values(G.br)) for (const o of b.ops) if (o.id === id) return o;
+  return null;
+}
+function wirePanel() {
+  const cid = G.sel;
+  app.querySelectorAll('[data-rm]').forEach((x) => (x.onclick = () => {
+    const b = G.br[cid]; const id = x.dataset.rm;
+    b.ops = b.ops.filter((o) => o.id !== id);
+    G.ledger = G.ledger.filter((l) => l.opId !== id);
+    renderGame();
+  }));
+  app.querySelectorAll('[data-cofund]').forEach((x) => (x.onclick = () => {
+    const o = findOp(x.dataset.cofund); if (!o) return;
+    G.tried.ops.add('cofund'); G.ledger.push({ from: cid, to: o.owner, amt: E.opCost(o) / 2, opId: o.id, label: E.opText(o).replace(/^[+~−-]\s*/, '') });
+    toast(`Joint project: ${CO[cid].short} now shares the cost of ${E.lineLabel(o.line)}`);
+    renderGame();
+  }));
+  const rq = $('#reqfix'); if (rq) rq.onclick = () => { const b = G.br[cid]; b.issue.state = 'waiting'; b.issue.until = G.t + b.issue.wait; G.tried.requests[cid] = G.t; G.tried.ops.add('request'); if (!G.L.timer) { /* untimed: clock still ticks */ } renderGame(); };
+  const pt = $('#patch'); if (pt) pt.onclick = () => { G.br[cid].issue.state = 'patched'; G.patched++; toast('Patched. It will pass validation, but the audit trail flags unverified data.'); renderGame(); };
+  const sy = $('#sync'); if (sy) sy.onclick = () => doSync(cid);
+  const mg = $('#merge'); if (mg) mg.onclick = () => doMerge(cid, false);
+  const fc = $('#force'); if (fc) fc.onclick = () => confirmForce(cid);
+}
+
+// ---- sync / conflicts ----
+function doSync(cid) {
+  const conf = conflictsFor(cid);
+  if (!conf.length) { G.br[cid].baseVer = G.main.ver; toast('Synced. Studies re-ran on the latest main.'); renderGame(); return; }
+  resolveConflict(cid, conf, 0);
+}
+function resolveConflict(cid, conf, i) {
+  if (i >= conf.length) { G.br[cid].baseVer = G.main.ver; closeSheet(); toast('Conflicts resolved and synced'); renderGame(); return; }
+  const { mine, theirs } = conf[i];
+  const owner = theirs.owner && CO[theirs.owner] ? CO[theirs.owner].short : 'Grid operator';
+  const canShare = theirs.owner && CO[theirs.owner] && E.opCost(theirs) > 0;
+  openSheet(`<span class="eyebrow">Merge conflict ${i + 1} of ${conf.length}</span>
+    <h3>${esc(E.lineLabel(mine.line))}</h3>
+    <p class="small">Both branches changed the same line, so the model can't hold both versions.</p>
+    <dl class="kv"><dt>Main (${esc(owner)})</dt><dd>${esc(E.opText(theirs))}</dd><dt>Yours (${esc(CO[cid].short)})</dt><dd>${esc(E.opText(mine))}</dd></dl>
+    ${canShare ? `<button class="opt" data-r="share"><b><span>Make it a joint project</span><span class="mono">pay $${fmt(E.opCost(theirs) / (G.ledger.filter((x) => x.opId === theirs.id).length + 2))}M</span></b><span class="small muted">Drop your duplicate and co-fund ${esc(owner)}'s version. This is usually the right call.</span></button>` : ''}
+    <button class="opt" data-r="theirs"><b><span>Use main's version</span><span class="mono">$0</span></b><span class="small muted">Drop your change. Your studies re-run on theirs.</span></button>
+    <button class="opt" data-r="mine"><b><span>Keep mine on top</span><span class="mono">$${E.opCost(mine)}M</span></b><span class="small muted">Your edit overrides theirs once merged. You pay for both, and it could break their project.</span></button>`);
+  $('#sheet').querySelectorAll('[data-r]').forEach((bt) => (bt.onclick = () => {
+    const b = G.br[cid]; const r = bt.dataset.r; G.tried.conflicts.push({ cid, r, line: mine.line }); if (r === 'share') G.tried.ops.add('cofund');
+    if (r === 'share') { b.ops = b.ops.filter((o) => o.id !== mine.id); G.ledger.push({ from: cid, to: theirs.owner, amt: E.opCost(theirs) / 2, opId: theirs.id, label: E.opText(theirs).replace(/^[+~−-]\s*/, '') }); }
+    if (r === 'theirs') b.ops = b.ops.filter((o) => o.id !== mine.id);
+    resolveConflict(cid, conf, i + 1);
+  }));
+}
+function confirmForce(cid) {
+  const ck = checksFor(cid);
+  const fails = ck.list.filter((c) => !c.ok);
+  openSheet(`<span class="eyebrow">Override the checks?</span><h3>Merge ${esc(CO[cid].short)} with failures</h3>
+    <p class="small">These checks are failing. Merging anyway puts known reliability risk or a budget overrun into the shared model that every other company builds on.</p>
+    <ul class="viol">${fails.map((c) => `<li>${esc(c.label)}</li>`).join('')}</ul>
+    <div class="btnrow"><button class="btn ghost grow" id="cx">Keep working</button><button class="btn danger grow" id="ok">Merge anyway</button></div>`);
+  $('#cx').onclick = closeSheet; $('#ok').onclick = () => { closeSheet(); doMerge(cid, true); };
+}
+function doMerge(cid, forced) {
+  const b = G.br[cid];
+  const before = studyFor(mainOps());
+  commit(cid, b.ops.map((o) => ({ ...o })), `Merge ${CO[cid].short}: ${CO[cid].goal.toLowerCase()}`);
+  b.merged = true; b.mergedAt = G.t; b.forced = forced; if (forced) G.forced++;
+  const after = studyFor(mainOps());
+  const SK = Object.keys(after.metrics); const P0 = SK[0];
+  const d = (k) => after.metrics[P0][k] - before.metrics[P0][k];
+  const curt = SK.reduce((t, k) => t + after.metrics[k].curtail, 0);
+  const others = G.L.companies.filter((x) => !G.br[x].merged);
+  const done = !others.length && !G.L.playground;
+  openSheet(`<span class="eyebrow">Merged to main · v${G.main.ver}</span><h3>${esc(CO[cid].name)}</h3>
+    <div class="outcome">
+      <div><span class="small muted">Clean energy at peak</span><b class="${d('clean') >= 0 ? 'good' : 'badc'}">${d('clean') >= 0 ? '+' : ''}${Math.round(d('clean'))} MW</b></div>
+      <div><span class="small muted">CO₂ at peak</span><b class="${d('co2') <= 0 ? 'good' : 'badc'}">${d('co2') > 0 ? '+' : ''}${Math.round(d('co2'))} t/h</b></div>
+      <div><span class="small muted">Curtailed (peak + night)</span><b class="${curt > 0.5 ? 'warnc' : 'good'}">${Math.round(curt)} MW</b></div>
+      <div><span class="small muted">Violations on main</span><b class="${after.violations.length ? 'badc' : 'good'}">${after.violations.length}</b></div>
+    </div>
+    <p class="small">${forced ? 'You merged with failing checks. The violations are now in the shared model, and every open branch inherits them.' : curt > 0.5 ? 'It’s reliable, but some clean energy is being thrown away. A bigger path to load would deliver all of it.' : 'Every study passed, and no clean energy is wasted.'}${others.length ? ` Main moved, so ${others.map((x) => CO[x].short).join(' and ')} must sync before merging.` : ''}</p>
+    <div class="btnrow"><button class="btn grow" id="cont">${done ? 'See results' : 'Continue'}</button></div>`);
+  $('#cont').onclick = () => { closeSheet(); if (done) finish('done'); else { if (others.length) G.sel = others[0]; renderGame(); } };
+  renderGame();
+}
+
+// ---- element sheets ----
+function lineSheet(lid) {
+  const sel = G.sel;
+  const ops = shownOps(sel); const m = E.build(ops); const st = studyFor(ops);
+  const l = m.lines[lid]; const corr = E.CORRIDORS.find((c) => c.id === lid);
+  const editable = sel !== 'main' && !G.br[sel].merged;
+  const mine = editable ? G.br[sel].ops.filter((o) => o.line === lid) : [];
+  let html = `<span class="eyebrow">${l ? (l.isNew ? 'New line' : 'Transmission line') : 'Buildable corridor'}</span><h3>${esc(E.lineLabel(lid))}</h3>`;
+  if (l) {
+    const SKs = Object.keys(st.loading); const lp = st.loading[SKs[0]][lid], ln = st.loading[SKs[1] || SKs[0]][lid], wp = st.worst[SKs[0]][lid], wn = st.worst[SKs[1] || SKs[0]][lid];
+    html += `<dl class="kv"><dt>Rating</dt><dd>${l.rating} MW normal · ${Math.round(l.rating * E.LTE)} MW emergency${l.dlr ? ' · DLR on' : ''}</dd>
+      ${SKs.length > 1 ? `<dt>Peak flow</dt><dd>${Math.round(Math.abs(lp.mw))} MW (${Math.round(lp.pct * 100)}%)</dd>
+      <dt>Night flow</dt><dd>${Math.round(Math.abs(ln.mw))} MW (${Math.round(ln.pct * 100)}%)</dd>` : `<dt>Flow (sun ${G.sun}, wind ${G.wind})</dt><dd>${Math.round(Math.abs(lp.mw))} MW (${Math.round(lp.pct * 100)}%)</dd>`}
+      <dt>Worst outage</dt><dd>${Math.round(Math.max(wp.pct, wn.pct) / E.LTE * 100)}% of emergency${(wp.pct >= wn.pct ? wp.by : wn.by) ? ' if ' + esc(E.lineLabel(wp.pct >= wn.pct ? wp.by : wn.by)) + ' trips' : ''}</dd></dl>`;
+  } else html += `<p class="small">An unbuilt right-of-way, ${corr.km} km. A new ${corr.rating} MW line here adds a parallel path and changes flows across the whole grid.</p>`;
+  if (!editable) html += `<p class="small muted">${sel === 'main' ? 'Main is read-only. Switch to a company branch to propose changes.' : 'This branch is already merged.'}</p>`;
+  else {
+    const has = (op) => mine.find((o) => o.op === op);
+    const inView = (op) => ops.some((o) => o.line === lid && o.op === op);
+    if (!l) html += optBtn('build', `Build new ${corr.rating} MW line`, corr.cost, 'Big, slow and expensive, but it adds a parallel path that also survives outages.');
+    else {
+      if (!l.upgraded && !has('upgrade')) html += optBtn('upgrade', `Rebuild: ${l.rating} → ${l.rating + 150} MW`, E.opCost({ op: 'upgrade', line: lid }), 'Reconductor with a higher-capacity wire. Same path, more capacity.');
+      if (!l.dlr && !has('dlr')) html += optBtn('dlr', 'Dynamic line rating', 4, 'Sensors rate the line by the weather: +5% on a hot, still peak, +15% on a windy night. A cheap grid-enhancing technology.');
+    }
+    mine.filter((o) => !o.locked).forEach((o) => { html += `<button class="opt" data-rmop="${o.id}"><b><span>Remove: ${esc(E.opText(o))}</span><span class="mono">−$${E.opCost(o)}M</span></b></button>`; });
+  }
+  html += `<button class="btn ghost" id="close">Close</button>`;
+  openSheet(html);
+  const b = G.br[sel];
+  $('#sheet').querySelectorAll('[data-opt]').forEach((bt) => (bt.onclick = () => {
+    const k = bt.dataset.opt;
+    if (k === 'build') b.ops.push(G.mk({ op: 'addLine', line: lid }, sel));
+    if (k === 'upgrade') b.ops.push(G.mk({ op: 'upgrade', line: lid, to: l.rating + 150 }, sel));
+    if (k === 'dlr') b.ops.push(G.mk({ op: 'dlr', line: lid }, sel));
+    closeSheet(); renderGame();
+  }));
+  $('#sheet').querySelectorAll('[data-rmop]').forEach((bt) => (bt.onclick = () => { b.ops = b.ops.filter((o) => o.id !== bt.dataset.rmop); G.ledger = G.ledger.filter((x) => x.opId !== bt.dataset.rmop); closeSheet(); renderGame(); }));
+  $('#close').onclick = closeSheet;
+}
+function optBtn(k, title, cost, desc) { return `<button class="opt" data-opt="${k}"><b><span>${esc(title)}</span><span class="mono">$${cost}M</span></b><span class="small muted">${esc(desc)}</span></button>`; }
+function busSheet(bid) {
+  const sel = G.sel; const ops = shownOps(sel); const m = E.build(ops); const bd = E.BUSES.find((b) => b.id === bid); const bus = m.buses[bid];
+  const editable = sel !== 'main' && !G.br[sel].merged;
+  const C = CO[sel];
+  let html = `<span class="eyebrow">Substation ${bid}</span><h3>${esc(bd.name)}</h3><dl class="kv">
+    <dt>Load</dt><dd>${bus.load} MW peak (half at night)${bus.flat ? ` + ${bus.flat} MW data center, 24/7` : ''}</dd>
+    <dt>Generation</dt><dd>${bus.gens.filter((g) => g.mw > 0).map((g) => g.mw + ' MW ' + g.type).join(', ') || 'none'}</dd>
+    <dt>Battery</dt><dd>${bus.batt ? bus.batt + ' MW (discharges at peak, charges at night from spare supply)' : 'none'}</dd></dl>`;
+  if (!editable) html += `<p class="small muted">${sel === 'main' ? 'Main is read-only. Switch to a company branch to propose changes.' : 'This branch is already merged.'}</p>`;
+  else {
+    html += optBtn('b100', 'Add 100 MW battery', E.opCost({ op: 'addBatt', mw: 100 }), 'Shaves peak load or adds peak supply here. At night it charges, which adds load.');
+    html += optBtn('b200', 'Add 200 MW battery', E.opCost({ op: 'addBatt', mw: 200 }), 'The same thing, twice as big.');
+    const myGen = C.project.find((p) => p.op === 'addGen' && p.bus === bid);
+    if (myGen) [100, 150, 200].forEach((cap) => { html += optBtn('cap' + cap, `Cap ${myGen.type} export at ${cap} MW`, 0, `Accept curtailment rather than paying for upgrades. Up to ${Math.max(0, Math.round(myGen.mw * (myGen.type === 'solar' ? 0.8 : 0.95)) - cap)} MW of clean energy wasted at its best hour.`); });
+    G.br[sel].ops.filter((o) => o.bus === bid && !o.locked).forEach((o) => { html += `<button class="opt" data-rmop="${o.id}"><b><span>Remove: ${esc(E.opText(o))}</span><span class="mono">${E.opCost(o) ? '−$' + E.opCost(o) + 'M' : ''}</span></b></button>`; });
+  }
+  html += `<button class="btn ghost" id="close">Close</button>`;
+  openSheet(html);
+  const b = G.br[sel];
+  $('#sheet').querySelectorAll('[data-opt]').forEach((bt) => (bt.onclick = () => {
+    const k = bt.dataset.opt;
+    if (k === 'b100' || k === 'b200') b.ops.push(G.mk({ op: 'addBatt', bus: bid, mw: k === 'b100' ? 100 : 200 }, sel));
+    if (k.startsWith('cap')) { const g = C.project.find((p) => p.op === 'addGen'); b.ops = b.ops.filter((o) => o.op !== 'cap'); b.ops.push(G.mk({ op: 'cap', bus: bid, type: g.type, mw: +k.slice(3) }, sel)); }
+    closeSheet(); renderGame();
+  }));
+  $('#sheet').querySelectorAll('[data-rmop]').forEach((bt) => (bt.onclick = () => { b.ops = b.ops.filter((o) => o.id !== bt.dataset.rmop); closeSheet(); renderGame(); }));
+  $('#close').onclick = closeSheet;
+}
+let lastFocus = null;
+function openSheet(html) {
+  closeSheet(); lastFocus = document.activeElement;
+  const s = document.createElement('div'); s.className = 'scrim'; s.id = 'scrim';
+  s.innerHTML = `<div class="sheet" id="sheet" role="dialog" aria-modal="true">${html}</div>`;
+  s.addEventListener('click', (e) => { if (e.target === s) closeSheet(); });
+  document.body.appendChild(s);
+  const f = s.querySelector('button'); if (f) f.focus();
+}
+function closeSheet() { const s = $('#scrim'); if (s) s.remove(); if (lastFocus && lastFocus.focus) try { lastFocus.focus(); } catch (e) {} }
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSheet(); });
+
+function showIntro() {
+  const L = G.L;
+  openSheet(`<span class="eyebrow">Level ${L.id} · ${esc(L.name)}</span><h3>${esc(L.sub)}</h3>
+    <p>${esc(L.intro)}</p>
+    <div class="howto" style="margin-top:0">
+      <div><b>Map</b>Line color is loading. Switch between summer peak and windy night, and use Worst outage to see N-1 stress.</div>
+      <div><b>Edit</b>Tap lines, dashed corridors or substations to rebuild, add DLR, build, add batteries or cap exports.</div>
+      <div><b>Score</b>Merge every branch with clean checks, on time and on budget. Co-funded shared lines and verified data earn bonuses.</div>
+    </div>
+    ${L.timer ? `<p class="small mono">Filing window: ${Math.floor(L.timer / 60)}:${String(L.timer % 60).padStart(2, '0')}. The clock pauses while this is open.</p>` : ''}
+    <button class="btn" id="go">${G.t ? 'Back to work' : 'Start'}</button>`);
+  G.paused = true;
+  $('#go').onclick = () => { G.paused = false; closeSheet(); renderGame(); };
+}
+
+function finish(why) {
+  if (!G || G.over) return; G.over = true;
+  const L = G.L; const st = studyFor(mainOps());
+  const rows = [];
+  let total = 0; const add = (label, pts) => { rows.push([label, Math.round(pts)]); total += pts; };
+  L.companies.forEach((cid) => {
+    const b = G.br[cid], C = CO[cid];
+    if (b.merged) { add(`${C.short} merged`, 100); if (!b.late) add(`${C.short} on time`, 40); }
+    else add(`${C.short} not merged`, 0);
+    const sp = spend(cid);
+    if (b.merged) add(`${C.short} budget ($${fmt(sp)}M of $${C.budget}M)`, sp <= C.budget ? (C.budget - sp) / 2 : -(sp - C.budget) * 2);
+  });
+  const vio = st.violations.length;
+  add(vio ? `Main has ${vio} violation${vio > 1 ? 's' : ''}` : 'Main passes every study', vio ? -40 * Math.min(vio, 6) : 150);
+  add(`Clean energy added at peak (+${Math.round(st.metrics.peak.clean - G.baseStudy.metrics.peak.clean)} MW)`, (st.metrics.peak.clean - G.baseStudy.metrics.peak.clean) / 4);
+  const curt = Object.values(st.metrics).reduce((t, m) => t + m.curtail, 0); if (curt > 0.5) add(`Curtailment (${Math.round(curt)} MW)`, -curt / 2);
+  if (G.ledger.length) add(`Joint projects (${G.ledger.length})`, 50 * G.ledger.length);
+  if (G.patched) add(`Unverified data patches (${G.patched})`, -30 * G.patched);
+  if (G.forced) add(`Merges with failing checks (${G.forced})`, -100 * G.forced);
+  if (L.timer && why === 'done') add(`Time left (${L.timer - G.t}s)`, (L.timer - G.t) / 3);
+  total = Math.round(total);
+  const stars = total >= L.stars[2] ? 3 : total >= L.stars[1] ? 2 : total >= L.stars[0] ? 1 : 0;
+  if (stars > (best['lab-' + L.id] || 0)) { best['lab-' + L.id] = stars; saveBest(); }
+  const rv = review(st, curt, vio);
+  const sk = skill(stars, curt, vio);
+  openSheet(`<span class="eyebrow">Level ${L.id} complete${why === 'time' ? ' · filing window closed' : ''}</span>
+    <h3>${total} points</h3><div class="bigstars" aria-label="${stars} of 3 stars">${'★'.repeat(stars)}${'☆'.repeat(3 - stars)}</div>
+    <div class="review">
+      <div class="skill"><span class="eyebrow">Read as</span><b>${sk.level} planner</b><span class="small muted">${esc(sk.why)}</span></div>
+      <h4>Try again, and this time\u2026</h4><ul class="notes try">${sk.tries.map((n) => `<li>${esc(n)}</li>`).join('')}</ul>
+      <h4>Your plan</h4>${rv.plan}
+      ${rv.untried.length ? `<h4>Not tried this run</h4><div class="chips">${rv.untried.map((u) => `<span class="chipbtn untried">${esc(u)}</span>`).join('')}</div>` : ''}
+      <h4>Planner\u2019s notes</h4><ul class="notes">${rv.notes.map((n) => `<li>${esc(n)}</li>`).join('')}</ul>
+    </div>
+    <details class="pq"><summary>Score breakdown</summary><div><ul class="score">${rows.map(([l, p]) => `<li><span>${esc(l)}</span><span class="${p < 0 ? 'badc' : ''}">${p > 0 ? '+' : ''}${p}</span></li>`).join('')}</ul></div></details>
+    <p class="small muted">Stars at ${L.stars.join(' / ')} points.</p>
+    <div class="btnrow"><button class="btn ghost grow" id="retry">Replay</button>${L.id < LEVELS.length ? `<button class="btn grow" id="nextL">${L.id + 1 === LEVELS.length ? 'Playground' : 'Level ' + (L.id + 1)}</button>` : `<button class="btn grow" id="toLab">All levels</button>`}</div>`);
+  $('#retry').onclick = () => { closeSheet(); route(); };
+  const nx = $('#nextL'); if (nx) nx.onclick = () => { closeSheet(); go('play-' + (L.id + 1)); };
+  const tl = $('#toLab'); if (tl) tl.onclick = () => { closeSheet(); go('lab'); };
+}
+
+const mmss = (t) => Math.floor(t / 60) + ':' + String(t % 60).padStart(2, '0');
+function review(st, curt, vio) {
+  const L = G.L, T = G.tried;
+  const merged = G.main.commits.flatMap((c) => c.ops);
+  // ---- your plan ----
+  const plan = L.companies.map((cid) => {
+    const C = CO[cid], b = G.br[cid];
+    const ops = (b.merged ? merged : b.ops).filter((o) => o.owner === cid && !o.locked);
+    const items = ops.map((o) => `${E.opText(o)}${E.opCost(o) ? ` ($${E.opCost(o)}M)` : ''}`);
+    G.ledger.filter((l) => l.from === cid).forEach((l) => items.push(`co-funded a share of ${CO[l.to].short}’s ${l.label} ($${fmt(share(l))}M)`));
+    G.ledger.filter((l) => l.to === cid).forEach((l) => items.push(`${CO[l.from].short} paid a share of your ${l.label}`));
+    const iss = b.issue.state === 'patched' ? 'patched the data error with a typical value' : T.requests[cid] != null ? `requested a corrected file at ${mmss(T.requests[cid])}` : 'left the data error unresolved';
+    if (!b.issue.none) items.push(iss);
+    T.conflicts.filter((c) => c.cid === cid).forEach((c) => items.push(`conflict on ${E.lineLabel(c.line)}: ${{ share: 'made it a joint project', theirs: 'took main’s version', mine: 'kept your version on top' }[c.r]}`));
+    const status = b.merged ? `merged at ${mmss(b.mergedAt)}${b.late ? ' (late)' : ''}${b.forced ? ' with failing checks' : ''}` : 'not merged';
+    return `<div class="rv-co" style="--tc:${C.color}"><b>${esc(C.short)}</b> <span class="muted small">${esc(status)} · spent $${fmt(spend(cid))}M of $${C.budget}M</span>
+      <ul>${(ops.length ? [] : ['<li class="muted">no upgrades of its own</li>']).join('')}${items.map((i) => `<li>${esc(i)}</li>`).join('')}</ul></div>`;
+  }).join('');
+  // ---- untried ----
+  const TOOLS = [['upgrade', 'Rebuilding a line'], ['dlr', 'Dynamic line rating'], ['addLine', 'Building a new corridor'], ['addBatt', 'Batteries'], ['cap', 'Export caps']];
+  const untried = TOOLS.filter(([k]) => !T.ops.has(k)).map(([, n]) => n);
+  if (L.companies.length > 1 && !T.ops.has('cofund')) untried.push('Co-funding');
+  if (!T.views.has('n1')) untried.push('Worst outage view');
+  if (!T.views.has('night') && !L.playground) untried.push('Windy night view');
+  if (!T.ops.has('request') && L.companies.some((c) => !G.br[c].issue.none)) untried.push('Requesting corrected data');
+  // ---- notes (questions, not answers) ----
+  const notes = [];
+  const unmerged = L.companies.filter((c) => !G.br[c].merged);
+  unmerged.forEach((cid) => { const f = checksFor(cid).list.find((c) => !c.ok); if (f) notes.push(`${CO[cid].short} never merged. Its first failing check was “${f.label}.” What would have needed to happen earlier to clear it?`); });
+  if (G.forced) notes.push(`You merged ${G.forced} branch${G.forced > 1 ? 'es' : ''} with failing checks. Open the Worst outage view on the reddest line: is the problem that line’s capacity, or the lack of a second path?`);
+  else if (vio) notes.push(`Main ended with ${vio} violation${vio > 1 ? 's' : ''}. On main, switch to Worst outage and find which outage stresses which line. What changed on main after your last merge?`);
+  if (curt > 0.5) notes.push(`Your plan threw away ${Math.round(curt)} MW of clean energy to save money. Remove the cap in a replay and open the Worst outage view: which line is the real bottleneck, and does fixing it cost more or less than the energy you\u2019re wasting?`);
+  L.companies.forEach((cid) => { const C = CO[cid], sp = spend(cid); if (G.br[cid].merged && sp > C.budget + 0.01) notes.push(L.companies.length > 1 ? `${C.short} spent $${fmt(sp)}M against a $${C.budget}M budget. Does anyone else’s power ride on what ${C.short} paid for?` : `${C.short} went $${fmt(sp - C.budget)}M over budget. Is there a fix that keeps every check green for less, and what would it cost in clean energy? Compare both runs’ scores.`); });
+  if (L.companies.length > 1 && !G.ledger.length) notes.push('Each company paid for its own upgrades. In one branch, look at where its new power actually flows on the map. Does any upgrade carry power for someone else?');
+  if (merged.some((o) => o.owner === 'metro' && o.op === 'addBatt')) notes.push('Metro bought batteries to cover a supply gap. Was that gap still there once the other branches merged? Merge order changes what each branch needs.');
+  const windSp = L.companies.includes('wind') ? spend('wind') : 0;
+  if (windSp > 20) notes.push(`Northwind spent $${fmt(windSp)}M. Its trouble shows up in one weather condition. Is there a tool that’s strongest in exactly that weather?`);
+  if (T.conflicts.some((c) => c.r === 'mine')) notes.push('In a conflict you kept your version on top, so two companies paid for one corridor. What would a joint project have changed for both budgets?');
+  if (G.patched) notes.push('Patching skips a wait but leaves unverified data in the audit trail. When could you have asked for the corrected file so the wait cost you nothing?');
+  else if (L.timer && Object.values(T.requests).some((t) => t > 30)) notes.push(`Some corrected-file requests went out late (${Object.values(T.requests).map(mmss).join(', ')}). What else could you have done while waiting on them?`);
+  if (!T.views.has('n1') && notes.length < 4) notes.push('You never opened the Worst outage view. It shows which outage overloads which line, which is usually the fastest way to choose a fix.');
+  if (!notes.length) notes.push(L.companies.length === 1 ? 'Clean run. Challenge: can any plan deliver every MW of solar and stay on budget? If not, what would you go back and negotiate?' : 'Clean, collaborative and on budget, with nothing left to flag.');
+  return { plan, untried, notes: notes.slice(0, 3) };
+}
+function skill(stars, curt, vio) {
+  const L = G.L, T = G.tried;
+  const finalOps = G.main.commits.flatMap((c) => c.ops).filter((o) => o.owner && o.owner !== 'iso' && !o.locked).length;
+  const churn = (T.added || 0) - finalOps;
+  const allMerged = L.companies.every((c) => G.br[c].merged);
+  const overs = L.companies.filter((c) => spend(c) > CO[c].budget + 0.01).length;
+  const reqTimes = Object.values(T.requests);
+  const withIssue = L.companies.filter((c) => !G.br[c].issue.none).length;
+  const earlyReq = withIssue === 0 || (reqTimes.length === withIssue && reqTimes.every((t) => t <= 20));
+  let nov = 0, exp = 0; const sig = [];
+  if (G.forced) { nov += 2; sig.push('merged past failing checks'); }
+  if (G.patched) { nov += 1; sig.push('patched data'); }
+  if (!allMerged) { nov += 2; sig.push('left a branch unmerged'); }
+  if (vio) { nov += 1; }
+  if (!T.views.has('n1')) { nov += 1; sig.push('never checked worst outages'); }
+  if (churn >= 4) { nov += 1; sig.push('lots of trial and error'); }
+  if (stars === 3) { exp += 2; sig.push('three stars'); }
+  if (earlyReq) { exp += 1; sig.push('requested data up front'); }
+  if (T.views.has('n1') && T.views.has('night')) exp += 1;
+  if (L.companies.length > 1 && G.ledger.length) { exp += 1; sig.push('shared costs'); }
+  if (curt < 0.5 && !overs && allMerged && !vio) exp += 1;
+  if (churn <= 1 && allMerged) { exp += 1; sig.push('few wasted moves'); }
+  const level = nov >= 3 || stars <= 1 ? 'Novice' : exp >= 5 && nov === 0 ? 'Expert' : 'Moderate';
+  const why = 'Based on: ' + (sig.length ? sig.slice(0, 4).join(', ') : 'a mixed run') + '.';
+  const tries = [];
+  const windSp = L.companies.includes('wind') ? spend('wind') : 0;
+  if (level === 'Novice') {
+    if (!T.ops.has('request') || G.patched) tries.push('the moment the level starts, tap “Request corrected file” in every branch. The wait runs while you work.');
+    if (!T.views.has('n1')) tries.push('before adding anything, switch to “Worst outage”, tap the reddest line and read which outage causes it. Fix that one line, then look again.');
+    if (G.forced || vio) tries.push('only press Merge when all five checks are green. If you’re stuck, use the Hint button on that branch.');
+    if (!allMerged) tries.push('merge the branch with the fewest failing checks first, then sync the others and see what changed.');
+    if (curt > 0.5) tries.push('skip the export cap and see what it really takes to deliver all the solar, even if you go a little over budget.');
+    tries.push('change one thing at a time and watch the line percentages move. That’s how planners build intuition for power flow.');
+  } else if (level === 'Moderate') {
+    if (curt > 0.5) tries.push('deliver every MW of clean energy with no export cap, while staying within 10% of budget.');
+    if (L.companies.length > 1 && !G.ledger.length) tries.push('find one upgrade that solves problems for two companies, and split its cost.');
+    if (L.companies.length > 1) tries.push('decide the merge order before you build anything. Which branch should land first so the others need less?');
+    if (windSp > 10) tries.push(`get Northwind merged for under $10M (you spent $${fmt(windSp)}M). Think about when its problem happens.`);
+    if (!T.views.has('night')) tries.push('check the windy night before every merge. Some lines only fail there.');
+    if (G.patched || !earlyReq) tries.push('request every corrected file in the first 20 seconds and never patch.');
+    if (overs) tries.push('bring every company in on budget without merging past a failing check.');
+    tries.push('beat your score by finishing faster. In timed levels, the time left is worth points.');
+  } else {
+    const tot = L.companies.reduce((s, c) => s + spend(c), 0);
+    tries.push(`earn three stars again while spending less than this run\u2019s $${fmt(tot)}M across all companies.`);
+    if (L.companies.length > 1) tries.push('merge the companies in a different order and compare total spend. Is your plan order-independent?');
+    if (T.ops.has('addLine')) tries.push('solve it without building any new corridor. Is that even possible, and what does it cost in clean energy?');
+    if ((L.events || []).length) tries.push('leave enough headroom that the mid-cycle change to main lands without breaking a single merged branch.');
+    tries.push('write down the plan you’d pitch to the three companies before you touch the map, then see whether the sim agrees.');
+  }
+  return { level, why, tries: tries.slice(0, 3) };
+}
+
+function showHint() {
+  const cid = G.sel;
+  let msg;
+  if (cid === 'main') msg = 'Main is read-only. Pick a company tab: its Checks list shows what’s blocking the merge.';
+  else if (G.br[cid].merged) msg = `${CO[cid].short} is merged. Look at the other tabs: anything marked “behind” needs a sync.`;
+  else {
+    const ck = checksFor(cid); const f = ck.list.find((c) => !c.ok);
+    if (!f) msg = 'Every check passes. Before merging, ask whether you’re paying for something another company would share, and whether any clean energy is being curtailed.';
+    else if (f.k === 'data') msg = f.wait ? 'The corrected file is on its way. Design upgrades while you wait.' : 'The model import failed validation. You can wait for a corrected file or patch it now. One costs time; the other costs trust in the data.';
+    else if (f.k === 'sync') msg = 'Main moved since this branch was tested. Sync first: your results may change, for better or worse.';
+    else if (f.k === 'budget') msg = 'Over budget. Which of your upgrades also helps another company? And is there a cheaper tool that fixes the same violation?';
+    else {
+      const v = f.v[0];
+      if (v.kind === 'adequacy') msg = `There isn’t enough supply at ${E.scen(v.scen).short}. Does this branch have to add it, or is supply arriving from another branch? Switch the map to \u201cAll open branches\u201d to preview them together.`;
+      else if (v.kind === 'island') msg = `One outage cuts off customers entirely. What gives that substation a second way in?`;
+      else msg = `Start with ${E.lineLabel(v.line)} (${Math.round(v.pct * 100)}%${v.cont ? ` when ${E.lineLabel(v.cont)} trips` : ''}, ${E.scen(v.scen).short === 'peak' ? 'summer peak' : 'windy night'}). Is the issue that one line\u2019s capacity, or that power has no other path?${v.scen === 'night' ? ' And what does a windy night do for a line\u2019s capacity?' : ''}`;
+    }
+  }
+  openSheet(`<span class="eyebrow">Hint · ${cid === 'main' ? 'main' : esc(CO[cid].short)}</span><p>${esc(msg)}</p><button class="btn" id="hok">Back to work</button>`);
+  $('#hok').onclick = closeSheet;
+}
+
+window.__gridlab = { get G() { return G; } };
+route();
+})();
+</script></body></html>
