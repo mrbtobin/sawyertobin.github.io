@@ -259,5 +259,85 @@
   <div class="footer">🐢 More games coming soon &nbsp;·&nbsp; sawyertobin.com</div>
 </div>
 
+
+<!-- Lettuce cursor: a lettuce trails the mouse; sit still and hungry turtles bound in to munch (up to 4) -->
+<style>
+  .lt-lettuce, .lt-turtle { position: fixed; left: 0; top: 0; pointer-events: none; z-index: 9999; will-change: transform; user-select: none; line-height: 1; }
+  .lt-lettuce { font-size: 30px; filter: drop-shadow(0 3px 2px rgba(0,0,0,.18)); }
+  .lt-turtle { font-size: 34px; filter: drop-shadow(0 4px 3px rgba(0,0,0,.2)); }
+  .lt-crumb { position: fixed; left: 0; top: 0; pointer-events: none; z-index: 9998; width: 5px; height: 5px; border-radius: 50%; background: #7cb342; }
+</style>
+<script>
+(() => {
+  try { if (matchMedia('(pointer: coarse)').matches || matchMedia('(prefers-reduced-motion: reduce)').matches) return; } catch (e) { return; }
+  const MAX = 4, FIRST = 2000, NEXT = 2600;           // ms of stillness before the 1st turtle, then each next one
+  const lettuce = document.createElement('div');
+  lettuce.className = 'lt-lettuce'; lettuce.textContent = '\u{1F96C}'; lettuce.setAttribute('aria-hidden', 'true');
+  lettuce.style.opacity = '0';
+  document.body.appendChild(lettuce);
+  let mx = innerWidth / 2, my = innerHeight / 2, lx = mx, ly = my, lastMove = performance.now(), inside = false, bite = 0;
+  const turtles = [];
+  const SLOTS = [[-1, 0.15], [1, 0.1], [-0.6, 0.85], [0.65, 0.9]];   // where each turtle sits around the lettuce
+  addEventListener('mousemove', (e) => {
+    mx = e.clientX + 16; my = e.clientY + 14;        // sit just below-right of the pointer so it never blocks a click
+    lastMove = performance.now();
+    if (!inside) { inside = true; lettuce.style.opacity = '1'; }
+  }, { passive: true });
+  document.addEventListener('mouseleave', () => { inside = false; lettuce.style.opacity = '0'; });
+  function spawn(now) {
+    const side = Math.floor(Math.random() * 4), W = innerWidth, H = innerHeight;
+    const x = side === 0 ? -50 : side === 1 ? W + 50 : Math.random() * W;
+    const y = side === 2 ? -50 : side === 3 ? H + 50 : Math.random() * H;
+    const el = document.createElement('div');
+    el.className = 'lt-turtle'; el.textContent = '\u{1F422}'; el.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(el);
+    turtles.push({ el, x, y, gx: lx, gy: ly, slot: SLOTS[turtles.length], lag: 120 + Math.random() * 520, react: now,
+      speed: 0.045 + Math.random() * 0.04, phase: Math.random() * 6.28, hopRate: 70 + Math.random() * 40, face: x < lx ? -1 : 1, munch: 0 });
+  }
+  function crumb(x, y) {
+    const c = document.createElement('div'); c.className = 'lt-crumb'; document.body.appendChild(c);
+    const vx = (Math.random() - 0.5) * 2.2, start = performance.now();
+    (function fall(now) {
+      const t = (now - start) / 600; if (t >= 1) { c.remove(); return; }
+      c.style.transform = `translate(${x + vx * t * 30}px, ${y + 40 * t * t - 10 * t}px)`; c.style.opacity = String(1 - t);
+      requestAnimationFrame(fall);
+    })(start);
+  }
+  function tick(now) {
+    // lettuce trails the pointer
+    lx += (mx - lx) * 0.12; ly += (my - ly) * 0.12;
+    const idle = now - lastMove;
+    if (inside && turtles.length < MAX && idle > FIRST + turtles.length * NEXT) spawn(now);
+    let munchers = 0;
+    turtles.forEach((t) => {
+      // each turtle only notices where the lettuce went after its own random delay
+      if (now >= t.react) { t.gx = lx + t.slot[0] * 30; t.gy = ly + t.slot[1] * 26; t.react = now + t.lag; }
+      const dx = t.gx - t.x, dy = t.gy - t.y, d = Math.hypot(dx, dy);
+      let hop = 0, rot = 0, wig = 0;
+      if (d > 4) {
+        const step = Math.min(d, Math.max(1.6, d * t.speed));
+        t.x += dx / d * step; t.y += dy / d * step;
+        if (Math.abs(dx) > 2) t.face = dx > 0 ? -1 : 1;     // the emoji faces left, so flip when heading right
+        hop = Math.abs(Math.sin(now / t.hopRate + t.phase)) * Math.min(18, 5 + d * 0.25);   // frolicky bounding
+        rot = Math.sin(now / t.hopRate + t.phase) * 10;
+        t.munch = 0;
+      } else if (idle > 400) {
+        munchers++; t.munch += 1;
+        wig = Math.sin(now / 75 + t.phase) * 2.2;            // nibble, nudging back and forth
+        rot = Math.sin(now / 110 + t.phase) * 7;
+        if (t.munch % 70 === 35 && Math.random() < 0.7) crumb(lx + 8, ly + 10);
+        t.face = t.gx < lx ? -1 : 1;                          // face the lettuce
+      }
+      t.el.style.transform = `translate(${(t.x + wig - 17).toFixed(1)}px, ${(t.y - hop - 17).toFixed(1)}px) scaleX(${t.face}) rotate(${rot.toFixed(1)}deg)`;
+    });
+    // the lettuce shrinks a little while it's being eaten and springs back when you move
+    bite += ((munchers ? 1 - 0.05 * munchers : 1) - bite) * 0.05;
+    const wob = munchers ? Math.sin(now / 90) * 4 : 0;
+    lettuce.style.transform = `translate(${(lx - 15).toFixed(1)}px, ${(ly - 15).toFixed(1)}px) scale(${bite.toFixed(3)}) rotate(${wob.toFixed(1)}deg)`;
+    requestAnimationFrame(tick);
+  }
+  bite = 1; requestAnimationFrame(tick);
+})();
+</script>
 </body>
 </html>
