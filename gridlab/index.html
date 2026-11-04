@@ -838,17 +838,6 @@ const DECKS = [
   },
 ];
 
-// Not quizzed: interview prep prompts
-const PREP = [
-  { q: 'Why Tapestry?', a: 'Personal: regular outages in my Burlingame neighborhood, and I’m planning solar and backup power, so I feel the "visibility gap" as a customer. Professional: it’s the rare software program whose output is physical. Better models mean projects get built sooner and lights stay on. That real-world impact is what I’ve chased my whole career.' },
-  { q: '"You don’t have an energy background."', a: 'My pattern is walking into a domain where everyone knows more than me and becoming useful fast: medical education, museums, security at Asana (where I was the first and for years only Security TPM), general-contracting my own home addition, building a haunted house. I learn by building a model of the system. To prep for this call, I built a grid-change simulator with power flow, N-1 and merge conflicts.' },
-  { q: 'Your GC project as an analogy', a: 'As my own GC I sequenced plumbers, electricians and roofers to inspections and deadlines, with each trade’s work depending on someone else’s. That’s the same shape as interconnection: dependent projects, gated reviews, and a shared physical system where one party’s change breaks another’s plan.' },
-  { q: 'How would you run the Modelweaver program?', a: 'First 30 days: shadow power-systems specialists and partner planners, and map today’s path from submission to case build to study. By 60: agree on milestones along ingest → validate → version → diff/merge → multi-party collaboration, with UAT owned by power-systems experts. By 90: a delivery cadence (sprints, release trains) and success metrics such as hours to build a case, validation errors caught at ingest, merge conflicts resolved, and time from developer change to approved model.' },
-  { q: 'Git ↔ grid cheat sheet', a: 'main = base case · commit/PR = project with an in-service date · CI = power-flow + N-1 studies · code review = approval workflow · merge conflict = two parties editing the same line · interaction conflict = changes that pass alone but fail together · release = a case series (e.g., the 2030 summer peak case) · permissions = CEII and per-company areas.' },
-  { q: 'Security angle', a: 'Multi-party model sharing is a security problem as much as a data problem: CEII, per-company permissions, audit trails for MOD-032, and isolated perimeters like the VPC Service Controls HyperQ runs in. Five years of Security TPM work means I’ll ask the right questions early rather than at launch review.' },
-  { q: 'Scrum and process fit', a: 'The TPM posting asks for stand-ups, retros, sprint planning, backlog management and taking programs from prototype to enterprise scale. I’ve been scrum master for backend teams at Asana and Evernote, ran annual and capacity planning, and helped take Slack and Asana public.' },
-  { q: 'Questions to ask the hiring manager', a: '1) Who is Modelweaver’s first real user: PJM planners, developers, or Tapestry’s own products? 2) Is the unit of change a whole project (like a PSS®E PRJ) or element-level edits? 3) How do you detect conflicts that only show up in the physics? 4) How do the 5–6 TPMs divide the work, by product or by partner? 5) How does Modelweaver relate to the Unified Model Manager and HyperQ? 6) What would make my first six months a clear success?' },
-];
 
 // Simulation levels. co: per-level company overrides (mw = project size, issue: false = clean import)
 const LEVELS = [
@@ -1274,7 +1263,6 @@ function route() {
   if (h === 'learn') return learn();
   if (h.startsWith('deck-')) return deck(h.slice(5));
   if (h === 'quiz' || h.startsWith('quiz-')) return quiz(h.slice(5) || null);
-  if (h === 'prep') return prep();
   if (h === 'lab') return lab();
   if (h.startsWith('play-')) return play(+h.slice(5));
   home();
@@ -1300,7 +1288,6 @@ function home() {
       <button class="tile lab glow" style="--gc:var(--plan);--gc2:var(--plan-edge);--gbg:var(--plan-bg)" data-go="lab"><span class="k">Simulate</span><h3>Grid Lab</h3><span class="muted">Nine levels from one firm to three, plus a playground with adjustable sun and wind.</span><span class="stars">${stars}/27 ★</span></button>
       <button class="tile glow" style="--gc:var(--manage);--gc2:var(--manage);--gbg:var(--manage-bg)" data-go="learn"><span class="k">Learn · ${knownN}/${total} known</span><h3>Study cards</h3><span class="muted">Six decks, from Tapestry 101 to interconnection.</span><div class="bar"><i style="width:${Math.round(100 * knownN / total)}%"></i></div></button>
       <button class="tile glow" style="--gc:var(--operate);--gc2:var(--operate);--gbg:var(--operate-bg)" data-go="quiz"><span class="k">Test</span><h3>Quiz</h3><span class="muted">Ten questions, by deck or mixed.</span></button>
-      <button class="tile glow" style="--gc:var(--lime-ink);--gc2:var(--lime);--gbg:var(--lime-bg)" data-go="prep"><span class="k">Prepare</span><h3>Call prep</h3><span class="muted">Your story, the Git↔grid cheat sheet and questions to ask.</span></button>
     </div>
     ${foot()}
   </div>`;
@@ -1436,13 +1423,6 @@ function quiz(deckId) {
   setup();
 }
 
-// ---------- prep ----------
-function prep() {
-  app.innerHTML = `<div class="wrap">
-    <div class="section-h"><h2>Call prep</h2><span class="muted">For the hiring-manager conversation</span></div>
-    <div class="prep">${PREP.map((p, i) => `<details class="pq" ${i === 1 ? 'open' : ''}><summary>${esc(p.q)}</summary><div><p>${esc(p.a)}</p></div></details>`).join('')}</div>
-  </div>`;
-}
 
 // ---------- lab: level select ----------
 function lab() {
