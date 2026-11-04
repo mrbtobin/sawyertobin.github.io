@@ -271,7 +271,7 @@
 </style>
 <script>
 (() => {
-  try { if (matchMedia('(pointer: coarse)').matches || matchMedia('(prefers-reduced-motion: reduce)').matches) return; } catch (e) { return; }
+  try { if (matchMedia('(prefers-reduced-motion: reduce)').matches) return; } catch (e) { return; }
   const SPROUT_AFTER = 4000, FOLLOW_DELAY = 2000, LETTUCE_AFTER = 3000, TURTLE_FIRST = 2000, TURTLE_NEXT = 2600, MAX_TURTLES = 4;
   const OFF_X = 16, OFF_Y = 26;                        // plant base sits just below-right of the pointer, so it never blocks a click
   let mx = -1, my = -1, inside = false, lastMove = performance.now();
@@ -279,11 +279,19 @@
   let stage = 'none', plant = null, px = 0, py = 0, grow = 0, matchedSince = 0, lastClod = 0, bite = 1;
   const turtles = [];
   const SLOTS = [[-1, -0.35], [1, -0.4], [-0.6, 0.25], [0.65, 0.3]];
-  addEventListener('mousemove', (e) => {
-    mx = e.clientX + OFF_X; my = e.clientY + OFF_Y; lastMove = performance.now(); inside = true;
-    if (plant) plant.style.opacity = '1';
-  }, { passive: true });
+  // mouse, pen or finger: wherever you last pointed or touched is "the cursor"
+  const point = (e) => {
+    const touch = e.pointerType === 'touch';
+    mx = e.clientX + OFF_X; my = e.clientY + (touch ? -12 : OFF_Y);   // on touch, sit beside the fingertip rather than under it
+    lastMove = performance.now(); inside = true;
+  };
+  addEventListener('pointermove', point, { passive: true });
+  addEventListener('pointerdown', point, { passive: true });
+  const touchPoint = (e) => { const t = e.touches[0] || e.changedTouches[0]; if (t) point({ clientX: t.clientX, clientY: t.clientY, pointerType: 'touch' }); };
+  addEventListener('touchstart', touchPoint, { passive: true });
+  addEventListener('touchmove', touchPoint, { passive: true });
   document.addEventListener('mouseleave', () => { inside = false; });
+  addEventListener('pageshow', () => { inside = true; });
   const rand = (a, b) => a + Math.random() * (b - a);
   function clod(x, y, burst) {
     const c = document.createElement('div'); c.className = 'lt-clod';
