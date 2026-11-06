@@ -290,7 +290,7 @@ function render(){
   $('trendCards').innerHTML=SL.map(s=>card(STITLE[s],modeSummary(),'tr'+s)).join('');
   $('barCards').innerHTML=SL.map(s=>card(STITLE[s]+' · '+st.year,'click a bar',`br${s}`)).join('');
   SL.forEach(s=>{trendChart($('tr'+s),s,ses);barChart($('br'+s),s,ses)});
-  $('legendHost').innerHTML=legend(ses);
+  $('legendHost').innerHTML=legend(ses)+((!ses.length||!SL.length)?'<p class="note">Nothing selected. Tap a chip above to turn a '+(!SL.length?'test or measure':st.mode==='entity'?'school or group':st.mode==='group'?'student group':'grade')+' back on.</p>':'');
   pivot(ses); detail(ses);
 }
 function pivot(ses){
@@ -327,16 +327,16 @@ function chips(host,items,sel,on,single){host.innerHTML='';items.forEach(it=>{co
 function controls(){
   document.querySelectorAll('#modeSeg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===st.mode));
   $('metricSel').value=st.metric;
-  chips($('subjChips'),[{k:'ELA',l:'English'},{k:'Math',l:'Math'},{k:'Sci',l:'Science'},{k:'EL',l:'English learner test'},{k:'Abs',l:'Chronic absenteeism'},{k:'Susp',l:'Suspensions'},{k:'Enr',l:'Enrollment'}],st.subjects,k=>{const i=st.subjects.indexOf(k);if(i>=0){if(st.subjects.length>1)st.subjects.splice(i,1)}else st.subjects.push(k);st.focus=null;controls();render()});
+  chips($('subjChips'),[{k:'ELA',l:'English'},{k:'Math',l:'Math'},{k:'Sci',l:'Science'},{k:'EL',l:'English learner test'},{k:'Abs',l:'Chronic absenteeism'},{k:'Susp',l:'Suspensions'},{k:'Enr',l:'Enrollment'}],st.subjects,k=>{const i=st.subjects.indexOf(k);if(i>=0){st.subjects.splice(i,1)}else st.subjects.push(k);st.focus=null;controls();render()});
   $('entBox').hidden=st.mode!=='entity';$('oneEntBox').hidden=st.mode==='entity';
   $('sgBox').hidden=st.mode==='group';$('sgMulti').hidden=st.mode!=='group';
   $('grBox').hidden=st.mode==='grade';$('grMulti').hidden=st.mode!=='grade';
   const items=PKEYS.map(k=>({k,l:PRESET[k].label,c:'var(--s'+PRESET[k].c+')'}));
   st.ents.filter(k=>k.startsWith('e:')).forEach(k=>items.push({k,l:labelOf(k),c:'var(--s8)'}));
-  chips($('entChips'),items,st.ents,k=>{const i=st.ents.indexOf(k);if(i>=0){if(st.ents.length>1)st.ents.splice(i,1)}else st.ents.push(k);if(st.ents.length>8)st.ents.shift();st.focus=null;controls();render()});
+  chips($('entChips'),items,st.ents,k=>{const i=st.ents.indexOf(k);if(i>=0){st.ents.splice(i,1)}else st.ents.push(k);if(st.ents.length>8)st.ents.shift();st.focus=null;controls();render()});
   $('sgSel').value=st.sg;$('grSel').value=st.grade;$('yrSel').value=st.year;$('oneEnt').value=st.oneEnt==='mck'?'mck':'e:'+st.oneEnt;
-  chips($('sgChips'),SG.map(s=>({k:s.id,l:s.name})),st.sgs,k=>{const i=st.sgs.indexOf(k);if(i>=0){if(st.sgs.length>1)st.sgs.splice(i,1)}else st.sgs.push(k);if(st.sgs.length>6)st.sgs.shift();st.focus=null;controls();render()});
-  chips($('grChips'),[{k:'TK',l:'TK'},{k:'K',l:'K'},{k:'1',l:'Grade 1'},{k:'2',l:'Grade 2'},{k:'3',l:'Grade 3'},{k:'4',l:'Grade 4'},{k:'5',l:'Grade 5'},{k:'3-5',l:'Grades 3–5'},{k:'K-5',l:'K–5'},{k:'TK-5',l:'TK–5'}],st.grades,k=>{const i=st.grades.indexOf(k);if(i>=0){if(st.grades.length>1)st.grades.splice(i,1)}else st.grades.push(k);st.focus=null;controls();render()});
+  chips($('sgChips'),SG.map(s=>({k:s.id,l:s.name})),st.sgs,k=>{const i=st.sgs.indexOf(k);if(i>=0){st.sgs.splice(i,1)}else st.sgs.push(k);if(st.sgs.length>8)st.sgs.shift();st.focus=null;controls();render()});
+  chips($('grChips'),[{k:'TK',l:'TK'},{k:'K',l:'K'},{k:'1',l:'Grade 1'},{k:'2',l:'Grade 2'},{k:'3',l:'Grade 3'},{k:'4',l:'Grade 4'},{k:'5',l:'Grade 5'},{k:'3-5',l:'Grades 3–5'},{k:'K-5',l:'K–5'},{k:'TK-5',l:'TK–5'}],st.grades,k=>{const i=st.grades.indexOf(k);if(i>=0){st.grades.splice(i,1)}else st.grades.push(k);st.focus=null;controls();render()});
 }
 function init(){
   // selects
