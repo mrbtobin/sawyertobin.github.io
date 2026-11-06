@@ -95,6 +95,10 @@ td.click:hover{background:var(--accent-soft)}
 .btn{padding:7px 12px;border:1px solid var(--line);background:var(--bg);border-radius:8px;cursor:pointer;font-size:12px}
 .btn:hover{border-color:var(--accent-ink)}
 .good{color:var(--ink)} .muted{color:var(--ink3)}
+.disclaimer{margin-top:18px;border:1px solid var(--line);border-left:3px solid var(--warn);background:var(--panel);border-radius:0 10px 10px 0;padding:10px 14px;color:var(--ink2);font-size:12.5px;max-width:980px}
+.disclaimer b{color:var(--ink)}
+.disclaimer a,.foot a{color:var(--accent-ink)}
+.foot{margin-top:28px;padding-top:14px;border-top:1px solid var(--line);color:var(--ink3);font-size:12px;max-width:980px}
 @media print{
   :root{--bg:#fff;--panel:#fff;--paper:#fff;--ink:#000;--ink2:#333;--ink3:#555;--line:#bbb;--grid:#fff;--s1:#2e3192;--s2:#0d8f84;--s3:#7f9600;--s4:#c26a00;--s5:#d6336c;--s6:#0f9e47;--s7:#2457c5;--s8:#5b5c53}
   body{background:#fff;color:#000;background-image:none}.rail,.btnrow,.presets,.top{display:none!important}.layout{display:block}
@@ -104,7 +108,7 @@ td.click:hover{background:var(--accent-soft)}
 </head><body>
 <div class="wrap">
 <div class="top"><div class="top-in">
-  <a class="brand" href="./" aria-label="School Excellence Metrics"><img src="bulldog.png" alt="" width="26" height="26"><span>School Excellence Metrics</span></a><span class="unofficial">Unofficial · PTA parent tool</span><span class="sp"></span>
+  <a class="brand" href="./" aria-label="School Excellence Metrics"><img src="bulldog.png" alt="" width="26" height="26"><span>School Excellence Metrics</span></a><span class="unofficial">Unofficial · made by a parent</span><span class="sp"></span>
   <a class="iconbtn" href="../" title="Back to the arcade">Arcade</a>
   <button class="iconbtn" id="themeBtn" type="button" aria-label="Switch light or dark">Theme</button>
 </div></div>
@@ -114,6 +118,7 @@ td.click:hover{background:var(--accent-soft)}
   <p>McKinley on California&rsquo;s CAASPP and science tests, the English learner test, chronic absenteeism, suspensions and enrollment, set against the other Burlingame schools and demographically similar schools in the Peninsula and South Bay, San Diego and Los Angeles. Tap any point or bar to see the records behind it.</p>
 </header>
 
+<aside class="disclaimer" role="note"><b>Unofficial.</b> Made by an interested parent as a personal project. It is not affiliated with, endorsed by or reviewed by McKinley Elementary, the Burlingame School District or any other organization. It uses official public data from the <a href="https://caaspp-elpac.ets.org/" target="_blank" rel="noopener">CAASPP and ELPAC research files</a> and the <a href="https://www.cde.ca.gov/ds/ad/filesabd.asp" target="_blank" rel="noopener">California Department of Education data files</a>. Any errors are mine or the data&rsquo;s. Do not use this to make formal decisions; it is only meant to prompt questions and discussion.</aside>
 <div class="layout">
 <aside class="rail" aria-label="Filters">
   <div><h2>Quick views</h2>
@@ -166,6 +171,7 @@ td.click:hover{background:var(--accent-soft)}
   </section>
 </div>
 </div>
+<footer class="foot">Unofficial, made by an interested parent. Data: <a href="https://caaspp-elpac.ets.org/" target="_blank" rel="noopener">CAASPP and ELPAC research files</a> and <a href="https://www.cde.ca.gov/ds/ad/filesabd.asp" target="_blank" rel="noopener">CDE data files</a>. Errors are mine or the data&rsquo;s. For discussion only, not for formal decisions.</footer>
 <div id="tip" class="tip" hidden></div>
 </div>
 
