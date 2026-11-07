@@ -48,7 +48,7 @@ const STR = {
     streak: n => `${n}-day streak`, streakLbl: "Reading streak", shells: n => `${n} shells`, special: "Special shells", pageShells: "Page shells", noneYet: "Read a whole book to win its special shell!",
     keepGoing: "Keep going", chapter: "Chapter", offline: "Couldn't open this book. Check your internet and try again.",
     skippedPart: "Oops! We skipped a part. Start here!", alreadyRead: "Already read!",
-    micAgain: "Shellfie can't hear you right now", micTap: "Tap to turn the microphone back on", micStill: "The microphone is still off. Tap any word for help.",
+    micAgain: "Shellfie can't hear you right now", micTap: "Tap to turn the microphone on", micSkip: "Read without the microphone", micStill: "The microphone is still off. Tap any word for help.",
     micHelp: "Grown-ups: if nothing happens, allow the microphone for this site (Safari: the aA button → Website Settings → Microphone; Chrome: the lock icon → Microphone).", skipped: "Read the skipped pages to win this book's special shell.",
     grownups: "For grown-ups",
     p: {
@@ -103,7 +103,7 @@ const STR = {
     streak: n => `${n} días seguidos`, streakLbl: "Racha de lectura", shells: n => `${n} caparazones`, special: "Caparazones especiales", pageShells: "Caparazones de página", noneYet: "¡Lee un libro completo para ganar su caparazón especial!",
     keepGoing: "Seguir", chapter: "Capítulo", offline: "No se pudo abrir este libro. Revisa tu internet e intenta otra vez.",
     skippedPart: "¡Ups! Nos saltamos un pedacito. ¡Empieza aquí!", alreadyRead: "¡Ya lo leíste!",
-    micAgain: "Shellfie no te escucha ahora", micTap: "Toca para encender el micrófono otra vez", micStill: "El micrófono sigue apagado. Toca cualquier palabra para recibir ayuda.",
+    micAgain: "Shellfie no te escucha ahora", micTap: "Toca para encender el micrófono", micSkip: "Leer sin micrófono", micStill: "El micrófono sigue apagado. Toca cualquier palabra para recibir ayuda.",
     micHelp: "Adultos: si no pasa nada, permitan el micrófono para este sitio (Safari: botón aA → Configuración del sitio web → Micrófono; Chrome: el candado → Micrófono).", skipped: "Lee las páginas que saltaste para ganar el caparazón especial de este libro.",
     grownups: "Para adultos",
     p: {
@@ -182,7 +182,8 @@ const T = () => STR[P.lang];
    Each entry: [epoch ms, type, data]. Types: session, page, asr, align, miscue-accepted, jump, refocus, hop, hesitate,
    ladder, quick-say, move-along, nudge, complete, skip-next, back, pause, resume, listener, tts, quiz, profile,
    settings, error. "why" fields record the rule the app followed. */
-const APP_VERSION = "2026.11.07-c";
+const APP_VERSION = "2026.11.07-e";
+const APP_BUILT = "2026-11-07T19:30Z";   // when this version was published
 const DEV_KEY = "shellfie_devlog", DEV_DAYS = 3;
 let DEVBUF = [], devT = null;
 const devOn = () => !!LS.get("shellfie_dev", 0);
@@ -566,11 +567,19 @@ class WebSpeechListener {
   resume() { if (!this.active) return; this.paused = false; this._start(); }
   async destroy() { this.active = false; this.paused = true; try { this.rec.onend = null; this.rec.onresult = null; this.rec.abort(); } catch { } this.rec = null; }
 }
-function engineInfo() {
-  if (!SR) return "tap";
-  const e = LS.get("shellfie_engine", null);
-  return e || "webspeech";
+function fmtWhen(d) { try { return new Date(d).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" }); } catch { return String(d); } }
+async function showVersion() {
+  const el = $("#verLine"); if (!el) return;
+  const base = `v${APP_VERSION} · ` + (P.lang === "es" ? "publicada " : "published ");
+  el.textContent = base + fmtWhen(APP_BUILT);
+  try {   // the server's own date for app.js, when it gives one
+    const r = await fetch("app.js", { method: "HEAD", cache: "no-store" }); const lm = r.headers.get("last-modified");
+    if (lm && !isNaN(Date.parse(lm))) el.textContent = base + fmtWhen(lm);
+  } catch { }
 }
+function engineInfo() { return SR ? "webspeech" : "tap"; }
+// older versions saved "tap" forever after one failed mic check; forget it so the mic is tried again
+try { if (localStorage.getItem("shellfie_engine")) { localStorage.removeItem("shellfie_engine"); } } catch { }
 
 /* ───────────── Mascot ───────────── */
 function turtleSVG(cls = "") {
@@ -687,11 +696,10 @@ function initOnboard() {
       } catch { ok = false; }
     }
     if (!SR || !ok) {
-      LS.set("shellfie_engine", "tap");
+      dlog("mic", { state: "onboarding check failed", recognizer: !!SR, why: !SR ? "no speech recognition in this browser" : "microphone not allowed yet; will ask again when a book opens" });
       $("#micHint").hidden = false; $("#micHint").textContent = !SR ? T().noRec : T().micDenied;
       $("#letsRead").hidden = false; $("#letsRead").onclick = finish; return;
     }
-    LS.set("shellfie_engine", "webspeech");
     finish();
   };
   function finish() { P.onb = 1; saveP(); SFX.yay(); goGrades(); }
@@ -828,6 +836,7 @@ async function openBook(id, { restart = false, ch: atCh = null } = {}) {
   show("reader"); mountTurtles($("#reader"));
   $("#rTitle").textContent = s.title; $("#rShells span").textContent = L.shells + L.sp.length;
   $("#rMode").hidden = !R.tap; $("#rMode").textContent = T().tapMode;
+  $("#rMode").onclick = () => { if (R && R.tap && SR) { R.tap = false; showMicAsk(); } };
   dlog("session", { book: id, title: s.title, lang: s.lang, grade: s.grade, ch, pg, chapters: s.chapters.length, tap: R.tap, style: styleName(), profile: P.prof || null, calibrating: !!R.cal, calWords: CAL ? CAL.words : 0, view: `${innerWidth}x${innerHeight}` });
   renderPage();
   if (!R.tap) startListening();
@@ -839,14 +848,20 @@ function startListening() {
     LISTENER = new WebSpeechListener(P.lang, onSpeech, onActivity);
     LISTENER.start(uniqueWords());
     mood($("#rAvatar"), "listening");
-  } catch { R.tap = true; $("#rMode").hidden = false; }
+    dlog("mic", { state: "starting", engine: "webspeech", recognizer: SR && SR.name, why: "book opened" });
+    const L0 = LISTENER;
+    setTimeout(() => {
+      if (!R || LISTENER !== L0 || R.tap || R.paused) return;
+      if (!L0.running && !L0.results) { dlog("mic", { state: "did not start", waitedMs: 2500, why: "no start event from the recognizer; ask for a tap so the browser can turn the microphone on" }); showMicAsk(); }
+    }, 2500 * TSC());
+  } catch (e) { dlog("mic", { state: "start threw", err: String(e && (e.name || e.message || e)), why: "show the microphone button" }); showMicAsk(); }
 }
 function uniqueWords() { return R ? R.words.filter(w => w.tier === "unique").map(w => w.t.replace(/[^\p{L}\p{N}'-]/gu, "")) : []; }
 function onActivity(kind) {
   if (!R) return;
   if (kind === "start") { R.epoch = 0; R.processed = -1; }
   if (kind === "speech") { R.heard = now(); }
-  if (kind === "denied" || String(kind).startsWith("blocked")) { dlog("mic", { state: "blocked", why: kind }); showMicAsk(); }
+  if (kind === "denied" || String(kind).startsWith("blocked")) { dlog("mic", { state: "blocked", why: kind, asks: R.micAsks || 0 }); showMicAsk(); }
 }
 /* Microphone watchdog: if the listener has gone quiet (ended and never restarted, or no events for a long time),
    restart it; after 3 restarts with no sign of life, ask the child to tap so the browser can ask for the mic again. */
@@ -861,21 +876,24 @@ function micWatchdog(t) {
 }
 function showMicAsk() {
   if (!R || $("#micAsk")) return;
+  R.micAsks = (R.micAsks || 0) + 1;
   LISTENER?.pause();
   const d = document.createElement("div"); d.id = "micAsk"; d.className = "r-pause";
-  d.innerHTML = `<div class="card">${turtleSVG("listening")}<h3>${h(T().micAgain)}</h3><button class="btn" id="micAskBtn">🎤 ${h(T().micTap)}</button><p class="hint" style="max-width:420px">${h(T().micHelp)}</p></div>`;
+  d.innerHTML = `<div class="card">${turtleSVG("listening")}<h3>${h(T().micAgain)}</h3><button class="btn" id="micAskBtn">🎤 ${h(T().micTap)}</button><button class="btn ghost" id="micSkipBtn" style="margin-top:10px">${h(T().micSkip)}</button><p class="hint" style="max-width:420px">${h(T().micHelp)}</p></div>`;
   $("#reader").appendChild(d);
-  $("#micAskBtn").onclick = async () => {
-    ac();
-    try {
-      const st = await navigator.mediaDevices.getUserMedia({ audio: true }); st.getTracks().forEach(x => x.stop());
-      dlog("mic", { state: "granted-again" });
-      d.remove(); if (LISTENER) { LISTENER.destroy(); LISTENER = null; } if (R) { R.watchdog = 0; R.tap = false; startListening(); R.lastProg = now(); }
-    } catch (e) {
-      dlog("mic", { state: "still-blocked", err: String(e && (e.name || e)) });
-      d.remove(); if (R) { R.tap = true; $("#rMode").hidden = false; $("#rMode").textContent = T().tapMode; }
-      toast(T().micStill);
-    }
+  $("#micAskBtn").onclick = () => {
+    // start the recognizer inside the tap itself: iOS Safari only turns the microphone on from a user gesture
+    ac(); d.remove();
+    if (LISTENER) { LISTENER.destroy(); LISTENER = null; }
+    if (!R) return;
+    R.watchdog = 0; R.tap = false; $("#rMode").hidden = true; R.lastProg = now();
+    dlog("mic", { state: "tapped to start", why: "child tapped the microphone button" });
+    startListening();
+  };
+  $("#micSkipBtn").onclick = () => {
+    d.remove(); if (LISTENER) { LISTENER.destroy(); LISTENER = null; }
+    if (R) { R.tap = true; $("#rMode").hidden = false; $("#rMode").textContent = T().tapMode; R.lastProg = now(); }
+    dlog("mic", { state: "reading without mic", why: "child chose tap-for-help for this book; the microphone is tried again next book" });
   };
 }
 function teardown() {
@@ -1237,6 +1255,7 @@ function bubbleAt(el, text) {
   $("#stage").appendChild(b); setTimeout(() => b.remove(), 2200);
 }
 async function refocus() {
+  if (!R || R.tap) return;
   // zoom back to the first skipped word, in place, so the child sees exactly where to start
   if (!R || !R.jump) return;
   dlog("refocus", { from: R.words[R.jump.from]?.n, at: R.words[R.jump.at]?.n, wordsReadAfterJump: R.jump.since, why: "child skipped ahead; bring them back to the first skipped word" });
@@ -1288,7 +1307,7 @@ function isComplete() {
 function checkComplete() {
   if (!R || R.completing || R.ladder || R.focusing) return;
   if (!isComplete()) {
-    if (R.anchor >= R.words.length) {
+    if (R.anchor >= R.words.length && !R.tap) {
       // reached the end with something missing: bring them back to the earliest unread stretch
       let k = R.words.findIndex((w, i) => !w.st && (isReq(w) || [1, 2, 3].every(d => R.words[i + d] && !R.words[i + d].st)));
       if (k >= 0 && !R.sentNotified.has("end" + k)) {
@@ -1606,6 +1625,7 @@ function fmtDate(t36) { const d = from36(t36); return d.toLocaleString(P.lang ==
 function titleOf(id) { return META[id]?.t || id; }
 async function openParent() {
   const dlg = $("#parent"), t = T(), p = t.p; applyI18n(); mountTurtles(dlg);
+  showVersion();
   const ids = Object.keys(P.b).filter(id => META[id]);
   const done = ids.filter(id => P.b[id][0] === 2);
   const accs = done.map(id => P.b[id][3]).filter(v => v != null);
@@ -1743,5 +1763,7 @@ window.Shellfie = { hear(text, final = true) { if (!R) return; const fake = { re
 mountTurtles(); bindGrades(); bindShelf(); bindReader(); bindParent(); applyI18n();
 history.replaceState({ s: "grades" }, "");
 if (!P.onb) initOnboard(); else goGrades();
-if ("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js").catch(() => { });
+if ("serviceWorker" in navigator && location.protocol !== "file:") {
+  navigator.serviceWorker.register("sw.js", { updateViaCache: "none" }).then(r => r.update().catch(() => { })).catch(() => { });
+}
 })();
