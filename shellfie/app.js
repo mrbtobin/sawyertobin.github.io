@@ -36,7 +36,7 @@ const STR = {
     gradeShort: { K: "K", 1: "1", 2: "2", 3: "3", 4: "4", 5: "5" },
     gradeLong: { K: "Kindergarten", 1: "1st grade", 2: "2nd grade", 3: "3rd grade", 4: "4th grade", 5: "5th grade" },
     shelfTitle: g => `${STR.en.gradeLong[g]} bookshelf`, genreTitle: g => STR.en.genres[g],
-    holdGate: "Grown-ups: press and hold", showRead: "Show books I've read", byGrade: "Grade → Genre", byGenre: "Genre → Grade",
+    holdGate: "Parents: press and hold", showRead: "Show books I've read", byGrade: "Grade → Genre", byGenre: "Genre → Grade",
     genres: { mckinley: "McKinley Bulldogs", meet: "Meet the Animals", jobs: "When I Grow Up", bedtime: "Bedtime Stories", fairy: "Fairy and Folk Tales", fables: "Fables", animal: "Animal Stories", everyday: "Everyday Life", adventure: "Adventure and Fantasy", poetry: "Poetry and Rhymes", nonfiction: "Nonfiction", seasons: "Seasons and Holidays" },
     soon: "Soon", soonToast: "Coming soon! Shellfie is still learning this book.", allRead: "You read them all!", books: n => `${n} books`,
     yourGrade: "Your grade", picks: "Shellfie picks", picksGo: "Read", resume: "Keep going", page: (a, b) => `Page ${a} of ${b}`,
@@ -50,7 +50,7 @@ const STR = {
     skippedPart: "Oops! We skipped a part. Start here!", alreadyRead: "Already read!",
     micAgain: "Shellfie can't hear you right now", micTap: "Tap to turn the microphone on", micSkip: "Read without the microphone", micStill: "The microphone is still off. Tap any word for help.",
     micHelp: "Grown-ups: if nothing happens, allow the microphone for this site (Safari: the aA button → Website Settings → Microphone; Chrome: the lock icon → Microphone).", skipped: "Read the skipped pages to win this book's special shell.",
-    grownups: "For grown-ups",
+    grownups: "For grown-ups", parentsBtn: "Parents",
     p: {
       report: "Reading report", minutes: "Minutes read", booksDone: "Books finished", pages: "Pages read", acc: "Best accuracy (avg)", wcpm: "Words correct / min",
       booksT: "Books", title: "Title", status: "Status", best: "Best", last: "Last", times: "Times", done: "Finished", inprog: "Reading", quizT: "Comprehension", score: "Score", date: "Date",
@@ -91,7 +91,7 @@ const STR = {
     gradeShort: { K: "K", 1: "1.º", 2: "2.º", 3: "3.º", 4: "4.º", 5: "5.º" },
     gradeLong: { K: "Kínder", 1: "1.er grado", 2: "2.º grado", 3: "3.er grado", 4: "4.º grado", 5: "5.º grado" },
     shelfTitle: g => `Librero de ${STR.es.gradeLong[g]}`, genreTitle: g => STR.es.genres[g],
-    holdGate: "Adultos: mantengan presionado", showRead: "Mostrar libros leídos", byGrade: "Grado → Género", byGenre: "Género → Grado",
+    holdGate: "Papás: mantengan presionado", showRead: "Mostrar libros leídos", byGrade: "Grado → Género", byGenre: "Género → Grado",
     genres: { mckinley: "Bulldogs de McKinley", meet: "Conoce a los animales", jobs: "Cuando sea grande", bedtime: "Cuentos para dormir", fairy: "Cuentos de hadas y folclor", fables: "Fábulas", animal: "Historias de animales", everyday: "La vida diaria", adventure: "Aventura y fantasía", poetry: "Poesía y rimas", nonfiction: "No ficción", seasons: "Temporadas y fiestas" },
     soon: "Pronto", soonToast: "¡Muy pronto! Shellfie todavía está aprendiendo este libro.", allRead: "¡Los leíste todos!", books: n => `${n} libros`,
     yourGrade: "Tu grado", picks: "Shellfie te recomienda", picksGo: "Leer", resume: "Seguir", page: (a, b) => `Página ${a} de ${b}`,
@@ -105,7 +105,7 @@ const STR = {
     skippedPart: "¡Ups! Nos saltamos un pedacito. ¡Empieza aquí!", alreadyRead: "¡Ya lo leíste!",
     micAgain: "Shellfie no te escucha ahora", micTap: "Toca para encender el micrófono", micSkip: "Leer sin micrófono", micStill: "El micrófono sigue apagado. Toca cualquier palabra para recibir ayuda.",
     micHelp: "Adultos: si no pasa nada, permitan el micrófono para este sitio (Safari: botón aA → Configuración del sitio web → Micrófono; Chrome: el candado → Micrófono).", skipped: "Lee las páginas que saltaste para ganar el caparazón especial de este libro.",
-    grownups: "Para adultos",
+    grownups: "Para adultos", parentsBtn: "Papás",
     p: {
       report: "Reporte de lectura", minutes: "Minutos de lectura", booksDone: "Libros terminados", pages: "Páginas leídas", acc: "Mejor precisión (promedio)", wcpm: "Palabras correctas / min",
       booksT: "Libros", title: "Título", status: "Estado", best: "Mejor", last: "Última", times: "Veces", done: "Terminado", inprog: "Leyendo", quizT: "Comprensión", score: "Puntaje", date: "Fecha",
@@ -183,7 +183,7 @@ const T = () => STR[P.lang];
    ladder, quick-say, move-along, nudge, complete, skip-next, back, pause, resume, listener, tts, quiz, profile,
    settings, error. "why" fields record the rule the app followed. */
 const APP_VERSION = "2026.11.07-g";
-const APP_BUILT = "2026-11-07T21:00Z";   // when this version was published
+const APP_BUILT = "2026-11-07T22:30Z";   // when this version was published
 const DEV_KEY = "shellfie_devlog", DEV_DAYS = 3;
 let DEVBUF = [], devT = null;
 const devOn = () => !!LS.get("shellfie_dev", 0);
