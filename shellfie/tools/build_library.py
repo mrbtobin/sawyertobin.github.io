@@ -22,7 +22,7 @@ CACHE = os.path.join(HERE, ".cache")
 OUT = os.path.join(ROOT, "books")
 random.seed(7)
 
-from approved_adaptations import adapt_story, adapt_quiz
+from approved_adaptations import adapt_story, adapt_quiz, adapt_gingerbread
 
 # ───────────────────────── source text helpers ─────────────────────────
 def body(src):
@@ -599,14 +599,16 @@ def main():
                               icon=r["icon"] or None, season=r["season"] or (season_of(r["title"]) if r["genre"] == "seasons" else None), daily=r["daily"] or None,
                               src=GUT.format(r["src"]), note=r["note"], chapters=chs, human=True, _recipe=r)
         report.append(f"   {r['id']}: {len(chs)} ch, {sum(len(c['pages']) for c in chs)} pages, {sum(wc(' '.join(c['pages'])) for c in chs)} words" + (f"  (dropped {len(dropped)}: {', '.join(d[1] for d in dropped[:4])})" if dropped else ""))
-    # authored stories (retellings, Meet a…, Be a…) — authored ones win only if no human original was built
+    # These reviewed, age-appropriate retellings replace the longer original editions.
+    preferred_retellings = {"en-1-tortoise-hare", "en-1-lion-mouse"}
     for s in node_authored():
-        if s["id"] in books: continue
+        if s["id"] in books and s["id"] not in preferred_retellings: continue
         s["human"] = False
         books[s["id"]] = s
     # Apply approved changes before generating quizzes so evidence reflects the adaptation.
     for b in books.values():
         adapt_story(b)
+        adapt_gingerbread(b)
     # quizzes: authored if present (and verified), else generated
     authored_q = json.load(open(os.path.join(HERE, "quizzes.json"), encoding="utf-8")) if os.path.exists(os.path.join(HERE, "quizzes.json")) else {}
     for b in books.values():
@@ -641,6 +643,9 @@ def main():
         e.update({"t": b["title"], "a": b["author"], "g": b["genre"], "id": b["id"], "icon": b.get("icon"), "pc": [len(c["pages"]) for c in b["chapters"]]})
         if b.get("src"): e["u"] = b["src"]
         if b.get("human"): e["h"] = 1
+        if b["id"] in preferred_retellings:
+            e["l"] = "Original adaptation"
+            e.pop("h", None); e.pop("u", None)
         if b.get("daily"): e["d"] = 1
         if r and r.get("star"): e["star"] = 1
         if b["genre"] == "seasons": e["s"] = b.get("season") or season_of(b["title"])

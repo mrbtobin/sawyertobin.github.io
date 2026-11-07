@@ -1,0 +1,22 @@
+{
+  "pages": [
+    "An old woman baked a gingerbread boy.",
+    "She opened the oven. Out he jumped!",
+    "The gingerbread boy ran out the door.",
+    "“Run, run!” he called. “Can you catch me?”",
+    "A cow saw him. She ran after him.",
+    "A horse saw him. He ran after him too.",
+    "The gingerbread boy came to a wide river.",
+    "A fox offered to help him cross.",
+    "“Hold on,” said the fox. “I can swim.”",
+    "The gingerbread boy rode on the fox’s back.",
+    "They reached the other side, safe and dry.",
+    "“Thank you!” said the boy. His friends waved from shore.",
+    "The fox swam back with him. Everyone shared a picnic."
+  ],
+  "quiz": [
+    {"k":"literal","q":"Who helped the gingerbread boy cross the river?","o":["The fox","The cow","The horse"],"a":0,"ev":"A fox offered to help him cross."},
+    {"k":"infer","q":"Why did the gingerbread boy ride on the fox’s back?","o":["The fox could swim across","He wanted to take a nap","The fox wanted to play a song"],"a":0,"ev":"“Hold on,” said the fox. “I can swim.”"},
+    {"k":"vocab","q":"What is a shore?","o":["Land beside the water","A kind of cookie","A place in an oven"],"a":0,"ev":"“Thank you!” said the boy. His friends waved from shore."}
+  ]
+}

@@ -43,7 +43,7 @@ window.SHELLFIE_STORIES.push(
   ]}]},
 
 { id:"en-1-tortoise-hare", lang:"en", grade:"1", genre:"fables", icon:"🐢",
-  title:"The Tortoise and the Hare", author:"Aesop, retelling", credit:"Retold from The Aesop for Children (1919), public domain.",
+  title:"The Tortoise and the Hare", author:"Aesop, retelling", credit:"An original, shortened retelling of The Aesop for Children (1919), public domain; adapted for young readers.",
   chapters:[{ pages:[
     "A hare liked to brag. \"I am the fastest!\" he said. \"Nobody can beat me.\"",
     "A tortoise looked up. \"I will race you,\" she said. All the animals laughed.",
@@ -59,10 +59,10 @@ window.SHELLFIE_STORIES.push(
   ]}]},
 
 { id:"en-1-lion-mouse", lang:"en", grade:"1", genre:"fables", icon:"🦁",
-  title:"The Lion and the Mouse", author:"Aesop, retelling", credit:"Retold from The Aesop for Children (1919), public domain.",
+  title:"The Lion and the Mouse", author:"Aesop, retelling", credit:"An original, shortened retelling of The Aesop for Children (1919), public domain; adapted for young readers.",
   chapters:[{ pages:[
     "A big lion was asleep in the sun. A little mouse ran over his nose.",
-    "The lion woke up and grabbed the mouse. \"I will eat you!\" he roared.",
+    "The lion woke up and gently placed a paw beside the mouse.",
     "\"Please let me go,\" said the mouse. \"Some day I will help you.\"",
     "The lion laughed. \"How can a tiny mouse help me?\" But he let her go.",
     "One day the lion was caught in a rope net. He roared and roared.",

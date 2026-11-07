@@ -6,7 +6,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'tools'))
-from approved_adaptations import PASSAGES, CREDIT, OLD_OPTION, NEW_OPTION, adapt_story, adapt_quiz
+from approved_adaptations import PASSAGES, CREDIT, OLD_OPTION, NEW_OPTION, adapt_story, adapt_quiz, adapt_gingerbread
 
 class ApprovedAdaptationsTests(unittest.TestCase):
     def test_published_edits_are_reproducible_from_source_passages(self):
@@ -42,6 +42,19 @@ class ApprovedAdaptationsTests(unittest.TestCase):
                         text.index('saw the mark the robber had made'))
         self.assertLess(text.index('saw the mark the robber had made'),
                         text.index('Morgiana thanked him for his advice, took the oil pot'))
+
+    def test_gingerbread_override_is_reproducible_and_quiz_is_supported(self):
+        published = json.loads((ROOT / 'books' / 'en-k-bryant-the-gingerbread-man.json').read_text(encoding='utf-8'))
+        base = copy.deepcopy(published)
+        base['chapters'] = [{'pages':['A prior edition.']}]
+        base['author'] = 'Sara Cone Bryant, Stories to Tell to Children (1907)'
+        note = ' A shortened, gentle adaptation for young readers; the ending has been changed.'
+        base['credit'] = base['credit'].replace(note, '')
+        adapt_gingerbread(base)
+        self.assertEqual(base, published)
+        for q in published['chapters'][0]['quiz']:
+            self.assertIn(q['ev'], ' '.join(published['chapters'][0]['pages']))
+            self.assertIn(q['a'], range(len(q['o'])))
 
     def test_changed_source_fails_instead_of_silently_losing_edit(self):
         with self.assertRaises(ValueError):

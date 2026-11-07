@@ -9,9 +9,9 @@ window.SHELLFIE_STORIES.push(
     "Today, you are a firefighter!",
     "You work at a fire station. You eat and sleep there too.",
     "You wear a big coat, thick pants, tall boots, and a hard helmet.",
-    "You also wear a mask with air, so smoke can not get in.",
+    "You also wear a mask and an air tank to help you breathe.",
     "Ding, ding, ding! The bell rings. You slide down the pole. Whoosh!",
-    "Oops! You only have one boot on. Your friend tosses you the other one.",
+    "You check your boots and gear before joining your team.",
     "You ride on the big red fire truck. Woo-woo!",
     "You spray water on the fire. You help people get out safely.",
     "A cat is stuck in a tree. You climb the ladder.",
@@ -19,11 +19,11 @@ window.SHELLFIE_STORIES.push(
     "You work with a team: a captain, a driver, and paramedics who help hurt people.",
     "The best part? You help people, and you get to drive the big truck!",
     "The hardest part? Fires are hot and smoky. Some days are long and tiring.",
-    "How do you become a firefighter? Finish high school. Then go to fire school for about 3 to 6 months, and learn first aid.",
+    "How do you become a firefighter? Finish high school, train at a fire academy, and learn first aid. Training can vary.",
     "What can you do now? Visit a fire station. Learn stop, drop, and roll. Make a fire escape plan with your family."
   ], quiz:[
     { k:"literal", q:"Where does a firefighter work?", o:["At a fire station","At a zoo","On a farm"], a:0, ev:"You work at a fire station." },
-    { k:"infer", q:"Why does a firefighter wear a mask with air?", o:["So smoke can not get in","To look funny","To stay dry"], a:0, ev:"You also wear a mask with air, so smoke can not get in." },
+    { k:"infer", q:"Why does a firefighter wear a mask with air?", o:["To help breathe in smoke","To look funny","To stay dry"], a:0, ev:"You also wear a mask and an air tank to help you breathe." },
     { k:"vocab", q:"What is a \"team\"?", o:["A group that works together","A kind of truck","A tall ladder"], a:0, ev:"You work with a team" }
   ]}]},
 
@@ -41,11 +41,11 @@ window.SHELLFIE_STORIES.push(
     "The best part? You see a child read a whole book for the first time.",
     "The hardest part? Lots of kids need help at the same time.",
     "At night, you plan tomorrow's lessons.",
-    "How do you become a teacher? Go to college for about 4 years. Then practice teaching in a real class with a helper teacher.",
+    "How do you become a teacher? Go to college, practice teaching, and earn the credential your school requires.",
     "What can you do now? Read to a younger kid. Play school with your stuffed animals. Help a friend learn something new."
   ], quiz:[
     { k:"literal", q:"Where was the hamster?", o:["Asleep in the teacher's shoe","In the lunch box","On the roof"], a:0, ev:"He is asleep in your shoe!" },
-    { k:"infer", q:"Why does the teacher wear comfy shoes?", o:["Because she stands up a lot","Because it is raining","Because they sparkle"], a:0, ev:"You wear comfy clothes and comfy shoes. You stand up a lot!" },
+    { k:"infer", q:"Why does the teacher wear comfy shoes?", o:["Because teachers stand up a lot","Because it is raining","Because they sparkle"], a:0, ev:"You wear comfy clothes and comfy shoes. You stand up a lot!" },
     { k:"vocab", q:"What is a \"principal\"?", o:["The leader of a school","A kind of pencil","A class pet"], a:0, ev:"You work with the principal" }
   ]}]},
 
