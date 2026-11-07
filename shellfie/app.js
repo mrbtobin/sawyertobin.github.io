@@ -40,7 +40,7 @@ const STR = {
     genres: { mckinley: "McKinley Bulldogs", meet: "Meet the Animals", jobs: "When I Grow Up", bedtime: "Bedtime Stories", fairy: "Fairy and Folk Tales", fables: "Fables", animal: "Animal Stories", everyday: "Everyday Life", adventure: "Adventure and Fantasy", poetry: "Poetry and Rhymes", nonfiction: "Nonfiction", seasons: "Seasons and Holidays" },
     soon: "Soon", soonToast: "Coming soon! Shellfie is still learning this book.", allRead: "You read them all!", books: n => `${n} books`,
     yourGrade: "Your grade", picks: "Shellfie picks", picksGo: "Read", resume: "Keep going", page: (a, b) => `Page ${a} of ${b}`,
-    ready: "Ready when you are", keepReading: "Keep reading", waitThis: "Wait, this one!", yourTurn: "Your turn!",
+    ready: "Ready when you are", keepReading: "Keep reading", iTurn: "Keep reading! I'll turn the page for you.", holdSkip: "Grown-ups: hold to skip", waitThis: "Wait, this one!", yourTurn: "Your turn!",
     yourTurnSay: "Your turn!", praise: ["Great job!", "Nice reading!", "You got it!", "Wow!", "Super!"], selfFix: "Nice fix!", tapMode: "Tap any word for help", listeningOff: "Shellfie is listening",
     quiz: "Quick questions", qOf: (a, b) => `Question ${a} of ${b}`, next: "Next", seeAnswer: "Here's the answer:",
     youDidIt: "You did it!", chapterDone: "Chapter done!", shellsEarned: "Shells earned", nailed: "Words you nailed", tricky: "Tricky words to try again",
@@ -95,7 +95,7 @@ const STR = {
     genres: { mckinley: "Bulldogs de McKinley", meet: "Conoce a los animales", jobs: "Cuando sea grande", bedtime: "Cuentos para dormir", fairy: "Cuentos de hadas y folclor", fables: "Fábulas", animal: "Historias de animales", everyday: "La vida diaria", adventure: "Aventura y fantasía", poetry: "Poesía y rimas", nonfiction: "No ficción", seasons: "Temporadas y fiestas" },
     soon: "Pronto", soonToast: "¡Muy pronto! Shellfie todavía está aprendiendo este libro.", allRead: "¡Los leíste todos!", books: n => `${n} libros`,
     yourGrade: "Tu grado", picks: "Shellfie te recomienda", picksGo: "Leer", resume: "Seguir", page: (a, b) => `Página ${a} de ${b}`,
-    ready: "Cuando quieras", keepReading: "Seguir leyendo", waitThis: "¡Espera, esta!", yourTurn: "¡Ahora tú!",
+    ready: "Cuando quieras", keepReading: "Seguir leyendo", iTurn: "¡Sigue leyendo! Yo paso la página.", holdSkip: "Adultos: mantén presionado para saltar", waitThis: "¡Espera, esta!", yourTurn: "¡Ahora tú!",
     praise: ["¡Muy bien!", "¡Qué bien lees!", "¡Lo lograste!", "¡Guau!", "¡Súper!"], selfFix: "¡Bien corregido!", tapMode: "Toca una palabra para recibir ayuda", listeningOff: "Shellfie te escucha",
     quiz: "Preguntas rápidas", qOf: (a, b) => `Pregunta ${a} de ${b}`, next: "Siguiente", seeAnswer: "Esta es la respuesta:",
     youDidIt: "¡Lo lograste!", chapterDone: "¡Terminaste el capítulo!", shellsEarned: "Caparazones ganados", nailed: "Palabras que leíste solito", tricky: "Palabras para practicar",
@@ -182,8 +182,8 @@ const T = () => STR[P.lang];
    Each entry: [epoch ms, type, data]. Types: session, page, asr, align, miscue-accepted, jump, refocus, hop, hesitate,
    ladder, quick-say, move-along, nudge, complete, skip-next, back, pause, resume, listener, tts, quiz, profile,
    settings, error. "why" fields record the rule the app followed. */
-const APP_VERSION = "2026.11.07-e";
-const APP_BUILT = "2026-11-07T19:30Z";   // when this version was published
+const APP_VERSION = "2026.11.07-f";
+const APP_BUILT = "2026-11-07T21:00Z";   // when this version was published
 const DEV_KEY = "shellfie_devlog", DEV_DAYS = 3;
 let DEVBUF = [], devT = null;
 const devOn = () => !!LS.get("shellfie_dev", 0);
@@ -540,10 +540,16 @@ class WebSpeechListener {
     r.onaudiostart = () => { this.alive = now(); dlog("listener", { event: "audio-start" }); };
     r.onaudioend = () => dlog("listener", { event: "audio-end", sessionMs: this.sessionStart ? now() - this.sessionStart : 0 });
     r.onnomatch = () => dlog("listener", { event: "no-match" });
-    r.onstart = () => { this.running = true; this.alive = now(); this.sessionStart = now(); this.results = 0; dlog("listener", { event: "start", restarts: this.restarts }); this.onActivity?.("start"); };
-    r.onerror = e => { dlog("listener", { event: "error", code: e.error, msg: e.message || "", sinceResultMs: now() - this.alive });
+    r.onstart = () => { this.starting = false; this.running = true; this.alive = now(); this.sessionStart = now(); this.results = 0; dlog("listener", { event: "start", restarts: this.restarts }); this.onActivity?.("start"); };
+    r.onerror = e => { dlog("listener", { event: "error", code: e.error, msg: e.message || "", sinceResultMs: now() - this.alive, ours: !!this.aborting });
+      this.starting = false;
+      if ((e.error === "aborted" || e.error === "no-speech") && !this.aborting) {
+        // iOS sometimes aborts by itself and never sends "end": make sure listening comes back
+        const at = now(); this.errAt = at;
+        setTimeout(() => { if (this.active && !this.paused && !this.blocked && this.errAt === at && (this.endAt || 0) < at) { dlog("listener", { event: "recover", why: "aborted with no end event" }); this.running = false; this._start(); } }, 1200);
+      }
       if (e.error === "not-allowed" || e.error === "service-not-allowed" || e.error === "audio-capture") { this.blocked = true; this.onActivity?.("blocked:" + e.error); } if (e.error === "not-allowed" || e.error === "service-not-allowed") { this.active = false; this.onActivity?.("denied"); } else if (e.error !== "no-speech" && e.error !== "aborted") this.fails++; };
-    r.onend = () => { this.running = false; dlog("listener", { event: "end", willRestart: this.active && !this.paused && !this.blocked, sessionMs: this.sessionStart ? now() - this.sessionStart : 0, results: this.results }); this.onActivity?.("end"); if (this.blocked) return; this.restarts++; if (this.active && !this.paused && this.fails < 6) setTimeout(() => { if (this.active && !this.paused) this._start(); }, 120); };
+    r.onend = () => { this.running = false; this.starting = false; this.aborting = false; this.endAt = now(); dlog("listener", { event: "end", willRestart: this.active && !this.paused && !this.blocked, sessionMs: this.sessionStart ? now() - this.sessionStart : 0, results: this.results }); this.onActivity?.("end"); if (this.blocked) return; this.restarts++; if (this.active && !this.paused && this.fails < 6) setTimeout(() => { if (this.active && !this.paused) this._start(); }, 120); };
   }
   async start(uniqueWords = []) {
     this.active = true;
@@ -561,9 +567,19 @@ class WebSpeechListener {
     // Bias only Unique words (names, rare nouns). Never Hard words: biasing would "hear" them even when misread.
     try { if (window.SpeechRecognitionPhrase && words.length) this.rec.phrases = words.slice(0, 40).map(w => new SpeechRecognitionPhrase(w, 3)); } catch { }
   }
-  _start() { try { this.rec.start(); } catch (e) { dlog("listener", { event: "start-failed", err: String(e && (e.name || e.message || e)) }); } }
-  restart(why) { dlog("listener", { event: "watchdog-restart", why }); try { this.rec.abort(); } catch { } this.alive = now(); setTimeout(() => { if (this.active && !this.paused) this._start(); }, 250); }
-  pause() { this.paused = true; try { this.rec.abort(); } catch { } }
+  _start() {
+    if (!this.rec || this.running || this.starting) return;
+    this.starting = true;
+    try { this.rec.start(); }
+    catch (e) {
+      this.starting = false; const err = String(e && (e.name || e.message || e));
+      dlog("listener", { event: "start-failed", err });
+      // still shutting down from the last abort: try again shortly (the end event also restarts it)
+      if (/InvalidState/.test(err)) setTimeout(() => { if (this.active && !this.paused && !this.running) this._start(); }, 400);
+    }
+  }
+  restart(why) { dlog("listener", { event: "watchdog-restart", why }); this.aborting = true; try { this.rec.abort(); } catch { } this.running = false; this.starting = false; this.alive = now(); setTimeout(() => { if (this.active && !this.paused) this._start(); }, 250); }
+  pause() { this.paused = true; this.aborting = true; try { this.rec.abort(); } catch { } }
   resume() { if (!this.active) return; this.paused = false; this._start(); }
   async destroy() { this.active = false; this.paused = true; try { this.rec.onend = null; this.rec.onresult = null; this.rec.abort(); } catch { } this.rec = null; }
 }
@@ -836,6 +852,7 @@ async function openBook(id, { restart = false, ch: atCh = null } = {}) {
   show("reader"); mountTurtles($("#reader"));
   $("#rTitle").textContent = s.title; $("#rShells span").textContent = L.shells + L.sp.length;
   $("#rMode").hidden = !R.tap; $("#rMode").textContent = T().tapMode;
+  $("#rNext").title = T().holdSkip;
   $("#rMode").onclick = () => { if (R && R.tap && SR) { R.tap = false; showMicAsk(); } };
   dlog("session", { book: id, title: s.title, lang: s.lang, grade: s.grade, ch, pg, chapters: s.chapters.length, tap: R.tap, style: styleName(), profile: P.prof || null, calibrating: !!R.cal, calWords: CAL ? CAL.words : 0, view: `${innerWidth}x${innerHeight}` });
   renderPage();
@@ -859,7 +876,7 @@ function startListening() {
 function uniqueWords() { return R ? R.words.filter(w => w.tier === "unique").map(w => w.t.replace(/[^\p{L}\p{N}'-]/gu, "")) : []; }
 function onActivity(kind) {
   if (!R) return;
-  if (kind === "start") { R.epoch = 0; R.processed = -1; }
+  if (kind === "start") { R.epoch = 0; R.processed = -1; R.used = {}; R.resLen = {}; R.sealed = {}; }
   if (kind === "speech") { R.heard = now(); }
   if (kind === "denied" || String(kind).startsWith("blocked")) { dlog("mic", { state: "blocked", why: kind, asks: R.micAsks || 0 }); showMicAsk(); }
 }
@@ -868,7 +885,7 @@ function onActivity(kind) {
 function micWatchdog(t) {
   const Lr = LISTENER; if (!Lr || !Lr.active || Lr.paused || Lr.blocked || !R || R.paused) return;
   const quiet = t - Lr.alive;
-  if ((!Lr.running && quiet > 4000 * TSC()) || quiet > 20000 * TSC()) {
+  if ((!Lr.running && !Lr.starting && quiet > 3000 * TSC()) || quiet > 12000 * TSC()) {
     R.watchdog = (R.watchdog || 0) + 1;
     if (R.watchdog > 3) { dlog("mic", { state: "unresponsive", quietMs: quiet, why: "3 restarts with no sign of life" }); showMicAsk(); return; }
     Lr.restart(Lr.running ? "no events for " + Math.round(quiet / 1000) + "s" : "ended and did not restart");
@@ -926,6 +943,7 @@ function splitPage(full, g, lang) {
   return sents.map(x => x.trim()).filter(Boolean);
 }
 function renderPage(dir = 0, sub = 0) {
+  sealResults();
   const s = R.s, g = s.grade, full = chapterPages()[R.pg];
   const pt = $("#pageText");
   const doFlip = dir !== 0;
@@ -972,6 +990,7 @@ function cursorIndex() {
   const pend = R.words.find(w => !w.st && !R.tent.has(w.i)); return pend ? pend.i : -1;
 }
 function updateCursor() {
+  if (R) $("#reader").classList.toggle("tapmode", !!R.tap);
   if (!R) return; const c = cursorIndex();
   R.words.forEach(w => {
     w.el.classList.toggle("next", w.i === c);
@@ -1136,14 +1155,30 @@ function align(hyps, start) {
   }
   return { marks: [...new Set(marks)], end: p, subs, spans, feats, sounding, misreads: misreads.filter(k => !marks.includes(k)) };
 }
+function resWords(r) { return (r[0]?.transcript || "").split(/\s+/).map(w => norm(w, R.s.lang).replace(/(\p{L})\1{2,}/gu, "$1")).filter(Boolean); }
+// words already heard in each recognizer result belong to the page they were heard on
+function sealResults() { if (!R) return; R.used = R.used || {}; R.sealed = R.sealed || {}; for (const k in (R.resLen || {})) { R.used[k] = Math.max(R.used[k] || 0, R.resLen[k]); R.sealed[k] = R.used[k]; } R.tent?.clear(); }
 function onSpeech(e) {
-  if (!R || R.completing || R.paused) return;
+  if (!R) return;
+  R.used = R.used || {}; R.resLen = R.resLen || {};
+  for (let i = e.resultIndex; i < e.results.length; i++) R.resLen[i] = resWords(e.results[i]).length;
+  if (R.completing || R.paused) return;
   const res = e.results; let interim = [];
   if (devOn()) { const last = res[res.length - 1]; if (last && (last.isFinal || !R._lastAsrLog || now() - R._lastAsrLog > 1200)) { R._lastAsrLog = now(); dlog("asr", { final: !!last.isFinal, text: last[0]?.transcript, conf: last[0]?.confidence != null ? Math.round(last[0].confidence * 100) / 100 : null, alts: [...last].slice(1).map(a => a.transcript), idx: res.length - 1 }); } }
   for (let i = Math.max(e.resultIndex, R.epoch); i < res.length; i++) {
-    const r = res[i]; const words = (r[0]?.transcript || "").split(/\s+/).map(w => norm(w, R.s.lang).replace(/(\p{L})\1{2,}/gu, "$1")).filter(Boolean);
-    if (r.isFinal) { if (i > R.processed) { R.processed = i; commit(words, true); } }
-    else interim.push(...words);
+    const r = res[i]; const all = resWords(r);
+    const used = R.used[i] || 0, OV = 3, from = Math.max((R.sealed && R.sealed[i]) || 0, used - OV);   // a few words of context from this page only
+    if (used >= all.length && !r.isFinal) continue;
+    if (r.isFinal) { if (i > R.processed) { R.processed = i; const nw = all.slice((R.sealed && R.sealed[i]) || 0); if (all.length > ((R.sealed && R.sealed[i]) || 0)) commit(nw, true); R.used[i] = all.length; } if (!R || R.completing) return; continue; }
+    // interim: the last word may still change ("spill" → "spilled"); everything before it is stable enough to count
+    const exp = R.words[cursorIndex()]?.n;
+    const stableN = all.length - (all[all.length - 1] === exp ? 0 : 1);
+    if (stableN > used) {
+      const nw = all.slice(from, stableN);
+      R.used[i] = stableN; commit(nw, false, true);
+      if (!R || R.completing) return;
+    }
+    interim.push(...all.slice(Math.max(stableN, used)));
   }
   if (!R || R.completing) return;
   // interim results move the highlight optimistically; finals confirm or roll back
@@ -1152,7 +1187,7 @@ function onSpeech(e) {
   updateCursor();
 }
 const JUMP_MIN = 4;   // skipping this many unread words or more counts as a jump (1–3 are forgiven, as before)
-function commit(hyps, final) {
+function commit(hyps, final, stable = false) {
   const before = R.anchor, cur0 = cursorIndex();
   if (R.ladder && R.ladder.yourTurn) {
     const lw = R.words[R.ladder.idx], lang = R.s.lang;
@@ -1164,9 +1199,14 @@ function commit(hyps, final) {
     dlog("your-turn-heard", { heard: hyps.join(" "), said: !!R.saidIt });
     if (R.saidIt || hyps.every(x => isFragment(x, lw, R.s.lang))) return;
   }
-  const { marks, subs, spans, feats, sounding, misreads } = align(hyps, R.anchor);
+  let { marks, subs, spans, feats, sounding, misreads } = align(hyps, R.anchor);
+  if (stable) {
+    const ok = new Set(); let last = cur0 < 0 ? R.words.length : cur0 - 1;
+    for (const m of [...marks].sort((a, b) => a - b)) { if (R.words[m].st) { ok.add(m); continue; } if (m <= last + 3 && m >= cur0 - 1) { ok.add(m); last = m; } }
+    marks = marks.filter(m => ok.has(m)); spans = spans.filter(sp => ok.has(sp[0])); subs = []; misreads = [];
+  }
   if (sounding) { R.lastSound = now(); dlog("sounding-out", { heard: hyps.join(" "), word: R.words[cursorIndex()]?.n, why: "pieces of the next word: wait, don't help yet" }); }
-  if (misreads.length) handleMisreads(misreads, hyps);
+  if (misreads.length && final) handleMisreads(misreads, hyps);
   if (!marks.length) return;
   if (R.cal) for (const f of feats) R.cal.feat[f] = (R.cal.feat[f] || 0) + 1;
   const t = now(); let progressed = false;
@@ -1190,7 +1230,7 @@ function commit(hyps, final) {
   const sorted = marks.sort((a, b) => a - b);
   // jump detection: the first newly matched word lies well past where the child should be
   const first = sorted.find(m => !R.words[m].st);
-  if (first != null && cur0 >= 0 && first > cur0 && !R.jump && !(R.noJumpUntil && now() < R.noJumpUntil)) {
+  if (first != null && cur0 >= 0 && first > cur0 && !stable && !R.jump && !(R.noJumpUntil && now() < R.noJumpUntil)) {
     const skipped = R.words.slice(cur0, first).filter(w => !w.st), gap = skipped.length;
     const crossesSentence = skipped.length && skipped[0].sent !== skipped[skipped.length - 1].sent;
     if (gap >= JUMP_MIN + 1 || (gap >= JUMP_MIN && crossesSentence)) { R.jump = { from: cur0, at: first, since: 0, t, sent: R.words[first].sent }; dlog("jump", { skipped: gap, from: R.words[cur0].n, to: R.words[first].n, why: `skipped ${gap} unread words (≥ ${JUMP_MIN})` }); }
@@ -1235,6 +1275,8 @@ function commit(hyps, final) {
     if ((sentDone && R.jump.since >= 3) || R.jump.since >= 8 || R.anchor >= R.words.length) { refocus(); return; }
   }
   if (!R.jump) checkSentenceEnd(before);
+  // mid-utterance (iOS interim) the page only turns when every word is read; the forgiving rules wait for a pause
+  if (stable && R.words.some(w => !w.st)) return;
   checkComplete();
 }
 function hopReadRun() {
@@ -1352,6 +1394,7 @@ function endChapter() {
   setTimeout(() => { if (R) startQuiz(); }, REDUCED ? 300 : 1300);
 }
 function tick() {
+  if (R) $("#reader").classList.toggle("tapmode", !!R.tap);
   if (!R || R.tap || R.completing || R.paused || R.ladder) return;
   const t = now(), idle = t - Math.max(R.lastProg, R.lastSound || 0);
   micWatchdog(t);
@@ -1378,7 +1421,7 @@ function tick() {
   }
 }
 function pauseReading() {
-  if (LISTENER && (!LISTENER.running || (R.watchdog || 0) > 0) && !R.tap) { dlog("mic", { state: "dead at idle pause", running: LISTENER.running, watchdog: R.watchdog || 0, why: "no progress and the microphone is not running: ask to turn it back on" }); showMicAsk(); return; }
+  if (LISTENER && (!LISTENER.running || (R.watchdog || 0) > 0) && !R.tap) { if ($("#micAsk")) return; dlog("mic", { state: "dead at idle pause", running: LISTENER.running, watchdog: R.watchdog || 0, why: "no progress and the microphone is not running: ask to turn it back on" }); showMicAsk(); return; }
   dlog("pause", { why: "no progress", idleMs: Math.round((now() - R.lastProg) / TSC()), limitMs: Math.round(idlePause() / TSC()) });
   R.paused = true; LISTENER?.pause(); flushTime();
   $("#rPause").hidden = false; mood($("#rAvatar"), "sleeping");
@@ -1488,13 +1531,32 @@ function endLadder(L0) { if (R && R.ladder === L0) { R.sess.helpMs = (R.sess.hel
 
 function bindReader() {
   $("#rHome").onclick = () => history.back();
-  $("#rNext").onclick = () => {
+  const nx = $("#rNext"); let holdT = null, held = false;
+  const listeningNow = () => R && !R.tap && !R.completing;
+  const endHold = () => { clearTimeout(holdT); holdT = null; nx.classList.remove("holding"); };
+  nx.addEventListener("pointerdown", () => {
+    held = false; if (!listeningNow() || R.ladder) return;
+    nx.classList.add("holding");
+    holdT = setTimeout(() => { held = true; endHold(); dlog("skip-next", { held: true, why: "Next held down while listening" }); doSkip(); }, 1100);
+  });
+  ["pointerup", "pointerleave", "pointercancel"].forEach(ev => nx.addEventListener(ev, endHold));
+  nx.addEventListener("contextmenu", e => e.preventDefault());
+  nx.onclick = () => {
     if (!R || R.ladder) return; ac();
     if (R.completing) return;
     if (R.tap) { completePage(true); return; } // tap-for-help mode: Next counts the page
+    if (held) { held = false; return; }
+    // quick tap while Shellfie is listening: encourage reading on instead of skipping
+    dlog("next-tap", { read: R.words.filter(w => w.st).length, of: R.words.length, why: "quick tap while listening: keep reading, Shellfie turns the page" });
+    showSay(T().iTurn, 2600); mood($("#rAvatar"), "listening following");
+    const c = R.words[cursorIndex()]?.el; if (c) { c.classList.remove("nudge"); void c.offsetWidth; c.classList.add("nudge"); }
+    nx.classList.remove("hinted"); void nx.offsetWidth; nx.classList.add("hinted");
+  };
+  function doSkip() {
+    if (!R || R.ladder || R.completing) return;
     dlog("skip-next", { ch: R.ch, pg: R.pg, read: R.words.filter(w => w.st).length, of: R.words.length, why: "Next tapped before the page was finished (not counted as read)" });
     advance(1); // skipping does not mark words read and does not count toward completion
-  };
+  }
   $("#rPrev").onclick = () => { if (!R || R.ladder) return; ac(); advance(-1); };
   $("#pageText").addEventListener("click", e => {
     const el = e.target.closest(".w"); if (!el || !R) return; ac();
@@ -1755,7 +1817,7 @@ $("#colBack").onclick = () => history.back();
 $("#quizHome").onclick = () => history.back();
 
 /* For testing the listener without a microphone: Shellfie.hear("the little red hen", true) */
-window.Shellfie = { hear(text, final = true) { if (!R) return; const fake = { resultIndex: 0, results: [Object.assign([{ transcript: text }], { isFinal: final })] }; R.epoch = 0; R.processed = -1; onSpeech(fake); }, state: () => R, syllables, tokenize,
+window.Shellfie = { hear(text, final = true) { if (!R) return; const fake = { resultIndex: 0, results: [Object.assign([{ transcript: text }], { isFinal: final })] }; R.epoch = 0; R.processed = -1; R.used = {}; R.resLen = {}; R.sealed = {}; onSpeech(fake); }, state: () => R, syllables, tokenize,
   next() { if (R) advance(1); },
   async open(id, ch = 0, pg = 0) { if (R) teardown(); P.b[id] = [P.b[id]?.[0] || 1, ch, pg, P.b[id]?.[3] ?? null, P.b[id]?.[4] ?? null]; await openBook(id); } };
 
