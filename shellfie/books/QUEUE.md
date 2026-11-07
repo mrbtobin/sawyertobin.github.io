@@ -35,7 +35,7 @@
 Status values: `queued` (free to take) · `claimed` (someone is writing it) · `done` (book file exists) · `blocked: <why>`.
 
 <!-- queue:start -->
-**Queue summary:** 172 queued · 0 claimed · 4 done (176 rows). Regenerate with `python3 shellfie/tools/make_queue.py`.
+**Queue summary:** 170 queued · 2 claimed · 4 done (176 rows). Regenerate with `python3 shellfie/tools/make_queue.py`.
 
 ### English
 
@@ -207,7 +207,7 @@ Status values: `queued` (free to take) · `claimed` (someone is writing it) · `
 | `es-2-viaje-mariposa-monarca` | El viaje de la mariposa monarca (otoño, no ficción) | seasons | Original: re-author as an original retelling, keep attribution in `credit`. Original · [link](https://es.wikipedia.org/w/index.php?search=migracion+mariposa+monarca) | 30–70 words/page | queued |  |  |
 | `es-2-rapunzel` | Rapunzel | bedtime | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Hermanos Grimm, versión propia | 30–70 words/page | queued |  |  |
 | `es-2-bella-bestia` | La bella y la bestia | bedtime | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Jeanne-Marie Leprince de Beaumont, versión propia | 30–70 words/page | queued |  |  |
-| `es-2-doce-princesas-bailarinas` | Las doce princesas bailarinas | bedtime | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Hermanos Grimm, versión propia | 30–70 words/page | queued |  |  |
+| `es-2-doce-princesas-bailarinas` | Las doce princesas bailarinas | bedtime | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Hermanos Grimm, versión propia | 30–70 words/page | claimed | Codex 2026-11-07 |  |
 
 #### Español (México) · Grade 3 (18 to write)
 
@@ -246,7 +246,7 @@ Status values: `queued` (free to take) · `claimed` (someone is writing it) · `
 | `es-4-bambi-vida-en-bosque` | Bambi: una vida en el bosque (capítulos) | animal | Dominio público en EE. UU.: re-author as an original retelling, keep attribution in `credit`. Felix Salten (1923), traducción propia · [link](https://en.wikisource.org/w/index.php?search=bambi+a+life+in+the+woods) | 110–200 words/page | queued |  |  |
 | `es-4-rikki-tikki-tavi` | Rikki-Tikki-Tavi | animal | Fuente de dominio público: re-author as an original retelling, keep attribution in `credit`. Rudyard Kipling (1894), traducción propia · [link](https://www.gutenberg.org/ebooks/search/?query=jungle+book+kipling) | 110–200 words/page | queued |  |  |
 | `es-4-heidi` | Heidi (capítulos) | everyday | Fuente de dominio público: re-author as an original retelling, keep attribution in `credit`. Johanna Spyri, traducción propia · [link](https://www.gutenberg.org/ebooks/search/?query=heidi+spyri) | 110–200 words/page | queued |  |  |
-| `es-4-ali-baba-cuarenta-ladrones` | Alí Babá y los cuarenta ladrones | fairy | Fuente de dominio público: re-author as an original retelling, keep attribution in `credit`. Las mil y una noches, versión propia · [link](https://www.gutenberg.org/ebooks/search/?query=blue+fairy+book+lang) | 110–200 words/page | queued |  |  |
+| `es-4-ali-baba-cuarenta-ladrones` | Alí Babá y los cuarenta ladrones | fairy | Fuente de dominio público: re-author as an original retelling, keep attribution in `credit`. Las mil y una noches, versión propia · [link](https://www.gutenberg.org/ebooks/search/?query=blue+fairy+book+lang) | 110–200 words/page | claimed | Codex 2026-11-07 |  |
 | `es-4-cuentos-calleja` | Cuentos de Calleja (selección) | fairy | Dominio público: re-author as an original retelling, keep attribution in `credit`. Saturnino Calleja (editor, †1915) · [link](https://es.wikisource.org/w/index.php?search=Cuentos+de+Calleja) | 110–200 words/page | queued |  |  |
 | `es-4-versos-sencillos` | Versos sencillos (selección: Cultivo una rosa blanca, Yo soy un hombre sincero) | poetry | Dominio público: re-author as an original retelling, keep attribution in `credit`. José Martí (1891) · [link](https://es.wikisource.org/w/index.php?search=Versos+sencillos+Marti) | 110–200 words/page | queued |  |  |
 | `es-4-reina-nieves` | La reina de las nieves (invierno) | seasons | Fuente de dominio público: re-author as an original retelling, keep attribution in `credit`. H. C. Andersen, versión propia · [link](https://www.gutenberg.org/ebooks/search/?query=andersen+fairy+tales) | 110–200 words/page | queued |  |  |
