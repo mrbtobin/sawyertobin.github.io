@@ -35,7 +35,7 @@
 Status values: `queued` (free to take) · `claimed` (someone is writing it) · `done` (book file exists) · `blocked: <why>`.
 
 <!-- queue:start -->
-**Queue summary:** 174 queued · 0 claimed · 2 done (176 rows). Regenerate with `python3 shellfie/tools/make_queue.py`.
+**Queue summary:** 172 queued · 2 claimed · 2 done (176 rows). Regenerate with `python3 shellfie/tools/make_queue.py`.
 
 ### English
 
@@ -96,7 +96,7 @@ Status values: `queued` (free to take) · `claimed` (someone is writing it) · `
 | `en-3-pomegranate-seeds` | The Pomegranate Seeds (why we have seasons) | seasons | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Nathaniel Hawthorne, Tanglewood Tales (1853) · [link](https://www.gutenberg.org/ebooks/search/?query=tanglewood+tales) | 60–130 words/page | queued |  |  |
 | `en-3-rama-sita` | Rama and Sita (Diwali) | seasons | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Ramayana, retelling · [link](https://www.gutenberg.org/ebooks/search/?query=ramayana) | 60–130 words/page | queued |  |  |
 | `en-3-happy-prince` | The Happy Prince | bedtime | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Oscar Wilde (1888) | 60–130 words/page | queued |  |  |
-| `en-3-selfish-giant` | The Selfish Giant | bedtime | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Oscar Wilde (1888) | 60–130 words/page | queued |  |  |
+| `en-3-selfish-giant` | The Selfish Giant | bedtime | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Oscar Wilde (1888) | 60–130 words/page | claimed | Codex 2026-11-07 |  |
 
 #### English · Grade 4 (10 to write)
 
@@ -121,7 +121,7 @@ Status values: `queued` (free to take) · `claimed` (someone is writing it) · `
 | `en-5-swiss-family-robinson` | The Swiss Family Robinson (chapters) | adventure | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Johann David Wyss, PD translation · [link](https://www.gutenberg.org/ebooks/search/?query=swiss+family+robinson) | 170–300 words/page | queued |  |  |
 | `en-5-around-world-in-eighty` | Around the World in Eighty Days (chapters) | adventure | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Jules Verne, PD translation · [link](https://www.gutenberg.org/ebooks/search/?query=around+the+world+in+eighty+days) | 170–300 words/page | queued |  |  |
 | `en-5-wonderful-adventures-nils` | The Wonderful Adventures of Nils (chapters) | adventure | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Selma Lagerlöf, tr. Velma Swanston Howard (1907) · [link](https://www.gutenberg.org/ebooks/search/?query=wonderful+adventures+of+nils) | 170–300 words/page | queued |  |  |
-| `en-5-casey-at-bat` | Casey at the Bat | poetry | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Ernest Lawrence Thayer (1888) · [link](https://en.wikisource.org/w/index.php?search=casey+at+the+bat) | 170–300 words/page | queued |  |  |
+| `en-5-casey-at-bat` | Casey at the Bat | poetry | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Ernest Lawrence Thayer (1888) · [link](https://en.wikisource.org/w/index.php?search=casey+at+the+bat) | 170–300 words/page | claimed | Codex 2026-11-07 |  |
 
 ### Español (México)
 
