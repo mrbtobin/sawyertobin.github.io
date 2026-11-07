@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1e5a2b">
+<meta name="description" content="Shellfie: a free bilingual read-aloud buddy for kids K–5. Read out loud and Shellfie the turtle follows along and helps with tricky words.">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Shellfie">
+<title>Shellfie</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png"><link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png"><link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Fredoka:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div class="sky" aria-hidden="true"><i></i><i></i><i></i></div>
+
+<!-- shared SVG defs -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="holo" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d6fbe6"/><stop offset=".45" stop-color="#b6f0d4"/><stop offset=".75" stop-color="#d9f7a8"/><stop offset="1" stop-color="#bfe8ff"/>
+    </linearGradient>
+    <linearGradient id="goldg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe680"/><stop offset="1" stop-color="#f0a21b"/></linearGradient>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-next" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v8.5a1.5 1.5 0 0 1-1.5 1.5H15v-6H9v6H5.5A1.5 1.5 0 0 1 4 19.5z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="3.4"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></g></symbol>
+    <symbol id="i-speak" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></g></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></symbol>
+    <symbol id="i-shell" viewBox="0 0 64 64"><path d="M6 46C6 24 18 10 32 10s26 14 26 36z" fill="url(#goldg)" stroke="#10221a" stroke-width="4.5" stroke-linejoin="round"/><path d="M32 46V14M32 46L17 18M32 46L47 18M32 46L9 32M32 46L55 32" stroke="#10221a" stroke-width="3.2" stroke-linecap="round" opacity=".85"/><rect x="4" y="44" width="56" height="8" rx="4" fill="#ffd25a" stroke="#10221a" stroke-width="4.5"/></symbol>
+    <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 2c1 4 6 6 6 12a6 6 0 0 1-12 0c0-3 2-5 3-6 0 2 1 3 2 3 0-4-1-6 1-9z" fill="#ff8a73" stroke="#10221a" stroke-width="2" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<!-- Onboarding -->
+<section id="onboard" class="screen" hidden>
+  <div class="hero-ring">
+    <svg class="arc" viewBox="0 0 300 300" aria-hidden="true"><path id="arcTop" d="M40 150a110 110 0 0 1 220 0" fill="none"/><path id="arcBot" d="M28 150a122 122 0 0 0 244 0" fill="none"/>
+      <text><textPath href="#arcTop" startOffset="50%" text-anchor="middle" data-i18n="arcTop">READ ALOUD</textPath></text>
+      <text><textPath href="#arcBot" startOffset="50%" text-anchor="middle" data-i18n="arcBot">WITH SHELLFIE</textPath></text></svg>
+    <div data-turtle="hero"></div>
+  </div>
+  <h1 class="wordmark">Shell<b>fie</b></h1>
+  <p data-i18n="tagline">Read out loud. I'll follow along and help with tricky words.</p>
+  <div class="miclevel" hidden><i></i></div>
+  <button class="btn big" id="letsRead" data-i18n="letsRead">Let's read!</button>
+  <div class="hint" id="micHint" hidden></div>
+</section>
+
+<!-- Grade selector -->
+<section id="grades" class="screen" hidden>
+  <div class="topbar">
+    <div class="brand grow"><div data-turtle="brand"></div><span class="wordmark">Shell<b>fie</b></span></div>
+    <div class="gate" id="gateGrades"><button class="icon-btn" aria-label="Grown-ups" data-gate><svg><use href="#i-gear"/></svg></button><svg class="ring" viewBox="0 0 64 64"><circle cx="32" cy="32" r="29"/></svg><span class="gate-tip" data-i18n="holdGate">Grown-ups: press and hold</span></div>
+  </div>
+  <div class="scroll">
+    <div class="lang" id="langSwitch" role="group" aria-label="Language"><span class="pill"></span><button data-lang="en" aria-pressed="true">English</button><button data-lang="es" aria-pressed="false">Español</button></div>
+    <div class="greet"><h1 data-i18n="pickGrade">Pick your grade</h1><p data-i18n="pickGradeSub">Then pick a story and read it out loud!</p></div>
+    <div class="grade-grid" id="gradeGrid"></div>
+    <div class="stats-row" id="statsRow"></div>
+  </div>
+</section>
+
+<!-- Bookshelf -->
+<section id="shelf" class="screen" hidden>
+  <div class="topbar">
+    <button class="icon-btn" id="shelfBack" aria-label="Back"><svg><use href="#i-back"/></svg></button>
+    <div class="grow"><h2 id="shelfTitle"></h2></div>
+    <div class="gate" id="gateShelf"><button class="icon-btn" aria-label="Grown-ups" data-gate><svg><use href="#i-gear"/></svg></button><svg class="ring" viewBox="0 0 64 64"><circle cx="32" cy="32" r="29"/></svg><span class="gate-tip" data-i18n="holdGate">Grown-ups: press and hold</span></div>
+  </div>
+  <div class="shelf-controls">
+    <div class="seg" id="browseSeg" role="group"><button data-browse="grade"></button><button data-browse="genre"></button></div>
+    <button class="toggle" id="showReadToggle" role="switch" aria-checked="true"><span class="sw"></span><span data-i18n="showRead">Show books I've read</span></button>
+  </div>
+  <div class="genre-chips" id="genreChips" hidden></div>
+  <div class="scroll" id="shelfScroll"></div>
+</section>
+
+<!-- Reader -->
+<section id="reader" class="screen" hidden>
+  <div class="r-top">
+    <button class="icon-btn" id="rHome" aria-label="Home"><svg><use href="#i-home"/></svg></button>
+    <div class="grow"><div class="r-progress"><i id="rProg"></i></div><div class="r-title" id="rTitle"></div></div>
+    <div class="r-avatar" id="rAvatar" title="Shellfie"><div data-turtle="avatar"></div></div>
+  </div>
+  <div class="r-mode" id="rMode" hidden></div>
+  <div class="book-stage" id="stage"><div class="page" id="page"><div class="page-text" id="pageText"></div></div></div>
+  <button class="r-nav prev" id="rPrev" aria-label="Back a page"><svg><use href="#i-back"/></svg></button>
+  <div class="r-shells" id="rShells"><svg><use href="#i-shell"/></svg><span>0</span></div>
+  <button class="r-nav nxt" id="rNext" aria-label="Next page"><svg><use href="#i-next"/></svg></button>
+  <div class="r-pause" id="rPause" hidden><div class="card"><div data-turtle="sleep"></div><h3 data-i18n="ready">Ready when you are</h3><button class="btn" id="rResume" data-i18n="keepReading">Keep reading</button></div></div>
+  <div class="help" id="help" hidden></div>
+</section>
+
+<!-- Quiz -->
+<section id="quiz" class="screen" hidden>
+  <div class="topbar"><button class="icon-btn" id="quizHome" aria-label="Home"><svg><use href="#i-home"/></svg></button><div class="grow"><h2 id="quizTitle"></h2></div></div>
+  <div class="scroll"><div class="center-col" id="quizBody"></div></div>
+</section>
+
+<!-- Results -->
+<section id="results" class="screen" hidden>
+  <div class="scroll"><div class="center-col" id="resBody"></div></div>
+</section>
+
+<!-- Shell collection -->
+<section id="collection" class="screen" hidden>
+  <div class="topbar"><button class="icon-btn" id="colBack" aria-label="Back"><svg><use href="#i-back"/></svg></button><div class="grow"><h2 data-i18n="myShells">My shell collection</h2></div></div>
+  <div class="scroll"><div class="center-col" id="colBody"></div></div>
+</section>
+
+<dialog id="parent"><div class="panel"><header><div data-turtle="mini" style="width:44px"></div><h2 data-i18n="grownups">For grown-ups</h2><button class="icon-btn" id="parentClose" aria-label="Close"><svg><use href="#i-close"/></svg></button></header><div class="body" id="parentBody"></div></div></dialog>
+<input type="file" id="importFile" accept="application/json,.json" hidden>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="catalog.js"></script>
+<script src="stories.js"></script>
+<script src="app.js"></script>
+</body></html>
