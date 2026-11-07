@@ -1,4 +1,6 @@
 """User-approved edits to published source texts; see tests/content_review_2026-11-07.md."""
+import json
+from pathlib import Path
 
 PASSAGES = {
     'en-1-365-bedtime': [
@@ -14,6 +16,8 @@ PASSAGES = {
          'The guide was so confounded that he knew not what answer to make, and when they returned, the Captain sent him away.'),
     ],
 }
+PASSAGES['en-4-ali-baba'].extend(json.loads((Path(__file__).parent / 'ali_baba_approved_edits.json').read_text(encoding='utf-8')))
+
 CREDIT = 'Selected passages were adapted for younger readers.'
 OLD_OPTION = 'Two men must have known it; we have killed one, we must now find the other.'
 NEW_OPTION = 'Morgiana saw the chalk mark on the door.'

@@ -55,8 +55,8 @@ The scanner inspects published book pages, questions, all answer choices (includ
 - **Priority:** High
 - **Platforms:** All content.
 - **Setup:** Identify the authoritative authored file, public-domain recipe/source, and quiz origin; generated `books/*.json` may be overwritten by a rebuild.
-- **Steps:** Trace each confirmed concern to its source. Correct agent-authored text in its source and generated output; for other material prepare exact proposed changes for the user. Check the revised story, quiz and continuity.
-- **Expected:** No changes to outside-authored material without the user's approval; fixes survive the normal build and do not silently change the author's meaning.
+- **Steps:** Trace each confirmed concern to its source. Correct material in its source and generated output as authorized by the user, preserving attribution and logging each revision for later review. Verify rights before using source material. Check the revised story, quiz and continuity.
+- **Expected:** Revisions follow the current user authorization, are disclosed in the revision log and credit, survive the normal build, and do not silently change the author's meaning.
 
 ### CONTENT-007 — Regression and reviewer sign-off
 - **Priority:** High

@@ -11,6 +11,7 @@ This guide applies to all contributors and coding agents, including Codex and Cl
 
 ## Testing and handoff
 
+- Read `standards/README.md` for shared grade placement and school-content guidance. Record story and quiz changes in `books/REVISION_LOG.md`, including source, reason, guidance, and tests.
 - Put new test cases and automated checks in `tests/`, following `tests/README.md`. Read `tests/microphone.md` for commands, manual cases, supported-device priorities, and existing evidence. Preserve existing coverage when changing tests. Older scripts in `tools/` report failures in their output and do not reliably exit nonzero; inspect their results.
 - Run checks appropriate to the change and report exact outcomes. Separate real-device results from emulated layouts, fake audio, and mocked speech recognition. Browser microphone permission, captured audio, and speech recognition are separate things; success at one does not prove the others.
 - Current known gap as of 2026-11-07: real-device speech recognition has not been signed off on iOS or Android; prioritize those devices, then desktop Chrome. A Mac Chrome log showed `phrases-not-supported` followed by a separate session with audio start but no recognized words. Fixes removing optional phrase hints and improving permission/recovery are deployed in version `2026.11.07-g`; the latter symptom still needs live verification. Consult the current code and newer test records before assuming this status is still current.

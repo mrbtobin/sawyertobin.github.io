@@ -28,7 +28,7 @@ On 2026-11-07 the scanner examined 224 built books and reported 1,047 keyword ma
 
 ## P-003 — Additional Ali Baba scenes, proposed for approval
 
-**Not applied.** The user requested specific proposals for the additional scenes. These changes substantially adapt the story, replacing mutilation and fatal attacks with a burial, capture and escape. They must be applied together and reviewed against the full chapter and quiz for continuity.
+**Approved and applied on 2026-11-07.** The user requested and approved these additional changes. These changes substantially adapt the story, replacing mutilation and fatal attacks with a burial, capture and escape. They must be applied together and reviewed against the full chapter and quiz for continuity.
 
 In `en-4-ali-baba`, chapter 1:
 
@@ -41,4 +41,4 @@ In `en-4-ali-baba`, chapter 1:
 7. **Page 20:** Replace “Morgiana plunged the dagger into his heart” with “Morgiana caught his arm and called for help. Ali Baba and his son took away his dagger, and the town authorities led him away.” Change “what have you done to ruin us?” to “what is the matter?”; replace “Look at him! he is both the false oil merchant and the Captain of the Forty Thieves” with “He is both the false oil merchant and the Captain of the Forty Thieves.” Keep the rest of the ending.
 8. **Page 21:** Replace “At the end of a year Ali Baba, hearing nothing of the two remaining robbers, judged they were dead” with “At the end of a year Ali Baba, having heard nothing more from the robbers”. This avoids the old count of dead robbers after the revised capture and the earlier approved change.
 
-These revisions leave threats, a death without graphic detail, weapons, enslavement in the original narrative, and the arranged marriage in the chapter; those remain for grade-level and representation review. Before implementation, recheck generated quiz options and evidence against all changed passages and disclose the adaptation in the credit.
+These revisions leave threats, a death without graphic detail, weapons, enslavement in the original narrative, and the arranged marriage in the chapter; those remain for grade-level and representation review. The existing quiz options and evidence were checked against the adapted passage, and the adaptation is disclosed in the credit. Recheck whenever quizzes are regenerated.

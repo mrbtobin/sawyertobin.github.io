@@ -28,6 +28,21 @@ class ApprovedAdaptationsTests(unittest.TestCase):
                 adapt_story(source); adapt_quiz(source)
                 self.assertEqual(source, published)
 
+    def test_adapted_ali_baba_quiz_and_key_scenes(self):
+        book = json.loads((ROOT / 'books' / 'en-4-ali-baba.json').read_text(encoding='utf-8'))
+        chapter = book['chapters'][0]
+        text = ' '.join(chapter['pages'])
+        for phrase in ('body into four quarters', 'sew the quarters together',
+                       'poured enough oil into every jar', 'plunged the dagger into his heart'):
+            self.assertNotIn(phrase, text)
+        for question in chapter['quiz']:
+            self.assertIn(question['ev'], text)
+            self.assertIn(question['a'], range(len(question['o'])))
+        self.assertLess(text.index('So she ran to the wife of Cassim and borrowed a measure.'),
+                        text.index('saw the mark the robber had made'))
+        self.assertLess(text.index('saw the mark the robber had made'),
+                        text.index('Morgiana thanked him for his advice, took the oil pot'))
+
     def test_changed_source_fails_instead_of_silently_losing_edit(self):
         with self.assertRaises(ValueError):
             adapt_story({'id':'en-4-ali-baba','chapters':[{'pages':['changed']}], 'credit':''})
