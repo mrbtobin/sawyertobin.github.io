@@ -1,0 +1,229 @@
+id,title,language,assigned_grade,chapters,pages,words_total,median_words_per_page,max_words_per_page,review_status,review_notes
+en-1-365-bedtime,365 Bedtime Stories,en,1,362,4455,124600,28,68,not yet read for grade review,
+en-1-be-astronaut,Be an Astronaut,en,1,1,11,284,25,40,not yet read for grade review,
+en-1-be-chef,Be a Chef,en,1,1,11,236,22,34,not yet read for grade review,
+en-1-be-doctor,Be a Doctor,en,1,1,11,272,27,33,not yet read for grade review,
+en-1-be-zookeeper,Be a Zookeeper,en,1,1,13,257,19,29,not yet read for grade review,
+en-1-boy-cried-wolf,The Boy Who Cried Wolf,en,1,1,11,286,28,34,not yet read for grade review,
+en-1-brooke-the-golden-goose,The Golden Goose,en,1,2,57,1696,30,47,not yet read for grade review,
+en-1-brooke-tom-thumb,Tom Thumb,en,1,2,44,1291,26.0,64,not yet read for grade review,
+en-1-bryant-little-jack-rollaround,Little Jack Rollaround,en,1,1,36,1007,28.0,65,not yet read for grade review,
+en-1-bryant-the-adventures-of-the-little-field-mouse,The Adventures of the Little Field Mouse,en,1,1,29,820,29,39,not yet read for grade review,
+en-1-bryant-the-country-mouse-and-the-city-mouse,The Country Mouse and the City Mouse,en,1,1,31,885,29,69,not yet read for grade review,
+en-1-bryant-the-lambikin,The Lambikin,en,1,1,21,656,31,51,not yet read for grade review,
+en-1-bryant-the-little-half-chick,The Little Half-Chick,en,1,1,33,893,27,38,not yet read for grade review,
+en-1-bryant-the-little-red-hen,The Little Red Hen,en,1,1,6,170,34.5,35,not yet read for grade review,
+en-1-childs-garden,A Child's Garden of Verses (selected),en,1,10,298,7441,25.0,37,not yet read for grade review,
+en-1-elves-shoemaker,The Elves and the Shoemaker,en,1,1,27,767,27,58,not yet read for grade review,
+en-1-fierce-bad-rabbit,The Story of a Fierce Bad Rabbit,en,1,1,6,172,30.5,35,not yet read for grade review,
+en-1-henny-penny,Henny Penny,en,1,1,31,825,27,48,not yet read for grade review,
+en-1-jeremy-fisher,The Tale of Mr. Jeremy Fisher,en,1,1,29,810,28,44,not yet read for grade review,
+en-1-johnny-cake,Johnny-Cake,en,1,1,29,889,30,57,not yet read for grade review,
+en-1-lion-mouse,The Lion and the Mouse,en,1,1,7,93,13,15,reviewed; educator review pending,"Original full story and quiz read; replaced with gentler source-credited retelling, grade 1 retained provisionally; see revision log."
+en-1-max-boo-boo,Max and Ms. Soohoo,en,1,1,9,163,20,23,not yet read for grade review,
+en-1-max-four-square,Max Plays Four Square,en,1,1,9,167,19,26,not yet read for grade review,
+en-1-max-halloween-parade,Max and the Halloween Parade,en,1,1,9,152,18,22,not yet read for grade review,
+en-1-max-home-sick,Max Is Home Sick,en,1,1,9,139,15,23,not yet read for grade review,
+en-1-meet-elephant,Meet Ellie the Elephant,en,1,1,9,248,26,37,not yet read for grade review,
+en-1-meet-octopus,Meet Otto the Octopus,en,1,1,9,188,20,28,not yet read for grade review,
+en-1-meet-sloth,Meet Sammy the Sloth,en,1,1,10,210,21.5,23,not yet read for grade review,
+en-1-meet-wolf,Meet Wally the Wolf,en,1,1,10,234,24.5,27,not yet read for grade review,
+en-1-miss-moppet,The Story of Miss Moppet,en,1,1,9,237,29,33,not yet read for grade review,
+en-1-more-aesop,"More Aesop: The Fox and the Grapes, The Crow and the Pitcher",en,1,2,10,269,26.5,34,not yet read for grade review,
+en-1-north-wind-sun,The North Wind and the Sun,en,1,1,9,219,21,35,not yet read for grade review,
+en-1-red-riding-hood,Little Red Riding Hood (Little Red Cap),en,1,2,44,1359,29.5,88,not yet read for grade review,
+en-1-stone-soup,Stone Soup,en,1,1,8,151,18.5,21,reviewed; educator review pending,New original adaptation and quiz reviewed against grade 1 guidance; educator review pending.
+en-1-teeny-tiny,The Teeny-Tiny Woman,en,1,1,12,390,32.5,51,not yet read for grade review,
+en-1-three-bears,The Story of the Three Bears,en,1,2,47,1356,26,62,not yet read for grade review,
+en-1-three-little-pigs,The Three Little Pigs,en,1,1,31,968,30,65,not yet read for grade review,
+en-1-tom-kitten,The Tale of Tom Kitten,en,1,1,26,722,29.0,42,not yet read for grade review,
+en-1-tortoise-hare,The Tortoise and the Hare,en,1,1,7,100,14,16,reviewed; educator review pending,"Original full story and quiz read; replaced with shorter source-credited retelling, grade 1 retained provisionally; see revision log."
+en-1-town-country-mouse,The Town Mouse and the Country Mouse,en,1,1,14,355,26.0,37,not yet read for grade review,
+en-2-benjamin-bunny,The Tale of Benjamin Bunny,en,2,1,19,1149,62,70,not yet read for grade review,
+en-2-book-of-nonsense,A Book of Nonsense (funny limericks),en,2,11,55,3392,62,67,not yet read for grade review,
+en-2-bremen,The Bremen Town Musicians,en,2,1,22,1285,61.0,98,not yet read for grade review,
+en-2-cinderella,"Cinderella, or the Little Glass Slipper",en,2,2,43,2478,61,101,not yet read for grade review,
+en-2-flopsy,The Tale of the Flopsy Bunnies,en,2,1,17,1030,63,70,not yet read for grade review,
+en-2-frog-prince,The Frog Prince,en,2,1,24,1416,62.5,101,not yet read for grade review,
+en-2-grimm-mother-hulda,Mother Hulda,en,2,1,8,439,57.0,70,not yet read for grade review,
+en-2-grimm-rapunzel,Rapunzel,en,2,1,24,1400,62.5,76,not yet read for grade review,
+en-2-grimm-the-elves,The Elves,en,2,1,22,1208,58.0,86,not yet read for grade review,
+en-2-grimm-the-golden-goose,The Golden Goose,en,2,1,33,1830,58,69,not yet read for grade review,
+en-2-grimm-the-queen-bee,The Queen Bee,en,2,1,15,859,57,76,not yet read for grade review,
+en-2-grimm-the-straw-the-coal-and-the-bean,"The Straw, the Coal, and the Bean",en,2,1,10,523,55.5,64,not yet read for grade review,
+en-2-jemima,The Tale of Jemima Puddle-Duck,en,2,1,24,1399,62.0,69,not yet read for grade review,
+en-2-johnny-town-mouse,The Tale of Johnny Town-Mouse,en,2,1,23,1309,60,70,not yet read for grade review,
+en-2-max-bulldog-buck,Max Earns a Bulldog Buck,en,2,1,9,214,23,32,not yet read for grade review,
+en-2-max-garden,Max in the School Garden,en,2,1,8,154,19.0,27,reviewed; educator review pending,"Full story and quiz read; connected sequence, simple science vocabulary and inference; grade 2 retained provisionally."
+en-2-max-soccer,Max Plays Soccer on the Field,en,2,1,8,158,21.0,27,not yet read for grade review,
+en-2-max-spirit-week,Max and Spirit Week,en,2,1,7,300,42,58,not yet read for grade review,
+en-2-max-turkey-trot,Max and the Turkey Trot,en,2,1,9,185,22,26,not yet read for grade review,
+en-2-peter-rabbit,The Tale of Peter Rabbit,en,2,1,18,970,54.5,69,not yet read for grade review,
+en-2-princess-pea,The Princess and the Pea (The Real Princess),en,2,1,8,413,59.0,66,not yet read for grade review,
+en-2-puss-in-boots,"The Master Cat; Or, Puss in Boots",en,2,1,32,1736,55.5,94,not yet read for grade review,
+en-2-raggedy-andy,Raggedy Andy Stories,en,2,20,261,15134,60,83,not yet read for grade review,
+en-2-raggedy-ann,Raggedy Ann Stories,en,2,20,264,15211,60.0,103,not yet read for grade review,
+en-2-sleeping-beauty,The Sleeping Beauty (Briar Rose),en,2,1,23,1301,57,90,not yet read for grade review,
+en-2-squirrel-nutkin,The Tale of Squirrel Nutkin,en,2,1,22,1242,59.5,68,not yet read for grade review,
+en-2-tittlemouse,The Tale of Mrs. Tittlemouse,en,2,1,19,1155,63,70,not yet read for grade review,
+en-2-two-bad-mice,The Tale of Two Bad Mice,en,2,1,16,947,57.5,70,not yet read for grade review,
+en-2-uncle-wiggily,Uncle Wiggily's Adventures,en,2,30,648,38068,61.0,87,not yet read for grade review,
+en-2-wolf-seven-kids,The Wolf and the Seven Little Goats,en,2,1,17,1049,62,67,not yet read for grade review,
+en-3-aladdin,Aladdin and the Wonderful Lamp,en,3,2,46,5320,117.0,130,not yet read for grade review,
+en-3-emperor,The Emperor's New Clothes,en,3,1,16,1872,119.5,129,not yet read for grade review,
+en-3-fifty-famous,Fifty Famous Stories Retold,en,3,55,286,31897,120.0,130,not yet read for grade review,
+en-3-fir-tree,The Fir Tree (Christmas),en,3,2,29,3256,119,130,not yet read for grade review,
+en-3-grimm-the-fisherman-and-his-wife,The Fisherman and His Wife,en,3,2,26,2925,121.5,142,not yet read for grade review,
+en-3-grimm-the-gallant-tailor,The Gallant Tailor,en,3,2,29,3308,124,130,not yet read for grade review,
+en-3-hansel-gretel,Hansel and Gretel,en,3,1,25,2858,116,130,not yet read for grade review,
+en-3-jack-beanstalk,Jack and the Beanstalk,en,3,1,21,2460,122,130,not yet read for grade review,
+en-3-just-so,"Just So Stories: The Elephant's Child, How the Camel Got His Hump, How the Whale Got His Throat",en,3,2,34,3762,117.0,141,not yet read for grade review,
+en-3-lang-toads-and-diamonds,Toads and Diamonds,en,3,1,8,920,117.5,129,not yet read for grade review,
+en-3-lang-why-the-sea-is-salt,Why the Sea is Salt,en,3,1,17,1824,107,127,not yet read for grade review,
+en-3-max-art,Max's Art Project,en,3,1,5,186,36,50,reviewed; educator review pending,"Full story and quiz read; clear cause/effect and creative problem-solving, grade 3 retained provisionally."
+en-3-max-drills,Max Practices the Big Five,en,3,1,5,232,46,52,reviewed; educator review pending,Full story and quiz read; revised emergency directions and quiz; grade 3 retained provisionally; see revision log.
+en-3-max-make-it-right,Max Makes It Right,en,3,1,6,238,39.0,46,reviewed; educator review pending,"Full story and quiz read; multiple perspectives and conflict resolution, grade 3 retained provisionally."
+en-3-max-reading-buddy,Max the Reading Buddy,en,3,1,5,301,62,68,not yet read for grade review,
+en-3-max-restaurant-night,Max at Restaurant Night,en,3,1,5,182,36,47,reviewed; educator review pending,Full story and quiz read; connected narrative and cause/effect; grade 3 retained provisionally.
+en-3-mother-west-wind,Old Mother West Wind,en,3,16,148,16958,122.0,130,not yet read for grade review,
+en-3-peter-cottontail,The Adventures of Peter Cottontail,en,3,26,142,15670,121.0,130,not yet read for grade review,
+en-3-reddy-fox,The Adventures of Reddy Fox,en,3,24,135,14769,120,130,not yet read for grade review,
+en-3-rumpelstiltskin,Rumpelstiltskin,en,3,1,10,1128,114.0,125,not yet read for grade review,
+en-3-selfish-giant,The Selfish Giant,en,3,1,6,401,66.5,73,reviewed; educator review pending,New short selected adaptation and quiz reviewed against grade 3 guidance; literary and educator review pending.
+en-3-swineherd,The Swineherd,en,3,1,13,1500,119,130,not yet read for grade review,
+en-3-thumbelina,Thumbelina,en,3,2,39,4381,117,130,not yet read for grade review,
+en-3-tiggy-winkle,The Tale of Mrs. Tiggy-Winkle,en,3,1,12,1372,119.5,130,not yet read for grade review,
+en-3-tin-soldier,The Steadfast Tin Soldier,en,3,1,15,1747,120,130,not yet read for grade review,
+en-3-ugly-duckling,The Ugly Duckling,en,3,2,32,3785,122.5,130,not yet read for grade review,
+en-3-velveteen,The Velveteen Rabbit,en,3,2,34,3990,123.0,130,not yet read for grade review,
+en-4-ali-baba,Ali Baba and the Forty Thieves,en,4,1,21,3381,174,199,not yet read for grade review,
+en-4-alice,Alice's Adventures in Wonderland,en,4,12,163,26618,172,254,not yet read for grade review,
+en-4-bad-child-beasts,The Bad Child's Book of Beasts (funny verse),en,4,2,5,685,158,201,not yet read for grade review,
+en-4-burgess-animal,The Burgess Animal Book for Children,en,4,41,466,76589,175.0,200,not yet read for grade review,
+en-4-five-children,Five Children and It,en,4,14,280,46692,174.0,199,not yet read for grade review,
+en-4-hanukkah,The Story of Hanukkah (nonfiction),en,4,1,4,177,45.5,48,reviewed; educator review pending,"Full nonfiction text and quiz read; historical and religious vocabulary and detail questions, grade 4 retained provisionally; cultural/educator review encouraged."
+en-4-heidi,Heidi,en,4,31,540,91529,176.0,207,not yet read for grade review,
+en-4-lang-beauty-and-the-beast,Beauty and the Beast,en,4,2,42,7204,180.5,199,not yet read for grade review,
+en-4-lang-east-of-the-sun-and-west-of-the-moon,East of the Sun and West of the Moon,en,4,1,25,4429,182,199,not yet read for grade review,
+en-4-lang-the-princess-on-the-glass-hill,The Princess on the Glass Hill,en,4,1,23,3761,167,199,not yet read for grade review,
+en-4-little-mermaid,The Little Mermaid,en,4,3,53,9223,184,197,not yet read for grade review,
+en-4-max-dia-de-muertos,Max and the Day of the Dead Ofrenda,en,4,1,5,254,52,58,reviewed; educator review pending,"Full story and quiz read; remembrance, cultural vocabulary and inference, grade 4 retained provisionally; cultural/educator review encouraged."
+en-4-max-harvest-festival,Max at the Harvest Festival,en,4,1,5,249,57,63,reviewed; educator review pending,"Full story and quiz read; community events and cause/effect, grade 4 retained provisionally."
+en-4-max-haunted-house,Max and the Haunted House in the MPR,en,4,1,5,237,47,52,not yet read for grade review,
+en-4-max-thriller,Max Teaches the Thriller Dance,en,4,1,5,312,63,74,not yet read for grade review,
+en-4-max-variety-show,Max and the Variety Show,en,4,1,5,352,64,100,not yet read for grade review,
+en-4-mowgli,Mowgli's Brothers and Kaa's Hunting,en,4,5,96,16634,179.5,200,not yet read for grade review,
+en-4-nightingale,The Nightingale,en,4,1,21,3576,182,196,not yet read for grade review,
+en-4-oz,The Wonderful Wizard of Oz,en,4,25,232,39425,179.0,200,not yet read for grade review,
+en-4-pollyanna,Pollyanna,en,4,32,332,56829,182.0,201,not yet read for grade review,
+en-4-princess-goblin,The Princess and the Goblin,en,4,32,306,51065,176.5,200,not yet read for grade review,
+en-4-reluctant-dragon,The Reluctant Dragon,en,4,3,63,10341,170,200,not yet read for grade review,
+en-4-rikki,Rikki-Tikki-Tavi,en,4,2,34,5943,178.0,199,not yet read for grade review,
+en-4-snow-queen,The Snow Queen (winter),en,4,3,71,12050,177,199,not yet read for grade review,
+en-4-wonder-book,"A Wonder-Book: King Midas, Pandora's Box",en,4,2,8,435,55.5,68,not yet read for grade review,
+en-5-anne,Anne of Green Gables,en,5,38,403,102996,270,300,not yet read for grade review,
+en-5-black-beauty,Black Beauty,en,5,48,242,59077,263.0,300,not yet read for grade review,
+en-5-call-wild,The Call of the Wild,en,5,6,114,28482,258.5,299,not yet read for grade review,
+en-5-casey-at-bat,Casey at the Bat,en,5,1,2,529,264.5,265,reviewed; educator review pending,New selected public-domain poem and quiz reviewed against grade 5 guidance; historical and educator review pending.
+en-5-cautionary,Cautionary Tales for Children (funny verse),en,5,12,14,2429,192.0,299,not yet read for grade review,
+en-5-christmas-carol,A Christmas Carol,en,5,6,111,28724,266,300,not yet read for grade review,
+en-5-gift-magi,The Gift of the Magi,en,5,1,8,2087,273.5,293,not yet read for grade review,
+en-5-little-princess,A Little Princess,en,5,20,260,67020,275.0,300,not yet read for grade review,
+en-5-little-women,Little Women,en,5,48,725,186220,271,300,not yet read for grade review,
+en-5-max-bulldog-ball,Max at the Bulldog Ball,en,5,1,5,395,80,86,not yet read for grade review,
+en-5-max-earth-day,Max Leads the Earth Day Cleanup,en,5,1,5,305,57,80,reviewed; educator review pending,"Full story and quiz read; data interpretation and cause/effect, grade 5 retained provisionally; local disposal rules vary."
+en-5-max-ruby-bridges,Max Walks for Ruby Bridges,en,5,1,5,314,63,68,reviewed; educator review pending,"Full story and quiz read; historical segregation, context and inference; grade 5 retained provisionally, historical/educator review encouraged."
+en-5-max-ski-week-spring-break,Max's Ski Week and Spring Break,en,5,1,5,288,54,72,reviewed; educator review pending,"Full story and quiz read; analogy and sequence, grade 5 retained provisionally."
+en-5-peter-wendy,Peter and Wendy,en,5,13,147,37261,270,298,not yet read for grade review,
+en-5-pied-piper,The Pied Piper of Hamelin,en,5,1,9,2148,239,298,not yet read for grade review,
+en-5-railway-children,The Railway Children,en,5,13,212,56302,283.0,300,not yet read for grade review,
+en-5-robin-hood,The Merry Adventures of Robin Hood,en,5,25,418,106766,269.0,300,not yet read for grade review,
+en-5-secret-garden,The Secret Garden,en,5,27,313,81095,276,300,not yet read for grade review,
+en-5-sherlock,"The Adventures of Sherlock Holmes: The Red-Headed League, The Blue Carbuncle",en,5,4,68,17079,268.0,300,not yet read for grade review,
+en-5-sleepy-hollow,The Legend of Sleepy Hollow (Halloween),en,5,2,48,11593,252.0,298,not yet read for grade review,
+en-5-tom-sawyer,The Adventures of Tom Sawyer,en,5,20,194,48480,269.0,300,not yet read for grade review,
+en-5-treasure-island,Treasure Island,en,5,34,273,68340,269,300,not yet read for grade review,
+en-5-wind-willows,The Wind in the Willows,en,5,12,218,53436,256.0,300,not yet read for grade review,
+en-k-be-farmer,Be a Farmer,en,K,1,12,153,12.0,26,reviewed; educator review pending,"Full text and quiz read; accessible career introduction with adult-supported projects, K retained provisionally."
+en-k-be-firefighter,Be a Firefighter,en,K,1,15,193,12,22,reviewed; educator review pending,"Full text and quiz read; gear and training language revised; K retained provisionally, see revision log."
+en-k-be-teacher,Be a Teacher,en,K,1,14,164,11.5,22,reviewed; educator review pending,"Full text and quiz read; credential and gender-neutral quiz wording revised; K retained provisionally, see revision log."
+en-k-be-vet,Be a Vet,en,K,1,12,161,13.0,22,reviewed; educator review pending,"Full text and quiz read; familiar animal-care setting, medical vocabulary needs support, K retained provisionally."
+en-k-bryant-the-cloud,The Cloud,en,K,1,25,548,19,51,not yet read for grade review,
+en-k-bryant-the-cock-a-doo-dle-doo,The Cock-A-Doo-Dle-Doo,en,K,1,8,111,9.0,29,not yet read for grade review,
+en-k-bryant-the-gingerbread-man,The Gingerbread Man,en,K,1,13,105,8,10,reviewed and adapted; educator review pending,Original full text and quiz reviewed; K assignment retained for a short gentle adaptation. See books/REVISION_LOG.md.
+en-k-bryant-the-little-pink-rose,The Little Pink Rose,en,K,1,12,140,12.5,19,not yet read for grade review,
+en-k-bryant-two-little-riddles-in-rhyme,Two Little Riddles in Rhyme,en,K,1,6,82,11.5,28,not yet read for grade review,
+en-k-enormous-turnip,The Enormous Turnip,en,K,1,8,57,6.0,10,reviewed; educator review pending,"Full story and quiz read; simple sequence and teamwork, K retained provisionally."
+en-k-little-red-hen,The Little Red Hen,en,K,1,9,77,8,14,reviewed; educator review pending,"Full story and quiz read; short repetitive sequence and simple motivation, K retained provisionally."
+en-k-lullabies,Mother Goose Lullabies,en,K,1,11,155,14,19,not yet read for grade review,
+en-k-max-first-day,Max's First Day at McKinley,en,K,1,12,124,11.0,13,reviewed; educator review pending,"Full story and quiz read; familiar setting, short sentences, basic detail and feeling questions; K retained provisionally."
+en-k-max-library,Max Visits the Library,en,K,1,10,94,8.0,14,reviewed; educator review pending,"Full text and quiz read; familiar sequence and detail questions, K retained provisionally."
+en-k-max-pajama-day,Max and Pajama & Hot Cocoa Day,en,K,1,10,88,9.0,11,reviewed; educator review pending,"Full story and quiz read; familiar setting and clear sequence, K retained provisionally."
+en-k-meet-bee,Meet Bizzy Bea the Bee,en,K,1,12,106,8.5,13,reviewed; educator review pending,"Full text and quiz read; accessible animal facts and vocabulary with support, K retained provisionally."
+en-k-meet-owl,Meet Ollie the Owl,en,K,1,12,105,8.0,12,reviewed; educator review pending,"Full text and quiz read; sight/flight factual wording and quiz revised, K retained provisionally; see revision log."
+en-k-meet-penguin,Meet Penny the Penguin,en,K,1,12,105,9.0,13,reviewed; educator review pending,"Full text and quiz read; predator wording revised, K retained provisionally; see revision log."
+en-k-meet-turtle,Meet Tiny Tim the Turtle,en,K,1,12,116,10.0,15,reviewed; educator review pending,"Full text and quiz read; accessible animal facts, K retained provisionally."
+en-k-mother-goose-rhymes,"Mother Goose Rhymes (Hey Diddle Diddle, Jack and Jill, Humpty Dumpty, Little Bo Peep)",en,K,1,19,265,14,18,not yet read for grade review,
+en-k-owl-pussycat,The Owl and the Pussy-cat,en,K,1,15,229,15,18,not yet read for grade review,
+en-k-real-mother-goose,The Real Mother Goose,en,K,40,1061,13567,12,27,not yet read for grade review,
+en-k-three-billy-goats-gruff,The Three Billy Goats Gruff,en,K,1,13,107,8,11,reviewed; educator review pending,New short adaptation and quiz reviewed against K guidance; educator review pending.
+es-1-conoce-elefanta,Conoce a Elena la Elefanta,es,1,1,9,246,25,39,not yet read for grade review,
+es-1-conoce-lobo,Conoce a Lalo el Lobo,es,1,1,10,233,24.0,27,not yet read for grade review,
+es-1-conoce-perezoso,Conoce a Pancho el Perezoso,es,1,1,10,203,20.0,24,not yet read for grade review,
+es-1-conoce-pulpo,Conoce a Paco el Pulpo,es,1,1,9,190,21,27,not yet read for grade review,
+es-1-leon-raton,El león y el ratón,es,1,1,7,83,11,16,reviewed; educator review pending,"Full story and quiz read; threat softened, grade 1 retained provisionally; see revision log."
+es-1-max-desfile,Max y el desfile de Halloween,es,1,1,8,139,18.0,23,not yet read for grade review,
+es-1-max-soohoo,Max y la señora Soohoo,es,1,1,9,165,20,24,not yet read for grade review,
+es-1-se-astronauta,¡Sé astronauta!,es,1,1,11,266,23,37,not yet read for grade review,
+es-1-se-chef,¡Sé chef!,es,1,1,11,220,21,32,not yet read for grade review,
+es-1-se-cuidador-zoo,¡Sé cuidador del zoológico!,es,1,1,13,258,20,30,not yet read for grade review,
+es-1-se-doctora,¡Sé doctora!,es,1,1,11,246,25,30,not yet read for grade review,
+es-1-tortuga-liebre,La tortuga y la liebre,es,1,1,7,101,14,16,reviewed; educator review pending,"Full story and quiz read; clear sequence and lesson, grade 1 retained provisionally."
+es-2-cempasuchil,La leyenda del cempasúchil (Día de Muertos),es,2,1,5,170,33,40,reviewed; educator review pending,"Full story and quiz read; cultural context clarified, grade 2 provisional; cultural and Spanish educator review needed."
+es-2-max-bulldog-buck,Max gana un Bulldog Buck,es,2,1,9,191,20,30,not yet read for grade review,
+es-2-max-carrera-pavo,Max y la Carrera del Pavo,es,2,1,8,160,19.0,27,not yet read for grade review,
+es-2-max-semana-espiritu,Max y la Semana del Espíritu Escolar,es,2,1,7,331,49,63,not yet read for grade review,
+es-2-princesa-guisante,La princesa y el guisante,es,2,1,5,160,33,35,reviewed; educator review pending,"Full story and quiz read; traditional exaggeration and sequence, grade 2 retained provisionally."
+es-3-bebe-pomposo,Bebé y el señor don Pomposo,es,3,1,13,1464,112,129,not yet read for grade review,
+es-3-cuentos-elefantes,Cuentos de elefantes,es,3,2,25,2884,118,169,not yet read for grade review,
+es-3-flautista,El flautista de Hamelín,es,3,1,4,210,47.0,72,reviewed; educator review pending,"Full story and quiz read; non-graphic peril resolved, grade 3 retained provisionally; discuss with educator."
+es-3-iriarte,"Fábulas: El burro flautista, Los dos conejos",es,3,2,2,240,120.0,129,not yet read for grade review,
+es-3-max-arreglarlo,Max lo arregla,es,3,1,6,217,35.0,45,not yet read for grade review,
+es-3-max-companero-lectura,"Max, compañero de lectura",es,3,1,5,293,61,65,not yet read for grade review,
+es-3-max-simulacros,Max practica los Cinco Grandes,es,3,1,5,234,48,55,reviewed; educator review pending,"Full story and quiz read; emergency guidance revised, grade 3 provisional; see revision log."
+es-3-nene-traviesa,Nené traviesa,es,3,1,17,1839,114,149,not yet read for grade review,
+es-3-samaniego,"Fábulas: La cigarra y la hormiga, La lechera, El cuervo y el zorro",es,3,3,6,572,118.5,126,not yet read for grade review,
+es-3-volcanes,La leyenda de los volcanes (Popocatépetl e Iztaccíhuatl),es,3,1,4,204,44.5,75,not yet read for grade review,
+es-4-camaron,El camarón encantado,es,4,1,19,3144,179,199,not yet read for grade review,
+es-4-grito-dolores,"El Grito de Dolores (16 de septiembre, no ficción)",es,4,1,4,212,52.0,58,reviewed; educator review pending,"Full story and quiz read; historic events and vocabulary, grade 4 provisional; historical and Spanish educator review needed."
+es-4-juego-nuevo,Un juego nuevo y otros viejos,es,4,1,12,1979,173.5,194,not yet read for grade review,
+es-4-max-dia-de-muertos,Max y la ofrenda de Día de Muertos,es,4,1,5,225,44,53,not yet read for grade review,
+es-4-max-thriller,Max enseña el baile de Thriller,es,4,1,5,293,63,69,not yet read for grade review,
+es-4-max-variedades,Max y el espectáculo de variedades,es,4,1,5,354,68,101,not yet read for grade review,
+es-4-menique,Meñique,es,4,2,33,5646,183,200,not yet read for grade review,
+es-4-muneca-negra,La muñeca negra,es,5,1,18,2988,165.0,215,reviewed; educator review pending,Full text and quiz read; moved from grade 4 to provisional grade 5 due to dense historical prose; Spanish educator review needed; see revision log.
+es-4-raton-perez,Ratón Pérez,es,4,1,25,4329,174,199,not yet read for grade review,
+es-4-tres-heroes,"Tres héroes: Bolívar, Hidalgo, San Martín",es,4,1,11,2021,192,199,not yet read for grade review,
+es-4-zapaticos,Los zapaticos de rosa,es,4,1,4,740,187.5,200,not yet read for grade review,
+es-5-corazon,De los Apeninos a los Andes; El pequeño escribiente florentino; El tamborcillo sardo,es,5,5,82,21682,278.0,300,not yet read for grade review,
+es-5-cuchara-tenedor,Historia de la cuchara y el tenedor,es,5,1,8,1963,277.0,298,not yet read for grade review,
+es-5-dos-ruisenores,Los dos ruiseñores,es,5,1,15,3719,271,284,not yet read for grade review,
+es-5-iliada,"La Ilíada, de Homero",es,5,1,17,4669,286,434,not yet read for grade review,
+es-5-max-bulldog-ball,Max en el Bulldog Ball,es,5,1,5,412,80,92,not yet read for grade review,
+es-5-max-dia-tierra,Max dirige la limpieza del Día de la Tierra,es,5,1,5,298,52,85,reviewed; educator review pending,"Full story and quiz read; data and cause/effect, grade 5 provisional; local disposal rules vary."
+es-5-max-ruby-bridges,Max camina por Ruby Bridges,es,5,1,5,337,67,77,not yet read for grade review,
+es-5-platero,Platero y yo,es,5,15,56,11522,202.5,304,not yet read for grade review,
+es-5-principe-feliz,El príncipe feliz,es,5,1,5,325,62,79,not yet read for grade review,
+es-5-regalo-reyes,El regalo de los Reyes Magos,es,5,1,5,347,63,97,reviewed; educator review pending,"Full story and quiz read; literary inference and cultural context, revised unsupported historical claim, grade 5 retained provisionally."
+es-k-conoce-abeja,Conoce a Abi la Abeja,es,K,1,12,105,8.0,13,reviewed; educator review pending,"Full story and quiz read; simple nonfiction sequence, K provisional; Spanish educator review needed."
+es-k-conoce-buho,Conoce a Bruno el Búho,es,K,1,12,107,9.0,15,reviewed; educator review pending,"Full story and quiz read; corrected absolute nonfiction claims, K provisional; see revision log."
+es-k-conoce-pinguino,Conoce a Pepe el Pingüino,es,K,1,12,100,7.5,16,reviewed; educator review pending,"Full story and quiz read; animal description and simple inference, K provisional; Spanish educator review needed."
+es-k-conoce-tortuga,Conoce a Tito la Tortuga,es,K,1,12,116,9.0,14,reviewed; educator review pending,"Full story and quiz read; simple nonfiction sequence, K provisional; Spanish educator review needed."
+es-k-gallinita-roja,La gallinita roja,es,K,1,9,71,6,12,reviewed; educator review pending,"Full story and quiz read; short repetitive sequence and simple motivation, K retained provisionally."
+es-k-max-pijamas,Max y el Día de Pijamas y Chocolate,es,K,1,10,92,9.0,12,reviewed; educator review pending,"Full story and quiz read; familiar routine and simple vocabulary, K retained provisionally."
+es-k-max-primer-dia,El primer día de Max en McKinley,es,K,1,12,121,10.0,13,reviewed; educator review pending,"Full story and quiz read; familiar setting and simple sequencing, K retained provisionally."
+es-k-nabo-gigante,El nabo gigante,es,K,1,8,51,6.0,9,reviewed; educator review pending,"Full story and quiz read; simple repetitive sequence and teamwork, K retained provisionally."
+es-k-se-bombero,¡Sé bombero!,es,K,1,15,188,11,23,not yet read for grade review,
+es-k-se-granjero,¡Sé granjero!,es,K,1,12,143,11.5,22,not yet read for grade review,
+es-k-se-maestra,¡Sé maestra!,es,K,1,14,160,10.0,25,not yet read for grade review,
+es-k-se-veterinaria,¡Sé veterinaria!,es,K,1,12,150,13.0,20,not yet read for grade review,

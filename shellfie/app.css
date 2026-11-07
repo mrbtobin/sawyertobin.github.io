@@ -564,3 +564,9 @@ body.reading.calm .r-avatar,body.reading.calm .r-nav,body.reading.calm #rHome{op
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
 /* iOS otherwise zooms when a small text field receives focus. */
 input,select,textarea{font-size:16px}
+/* Grown-ups gate: a quiet "Parents" text button (press and hold) */
+.parents-btn{appearance:none;border:0;background:transparent;color:var(--ink);opacity:.55;font:600 15px/1 Andika,system-ui,sans-serif;padding:10px 6px;cursor:pointer;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
+.parents-btn:hover,.parents-btn:focus-visible{opacity:.9;text-decoration:underline}
+.gate .hold-bar{position:absolute;left:6px;right:6px;bottom:4px;height:3px;border-radius:2px;background:var(--forest);transform:scaleX(0);transform-origin:left;pointer-events:none}
+.gate.holding .hold-bar{transition:transform 1.2s linear;transform:scaleX(1)}
+.gate.holding .parents-btn{opacity:1}

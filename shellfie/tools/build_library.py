@@ -22,6 +22,8 @@ CACHE = os.path.join(HERE, ".cache")
 OUT = os.path.join(ROOT, "books")
 random.seed(7)
 
+from approved_adaptations import adapt_story, adapt_quiz, adapt_gingerbread
+
 # ───────────────────────── source text helpers ─────────────────────────
 def body(src):
     t = open(os.path.join(CACHE, f"{src}.txt"), encoding="utf-8").read().replace("\r", "").replace("﻿", "")
@@ -435,7 +437,7 @@ for sid, head, ic, cat, g, gen in [("es-3-bebe-pomposo", "Bebé y el señor don 
                                    ("es-3-cuentos-elefantes", "Cuentos de elefantes", "🐘", "Cuentos de elefantes", "3", "nonfiction"),
                                    ("es-4-menique", "Meñique", "🪓", "Meñique", "4", "fairy"),
                                    ("es-4-camaron", "El camarón encantado", "🦐", "El camarón encantado", "4", "fairy"),
-                                   ("es-4-muneca-negra", "La muñeca negra", "🪆", "La muñeca negra", "4", "everyday"),
+                                   ("es-4-muneca-negra", "La muñeca negra", "🪆", "La muñeca negra", "5", "everyday"),
                                    ("es-4-tres-heroes", "Tres héroes", "🎖️", "Tres héroes: Bolívar, Hidalgo, San Martín", "4", "nonfiction"),
                                    ("es-4-juego-nuevo", "Un juego nuevo y otros viejos", "🎲", "Un juego nuevo y otros viejos", "4", "nonfiction"),
                                    ("es-4-zapaticos", "Los zapaticos de rosa", "🩰", "Los zapaticos de rosa", "4", "poetry"),
@@ -597,11 +599,16 @@ def main():
                               icon=r["icon"] or None, season=r["season"] or (season_of(r["title"]) if r["genre"] == "seasons" else None), daily=r["daily"] or None,
                               src=GUT.format(r["src"]), note=r["note"], chapters=chs, human=True, _recipe=r)
         report.append(f"   {r['id']}: {len(chs)} ch, {sum(len(c['pages']) for c in chs)} pages, {sum(wc(' '.join(c['pages'])) for c in chs)} words" + (f"  (dropped {len(dropped)}: {', '.join(d[1] for d in dropped[:4])})" if dropped else ""))
-    # authored stories (retellings, Meet a…, Be a…) — authored ones win only if no human original was built
+    # These reviewed, age-appropriate retellings replace the longer original editions.
+    preferred_retellings = {"en-1-tortoise-hare", "en-1-lion-mouse"}
     for s in node_authored():
-        if s["id"] in books: continue
+        if s["id"] in books and s["id"] not in preferred_retellings: continue
         s["human"] = False
         books[s["id"]] = s
+    # Apply approved changes before generating quizzes so evidence reflects the adaptation.
+    for b in books.values():
+        adapt_story(b)
+        adapt_gingerbread(b)
     # quizzes: authored if present (and verified), else generated
     authored_q = json.load(open(os.path.join(HERE, "quizzes.json"), encoding="utf-8")) if os.path.exists(os.path.join(HERE, "quizzes.json")) else {}
     for b in books.values():
@@ -620,6 +627,7 @@ def main():
                 q = auto_quiz(ch["pages"], ch.get("_names", []), pool, ch.get("_words", []), lang, grade, bool(b.get("_recipe", {}).get("poem")))
             ch["quiz"] = q
             ch.pop("_names", None); ch.pop("_words", None)
+        adapt_quiz(b)
     # write books + link catalog
     def find_entry(L, g, title):
         for e in cat[L][g]:
@@ -635,6 +643,9 @@ def main():
         e.update({"t": b["title"], "a": b["author"], "g": b["genre"], "id": b["id"], "icon": b.get("icon"), "pc": [len(c["pages"]) for c in b["chapters"]]})
         if b.get("src"): e["u"] = b["src"]
         if b.get("human"): e["h"] = 1
+        if b["id"] in preferred_retellings:
+            e["l"] = "Original adaptation"
+            e.pop("h", None); e.pop("u", None)
         if b.get("daily"): e["d"] = 1
         if r and r.get("star"): e["star"] = 1
         if b["genre"] == "seasons": e["s"] = b.get("season") or season_of(b["title"])

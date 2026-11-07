@@ -43,7 +43,7 @@ window.SHELLFIE_STORIES.push(
   ]}]},
 
 { id:"en-1-tortoise-hare", lang:"en", grade:"1", genre:"fables", icon:"🐢",
-  title:"The Tortoise and the Hare", author:"Aesop, retelling", credit:"Retold from The Aesop for Children (1919), public domain.",
+  title:"The Tortoise and the Hare", author:"Aesop, retelling", credit:"An original, shortened retelling of The Aesop for Children (1919), public domain; adapted for young readers.",
   chapters:[{ pages:[
     "A hare liked to brag. \"I am the fastest!\" he said. \"Nobody can beat me.\"",
     "A tortoise looked up. \"I will race you,\" she said. All the animals laughed.",
@@ -59,10 +59,10 @@ window.SHELLFIE_STORIES.push(
   ]}]},
 
 { id:"en-1-lion-mouse", lang:"en", grade:"1", genre:"fables", icon:"🦁",
-  title:"The Lion and the Mouse", author:"Aesop, retelling", credit:"Retold from The Aesop for Children (1919), public domain.",
+  title:"The Lion and the Mouse", author:"Aesop, retelling", credit:"An original, shortened retelling of The Aesop for Children (1919), public domain; adapted for young readers.",
   chapters:[{ pages:[
     "A big lion was asleep in the sun. A little mouse ran over his nose.",
-    "The lion woke up and grabbed the mouse. \"I will eat you!\" he roared.",
+    "The lion woke up and gently placed a paw beside the mouse.",
     "\"Please let me go,\" said the mouse. \"Some day I will help you.\"",
     "The lion laughed. \"How can a tiny mouse help me?\" But he let her go.",
     "One day the lion was caught in a rope net. He roared and roared.",
@@ -250,7 +250,7 @@ window.SHELLFIE_STORIES.push(
   title:"El león y el ratón", author:"Esopo, versión propia", credit:"Versión propia de la fábula de Esopo (fuente de dominio público).",
   chapters:[{ pages:[
     "Un león grande dormía al sol. Un ratoncito le pasó por la nariz.",
-    "El león despertó y atrapó al ratón. —¡Te voy a comer! —rugió.",
+    "El león despertó y puso una pata junto al ratón.",
     "—Por favor, suéltame —dijo el ratón—. Algún día te ayudaré.",
     "El león se rio. —¿Cómo me va a ayudar un ratón tan chiquito? —Pero lo soltó.",
     "Un día, el león cayó en una red de cuerdas. Rugió y rugió.",
@@ -283,10 +283,10 @@ window.SHELLFIE_STORIES.push(
     "Todas las tardes subían juntos a una montaña. Allá arriba le llevaban flores al dios del sol, Tonatiuh, que los miraba con cariño. Se prometieron que siempre estarían juntos.",
     "Cuando crecieron, Huitzilin tuvo que irse muy lejos y ya no regresó. Xóchitl estaba muy triste. Subió a la montaña y le pidió a Tonatiuh que la volviera a reunir con su amigo.",
     "El sol le mandó un rayo dorado y Xóchitl se convirtió en una flor de pétalos naranjas, brillantes como el sol. Entonces llegó un colibrí, se posó en la flor, y la flor se abrió. ¡Era Huitzilin!",
-    "Por eso, en el Día de Muertos, adornamos los altares con flores de cempasúchil. Su color y su aroma ayudan a las almas a encontrar el camino a casa, para estar otra vez con quienes las quieren."
+    "En el Día de Muertos, muchas familias adornan los altares con flores de cempasúchil. Según esta tradición, su color y su aroma ayudan a las almas a encontrar el camino a casa, para estar otra vez con quienes las quieren."
   ], quiz:[
     { k:"literal", q:"¿En qué se convirtió Xóchitl?", o:["En una flor naranja","En un colibrí","En una montaña","En el sol"], a:0, ev:"Xóchitl se convirtió en una flor de pétalos naranjas" },
-    { k:"infer", q:"¿Por qué ponemos cempasúchil en los altares?", o:["Para ayudar a las almas a encontrar el camino","Porque es la flor más barata","Para que lleguen colibríes","Porque no tiene olor"], a:0, ev:"Su color y su aroma ayudan a las almas a encontrar el camino a casa" },
+    { k:"infer", q:"Según esta tradición, ¿por qué algunas familias ponen cempasúchil en los altares?", o:["Para ayudar a las almas a encontrar el camino","Porque es la flor más barata","Para que lleguen colibríes","Porque no tiene olor"], a:0, ev:"su color y su aroma ayudan a las almas a encontrar el camino a casa" },
     { k:"vocab", q:"¿Qué es un «colibrí»?", o:["Un pájaro muy pequeño","Una flor","Un dios","Una montaña"], a:0, ev:"Él se llamaba Huitzilin, que quiere decir colibrí." }
   ]}]},
 
@@ -349,7 +349,7 @@ window.SHELLFIE_STORIES.push(
     "Della miraba por la ventana a un gato gris que caminaba sobre una barda gris. Quería regalarle a Jim algo especial, algo digno de él. De pronto se apartó de la ventana, se puso su viejo abrigo café y su sombrero, y corrió hasta una tienda con un letrero que decía: «Madame Sofronie. Artículos de cabello de todas clases». Veinte minutos después salió con veinte dólares, y su hermoso cabello ya no estaba.",
     "Recorrió todas las tiendas hasta que lo encontró: una cadena de platino, sencilla y elegante, para el reloj de Jim. A las siete en punto se abrió la puerta. Jim entró y se quedó mirando el cabello corto de Della con una expresión extraña. —No me mires así —le suplicó ella—. El pelo me crece muy rápido. Lo vendí para comprarte un regalo.",
     "Jim sacó un paquete de su abrigo. Adentro había unas peinetas de carey con orillas de piedras brillantes, las mismas que Della había admirado durante meses en un aparador. Ahora no tenía cabello largo para usarlas. Entonces ella le mostró la cadena. Jim sonrió con ternura. —Della —le dijo—, vendí el reloj para comprarte las peinetas.",
-    "Los Reyes Magos fueron los sabios que llevaron regalos al niño recién nacido, y así inventaron la costumbre de regalar. Della y Jim habían sacrificado, sin pensarlo, los mayores tesoros de su casa el uno por el otro. Y, sin embargo, nos dice el autor, de todos los que hacen regalos, ellos fueron los más sabios. Ellos son los verdaderos Reyes Magos."
+    "El narrador compara sus regalos con los de los Reyes Magos, personajes de la tradición cristiana. Della y Jim habían sacrificado, sin pensarlo, los mayores tesoros de su casa el uno por el otro. Y, sin embargo, nos dice el autor, de todos los que hacen regalos, ellos fueron los más sabios. Ellos son los verdaderos Reyes Magos."
   ], quiz:[
     { k:"literal", q:"¿Qué vendió Della para comprar el regalo de Jim?", o:["Su cabello","Su abrigo","Sus peinetas","Su reloj"], a:0, ev:"Veinte minutos después salió con veinte dólares, y su hermoso cabello ya no estaba." },
     { k:"infer", q:"¿Por qué el autor dice que Della y Jim fueron los más sabios?", o:["Dieron lo que más querían el uno por el otro","Encontraron los mejores precios","Compraron regalos muy caros","Guardaron bien sus tesoros"], a:0, ev:"Della y Jim habían sacrificado, sin pensarlo, los mayores tesoros de su casa el uno por el otro." },

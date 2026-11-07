@@ -1,6 +1,6 @@
 /* Shellfie service worker: app files come fresh from the network (cache is the offline fallback);
    stories and fonts come from the cache first so reading works offline. */
-const CACHE = "shellfie-v10";
+const CACHE = "shellfie-v14";
 const SHELL = ["./", "index.html", "app.css", "app.js", "catalog.js", "manifest.webmanifest", "favicon.svg", "favicon-32.png", "icon-192.png", "icon-512.png", "apple-touch-icon.png"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL.map(u => new Request(u, { cache: "reload" })))).then(() => self.skipWaiting())); });
 self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
