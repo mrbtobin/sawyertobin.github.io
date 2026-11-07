@@ -3,7 +3,7 @@
 const { chromium } = require("playwright");
 const BASE = process.env.BASE || "http://localhost:8765/shellfie/";
 (async () => {
-  const b = await chromium.launch();
+  const b = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {});
   const ctx = await b.newContext({ viewport: { width: 1024, height: 768 }, permissions: ["clipboard-read", "clipboard-write"] });
   const p = await ctx.newPage(); const errs = [];
   p.on("pageerror", e => errs.push(e.message));
