@@ -9,6 +9,7 @@
 | `catalog_base.json`, `catalog_extra.json` | The full catalog from the build prompt plus added fairy-tale and bedtime titles ("soon" until a source exists). |
 | `sim_reading.js` | Listener simulation: normal reading with recognizer noise, skipping a paragraph (child rereads or jumps past the part already read), skipping a sentence. |
 | `qa_personas.js` | QA reader panel at every level K–5 in English and Spanish: speedy, novice, typical, accents and speech patterns. Reports unneeded help, real stumbles helped, nudges, refocus, help time and the learned profile. `--fixed` runs the no-profile baseline. |
+| `make_queue.py` | Writes `books/QUEUE.md`, the list of catalog titles that still need a book (status `queued` / `claimed` / `done`, with a proposed book id, source and grade band). Re-running keeps claims and marks rows `done` once `books/<id>.json` exists. `--check` exits 1 if the file is stale. |
 
 Rebuild everything:
 
