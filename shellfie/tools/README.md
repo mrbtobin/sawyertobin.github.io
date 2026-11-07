@@ -4,6 +4,8 @@
 |---|---|
 | `fetch.sh` + `sources.txt` | Downloads Project Gutenberg plain texts from the GITenberg mirror on GitHub into `tools/.cache/` (not committed). |
 | `build_library.py` | Builds `books/<id>.json` and `catalog.js`. Each book is extracted, cleaned, screened for dated/hurtful language (sentences, paragraphs, or whole chapters removed and noted in the credit), its Spanish spelling modernized, paginated to the grade's words-per-page band, split into quiz-sized parts, and given 3 quiz questions per chapter (authored when present, otherwise generated from the text and checked against it). |
+| `add_authored_books.py` | Adds new authored books and links existing catalog entries without a full rebuild; refuses to overwrite existing books. |
+| `approved_adaptations.py` | Applies approved public-domain story and quiz adaptations when building the library; exact Ali Baba edits are in `ali_baba_approved_edits.json`. |
 | `authored/*.js` | Hand-written stories: the original retellings, the "Meet a…" animal series and the "Be a…" jobs series (English + Spanish). A Gutenberg original with the same id wins over a retelling. |
 | `catalog_base.json`, `catalog_extra.json` | The full catalog from the build prompt plus added fairy-tale and bedtime titles ("soon" until a source exists). |
 | `sim_reading.js` | Listener simulation: normal reading with recognizer noise, skipping a paragraph (child rereads or jumps past the part already read), skipping a sentence. |

@@ -29,6 +29,7 @@ Keep cases separate from results. Record each real-device run with the date, tes
 
 ## Current coverage
 
+- [Story and quiz suitability review](content_suitability.md)
 - [Microphone cases and device matrix](microphone.md)
 - `microphone.js`: automated simulated microphone lifecycle checks
 - `microphone_virtual.js`: Chromium layout profiles with fake audio capture and simulated speech

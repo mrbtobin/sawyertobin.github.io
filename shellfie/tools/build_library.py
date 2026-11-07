@@ -22,6 +22,8 @@ CACHE = os.path.join(HERE, ".cache")
 OUT = os.path.join(ROOT, "books")
 random.seed(7)
 
+from approved_adaptations import adapt_story, adapt_quiz
+
 # ───────────────────────── source text helpers ─────────────────────────
 def body(src):
     t = open(os.path.join(CACHE, f"{src}.txt"), encoding="utf-8").read().replace("\r", "").replace("﻿", "")
@@ -602,6 +604,9 @@ def main():
         if s["id"] in books: continue
         s["human"] = False
         books[s["id"]] = s
+    # Apply approved changes before generating quizzes so evidence reflects the adaptation.
+    for b in books.values():
+        adapt_story(b)
     # quizzes: authored if present (and verified), else generated
     authored_q = json.load(open(os.path.join(HERE, "quizzes.json"), encoding="utf-8")) if os.path.exists(os.path.join(HERE, "quizzes.json")) else {}
     for b in books.values():
@@ -620,6 +625,7 @@ def main():
                 q = auto_quiz(ch["pages"], ch.get("_names", []), pool, ch.get("_words", []), lang, grade, bool(b.get("_recipe", {}).get("poem")))
             ch["quiz"] = q
             ch.pop("_names", None); ch.pop("_words", None)
+        adapt_quiz(b)
     # write books + link catalog
     def find_entry(L, g, title):
         for e in cat[L][g]:

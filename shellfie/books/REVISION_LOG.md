@@ -1,0 +1,20 @@
+# Shellfie story revision log
+
+Record each future story or quiz change here, including book ID and title, date, version or commit, source/edition, location, what changed, why, the specific Shellfie guidance or external standard used, reviewer/approval, and tests. Link the original and replacement or a version-controlled patch. If the change affects a source-derived book, record the adaptation in its credit and apply the change in the authoritative build source as well as published JSON. Do not claim this log reconstructs changes before it was created; use Git history and book credits for earlier work.
+
+## en-1-365-bedtime — 365 Bedtime Stories
+
+- **2026-11-07; chapter 45, pages 3, 4, 6; public-domain source Mary Graham Bonner (1923), Project Gutenberg #69225.** Replaced repeated descriptions of St. Valentine's execution with non-graphic descriptions of punishment, death and remembrance. User approved P-001. Reason: [Shellfie K–1 and all-grade content guidance](../standards/grade-placement.md#shellfie-editorial-content-guidance), avoiding graphic violence while handling death sensitively. Credit notes adaptation. Exact before/after text and rationale: [P-001](../tests/content_review_2026-11-07.md#p-001--first-grade-st-valentines-day) and `tools/approved_adaptations.py`; regression tests: `tests/test_approved_adaptations.py`.
+
+## en-4-ali-baba — Ali Baba and the Forty Thieves
+
+- **2026-11-07; chapter 1, page 10 and quiz 2; public-domain Andrew Lang edition, Project Gutenberg #503.** Changed the guide's execution to dismissal and replaced a violent quiz distractor. User approved P-002. Reason: [Shellfie all-grade content and quiz guidance](../standards/grade-placement.md#shellfie-editorial-content-guidance). Credit notes adaptation. Exact changes: [P-002](../tests/content_review_2026-11-07.md#p-002--fourth-grade-ali-baba) and `tools/approved_adaptations.py`.
+- **2026-11-07; chapter 1, pages 6, 8–9, 14–16, 20–21.** Replaced the mutilation, body-sewing, boiling-oil killings and final stabbing with a burial, capture and escape; adjusted connected plot details. User approved P-003. This materially changes the original plot. Reason: [Shellfie all-grade and grade 4–5 guidance](../standards/grade-placement.md#shellfie-editorial-content-guidance), avoiding graphic violence while reviewing other non-graphic threats in context. Exact changes: [P-003](../tests/content_review_2026-11-07.md#p-003--additional-ali-baba-scenes-proposed-for-approval) and `tools/ali_baba_approved_edits.json`. Existing quiz answers and evidence were checked against the adapted chapter; regression tests: `tests/test_approved_adaptations.py`. Threats, a non-graphic death, enslavement and the marriage remain and need contextual review; this is not a full school-suitability sign-off.
+
+## en-k-three-billy-goats-gruff — The Three Billy Goats Gruff
+
+- **2026-11-07; new kindergarten adaptation.** Wrote a short original school-friendly adaptation of a traditional Norwegian folktale, using [Popular Tales from the Norse, translated by George Webbe Dasent (1859), Project Gutenberg #8933](https://www.gutenberg.org/ebooks/8933), as the documented public-domain reference. Replaced threats of eating and graphic injury with bridge-sharing and cooperation; credit labels the work as an adaptation. Reason: [Shellfie K–1 and all-grade guidance](../standards/grade-placement.md#shellfie-editorial-content-guidance). Source: `tools/authored/queue_codex.js`; quiz, grade/page checks and catalog consistency: `tests/test_queue_books.py`. Grade is provisional, awaiting educator review.
+
+## en-1-stone-soup — Stone Soup
+
+- **2026-11-07; new first-grade original retelling.** Wrote a short adaptation of the traditional shared-meal folktale with a make-believe stone and actual food ingredients; the credit explicitly says not to put stones in food. Reason: [Shellfie grade 1, reader/task and safety guidance](../standards/grade-placement.md). Source: `tools/authored/queue_codex.js`; quiz, grade/page checks and catalog consistency: `tests/test_queue_books.py`. Grade is provisional, awaiting educator review.
