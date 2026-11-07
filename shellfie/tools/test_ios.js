@@ -6,7 +6,7 @@
 const { chromium } = require("playwright");
 const BASE = process.env.BASE || "http://localhost:8765/shellfie/";
 (async () => {
-  const b = await chromium.launch();
+  const b = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {});
   const p = await (await b.newContext({ viewport: { width: 430, height: 775 }, hasTouch: false })).newPage(); const errs = [];
   p.on("pageerror", e => errs.push(e.message));
   await p.addInitScript(() => {
