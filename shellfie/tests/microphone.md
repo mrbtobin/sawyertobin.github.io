@@ -38,6 +38,8 @@ Use the deployed HTTPS site or localhost, with a working microphone, audible rea
 11. **Unsupported/blocked environment:** Where speech recognition is unavailable or school policy blocks it, confirm tap-for-help remains usable and the adult receives useful guidance.
 12. **Layout and accessibility:** At both orientations and common zoom/text sizes, check that permission/retry/fallback controls and instructions remain visible, tappable, keyboard reachable and readable.
 
+13. **Slow permission decision:** On a fresh site permission, wait at least 5 seconds before allowing microphone access. Expect the browser prompt to remain usable without Shellfie interrupting it with a retry screen; then confirm actual reading is recognized.
+
 ## Automated regression checks
 
 From the repository root, install Playwright and its Chromium browser in your development environment, then in separate terminals run:
@@ -52,8 +54,6 @@ node shellfie/tools/test_feedback.js
 ```
 
 Set `CHROMIUM_PATH` to an installed Chromium executable if Playwright's browser is unavailable; set `BASE` to override the local URL. These checks simulate recognition events and do not test actual microphone audio or browser speech services. `microphone.js` exits nonzero on failure. The older scripts print their results and must be reviewed for failed checks and browser errors.
-
-13. **Slow permission decision:** On a fresh site permission, wait at least 5 seconds before allowing microphone access. Expect the browser prompt to remain usable without Shellfie interrupting it with a retry screen; then confirm actual reading is recognized.
 
 ## Run record
 
