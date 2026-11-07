@@ -31,4 +31,5 @@ Keep cases separate from results. Record each real-device run with the date, tes
 
 - [Microphone cases and device matrix](microphone.md)
 - `microphone.js`: automated simulated microphone lifecycle checks
+- `microphone_virtual.js`: Chromium layout profiles with fake audio capture and simulated speech
 - Additional legacy simulations are listed in [tools/README.md](../tools/README.md).
