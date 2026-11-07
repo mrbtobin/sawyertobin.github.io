@@ -234,6 +234,16 @@ svg{display:block}
 .w.helped{color:var(--read);text-decoration:underline 2px dotted rgba(63,224,160,.8);text-underline-offset:.18em}
 .w.next{background:var(--sun-soft);box-shadow:0 0 0 .08em var(--sun-soft),0 0 .6em rgba(255,210,90,.75);color:var(--ink)}
 .page-text.dots .w.hard:not(.read):not(.helped){text-decoration:underline 2px dotted rgba(16,34,26,.45);text-underline-offset:.2em}
+.page-text .ph{font-family:var(--ui);font-weight:700;font-size:.62em;letter-spacing:.06em;text-transform:uppercase;color:var(--forest-3);margin:.2em 0 .4em}
+.page-text.poem p{margin-bottom:.7em}
+.book-stage.focusing .page-text .w:not(.focus),.book-stage.focusing .page-text .pw,.book-stage.focusing .page-text .ph{opacity:.25;transition:opacity .3s}
+.w.focus{position:relative;z-index:5;display:inline-block;transform:scale(1.55);background:var(--sun-soft);box-shadow:0 0 0 .1em var(--sun),0 0 1.2em rgba(255,210,90,.95),0 0 0 .5em rgba(63,224,160,.25);transition:transform .35s cubic-bezier(.3,1.6,.5,1);animation:none!important}
+.w.refocus{animation:refocusPulse 1s ease-in-out 4}
+@keyframes refocusPulse{50%{box-shadow:0 0 0 .14em var(--sun),0 0 1em rgba(255,210,90,.9)}}
+.w.hop{animation:hopRun .9s ease}
+@keyframes hopRun{30%{background:rgba(63,224,160,.28);color:var(--forest)}}
+.hopbubble{position:absolute;z-index:6;padding:6px 12px;border-radius:999px;background:var(--ink);color:#fff;font:600 14px var(--ui);pointer-events:none;animation:fadeIn .2s,bubbleUp 2.2s ease forwards}
+@keyframes bubbleUp{80%{opacity:1}to{opacity:0;transform:translateY(-10px)}}
 .w.pending{animation:pend 1.6s ease-in-out infinite}
 @keyframes pend{50%{background:rgba(255,138,115,.22)}}
 .w.prompt{text-decoration:underline 4px solid var(--coral)!important;text-underline-offset:.18em;animation:blinkw .4s steps(2) 3}
@@ -356,3 +366,91 @@ dialog::backdrop{background:rgba(16,34,26,.45);backdrop-filter:blur(4px)}
 .toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 24px);transform:translateX(-50%) translateY(20px);z-index:60;opacity:0;transition:all .3s;pointer-events:none;
   padding:12px 20px;border-radius:999px;background:var(--ink);color:#fff;font-weight:600;font-size:16px;box-shadow:0 10px 30px rgba(0,0,0,.25);max-width:calc(100vw - 32px);text-align:center}
 .toast.on{opacity:1;transform:translateX(-50%)}
+
+/* ───────── Calm reading: only the words move (ADHD / autism friendly) ───────── */
+body.reading.calm .sky{display:none}
+body.reading.calm #reader{background:#f3f6f0}
+body.reading.calm .page{box-shadow:0 3px 0 rgba(16,34,26,.55),0 18px 40px -30px rgba(19,64,32,.35);border-color:rgba(16,34,26,.75)}
+body.reading.calm .page::before{display:none}
+body.reading.calm .r-title{display:none}
+body.reading.calm .r-progress{height:5px;background:rgba(16,34,26,.07)}
+body.reading.calm .r-progress i{box-shadow:none;background:var(--forest-3);opacity:.55}
+body.reading.calm .r-avatar .turtle,body.reading.calm .r-avatar .turtle *{animation:none!important;transition:none!important}
+body.reading.calm .r-avatar .wave{opacity:.55}
+body.reading.calm .r-avatar,body.reading.calm .r-nav,body.reading.calm #rHome{opacity:.6;transition:opacity .2s}
+body.reading.calm .r-avatar:hover,body.reading.calm .r-nav:hover,body.reading.calm .r-nav:focus-visible,body.reading.calm #rHome:hover{opacity:1}
+body.reading.calm .r-shells{opacity:0;pointer-events:none;transition:opacity .4s}
+body.reading.calm .r-shells.pop{opacity:1;animation:none}
+body.reading.calm .r-nav.nxt.blink{animation:none;opacity:1;box-shadow:0 5px 0 var(--ink),0 0 0 6px rgba(196,242,106,.7)}
+body.reading.calm .w{transition:color .25s,background-color .15s}
+body.reading.calm .w.next{box-shadow:0 0 0 .08em var(--sun-soft);background:var(--sun-soft)}
+body.reading.calm .w.pending{animation:none;text-decoration:underline 3px solid rgba(255,138,115,.6);text-underline-offset:.2em}
+body.reading.calm .w.prompt{animation:none}
+body.reading.calm .w.sparkle::after{animation-duration:.6s}
+body.reading.calm .backarrow{animation:none}
+body.reading.calm .help{background:rgba(243,246,240,.86)}
+body.reading.calm .help .zoom{animation:none;box-shadow:0 6px 0 var(--ink)}
+body.reading.calm .help .say .turtle *{animation:none!important}
+body.reading.calm .leaf.slide-f,body.reading.calm .leaf.slide-b{animation-duration:.28s}
+
+/* ───────── Layout: phones & tablets, portrait & landscape ───────── */
+.help .zoom{font-size:min(13vw,20vh,128px)}
+.hero-ring{width:min(70vw,45vh,320px)}
+@media (orientation:landscape){
+  .grade-grid{max-width:min(720px,120vh)}
+}
+/* Landscape reading: page uses the full height; Back / Next sit in thumb columns at the sides */
+@media (orientation:landscape) and (min-aspect-ratio:5/4){
+  .book-stage{top:calc(env(safe-area-inset-top) + 14px);bottom:calc(env(safe-area-inset-bottom) + 14px);left:calc(max(16px,env(safe-area-inset-left)) + 96px);right:calc(max(16px,env(safe-area-inset-right)) + 96px)}
+  .r-top{top:calc(env(safe-area-inset-top) + 12px);left:max(16px,env(safe-area-inset-left));right:max(16px,env(safe-area-inset-right))}
+  .r-top .grow{position:absolute;left:calc(96px + 28px);right:calc(96px + 28px);top:-6px}
+  .r-progress{max-width:none}
+  .r-title{display:none}
+  .r-avatar{width:72px;height:60px}
+  .r-nav{top:50%;bottom:auto;transform:translateY(-50%);width:76px;height:96px}
+  .r-nav:active{transform:translateY(calc(-50% + 4px))}
+  .r-nav.prev{left:max(16px,env(safe-area-inset-left))}
+  .r-nav.nxt{right:max(16px,env(safe-area-inset-right))}
+  .r-shells{left:max(16px,env(safe-area-inset-left));bottom:calc(env(safe-area-inset-bottom) + 14px);transform:none;font-size:16px;padding:6px 12px 6px 8px}
+  .r-shells.pop{animation:none}
+  .r-mode{top:auto;bottom:calc(env(safe-area-inset-bottom) + 18px)}
+  .page{max-width:1100px}
+}
+/* Short landscape screens (iPhone landscape): tighter chrome */
+@media (orientation:landscape) and (max-height:520px){
+  .book-stage{top:calc(env(safe-area-inset-top) + 8px);bottom:calc(env(safe-area-inset-bottom) + 8px)}
+  .r-top{top:calc(env(safe-area-inset-top) + 8px)}
+  .r-top .grow{top:-4px}
+  .icon-btn{width:46px;height:46px}
+  .r-avatar{width:60px;height:50px;border-radius:18px}
+  .r-avatar .turtle{width:48px}
+  .r-nav{width:68px;height:84px;border-radius:20px}
+  .page{border-radius:20px}
+  .page-text{inset:14px 22px}
+  .r-shells{display:none}
+  .topbar{padding:8px 0 6px}
+  .grade-tile .num{font-size:clamp(30px,7vh,52px)}
+  .res-hero .turtle{width:110px}
+  .qcard{padding:16px}
+  .opt{min-height:54px}
+}
+/* Tall phones in portrait (iPhone Pro Max): slightly roomier page */
+@media (orientation:portrait) and (max-width:500px){
+  .book-stage{top:calc(env(safe-area-inset-top) + 86px);bottom:calc(env(safe-area-inset-bottom) + 98px)}
+}
+/* Big tablets in portrait: center the page with comfortable margins */
+@media (orientation:portrait) and (min-width:760px){
+  .book-stage{left:max(28px,env(safe-area-inset-left));right:max(28px,env(safe-area-inset-right))}
+}
+.devbox{border:1px dashed var(--line);border-radius:14px;padding:8px 12px;color:var(--ink-3)}
+.devbox summary{cursor:pointer;font-size:13px;letter-spacing:.06em;text-transform:uppercase}
+.devbox input{font:inherit;padding:8px 10px;border-radius:10px;border:2px solid var(--line);min-width:0;width:min(260px,50vw)}
+@media (orientation:landscape) and (min-aspect-ratio:5/4){ .r-avatar{margin-left:auto} }
+@media (orientation:landscape) and (max-height:520px){
+  .grade-grid{grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;max-width:none}
+  .grade-tile{aspect-ratio:.82}
+  .grade-tile .num{width:70%}
+  .grade-tile .lbl{font-size:12px}
+  #grades .scroll{gap:12px}
+  .greet h1{font-size:28px}
+}

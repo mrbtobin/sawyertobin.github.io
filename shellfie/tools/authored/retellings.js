@@ -3,7 +3,7 @@
    short text, as Sections 9-10 of the build prompt allow. Pages are hand-broken at sentence
    boundaries to roughly match the grade's words-per-page band (Section 11).
    Quiz items: k = literal | infer | vocab, a = index of the right option, ev = supporting sentence. */
-window.SHELLFIE_STORIES = [
+window.SHELLFIE_STORIES.push(
 
 /* ───────────── ENGLISH ───────────── */
 
@@ -369,4 +369,4 @@ window.SHELLFIE_STORIES = [
     { k:"infer", q:"¿Por qué el ángel eligió el corazón y la golondrina?", o:["Porque dieron todo para ayudar a otros","Porque eran de oro","Porque eran los más bonitos","Porque nadie los quería"], a:0, ev:"Ese día, un ángel buscó las dos cosas más valiosas de la ciudad." },
     { k:"vocab", q:"¿Qué quiere decir «opaco»?", o:["Sin brillo","Muy caliente","Muy alegre","Transparente"], a:0, ev:"El príncipe se volvió gris y opaco" }
   ]}]}
-];
+);

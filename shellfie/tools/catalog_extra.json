@@ -1,0 +1,153 @@
+{
+"en": {
+"K": [],
+"1": [
+{
+"t": "Goldilocks and the Three Bears",
+"a": "Robert Southey (1837) tradition",
+"l": "Public domain",
+"g": "bedtime",
+"u": ""
+}
+],
+"2": [
+{
+"t": "Snow White and Rose-Red",
+"a": "Brothers Grimm",
+"l": "Public domain",
+"g": "bedtime",
+"u": ""
+},
+{
+"t": "The Twelve Dancing Princesses",
+"a": "Brothers Grimm / Andrew Lang",
+"l": "Public domain",
+"g": "bedtime",
+"u": ""
+}
+],
+"3": [
+{
+"t": "The Happy Prince",
+"a": "Oscar Wilde (1888)",
+"l": "Public domain",
+"g": "bedtime",
+"u": ""
+},
+{
+"t": "The Selfish Giant",
+"a": "Oscar Wilde (1888)",
+"l": "Public domain",
+"g": "bedtime",
+"u": ""
+}
+],
+"4": [
+{
+"t": "The Nutcracker and the Mouse King",
+"a": "E. T. A. Hoffmann (1816)",
+"l": "Public domain",
+"g": "seasons",
+"u": ""
+},
+{
+"t": "The Wild Swans",
+"a": "Hans Christian Andersen",
+"l": "Public domain",
+"g": "bedtime",
+"u": ""
+}
+],
+"5": []
+},
+"es": {
+"K": [
+{
+"t": "Arrorró, mi niño y otras canciones de cuna",
+"a": "Tradicional",
+"l": "Public domain",
+"g": "bedtime",
+"u": ""
+},
+{
+"t": "Los pollitos dicen (para dormir)",
+"a": "Tradicional",
+"l": "Public domain",
+"g": "bedtime",
+"u": ""
+}
+],
+"1": [
+{
+"t": "Pulgarcito",
+"a": "Charles Perrault, versión propia",
+"l": "Public domain",
+"g": "bedtime",
+"u": ""
+},
+{
+"t": "Los tres osos",
+"a": "Tradicional, versión propia",
+"l": "Public domain",
+"g": "bedtime",
+"u": ""
+}
+],
+"2": [
+{
+"t": "Rapunzel",
+"a": "Hermanos Grimm, versión propia",
+"l": "Public domain",
+"g": "bedtime",
+"u": ""
+},
+{
+"t": "La bella y la bestia",
+"a": "Jeanne-Marie Leprince de Beaumont, versión propia",
+"l": "Public domain",
+"g": "bedtime",
+"u": ""
+},
+{
+"t": "Las doce princesas bailarinas",
+"a": "Hermanos Grimm, versión propia",
+"l": "Public domain",
+"g": "bedtime",
+"u": ""
+}
+],
+"3": [
+{
+"t": "La sirenita",
+"a": "H. C. Andersen, versión propia",
+"l": "Public domain",
+"g": "bedtime",
+"u": ""
+},
+{
+"t": "El traje nuevo del emperador",
+"a": "H. C. Andersen, versión propia",
+"l": "Public domain",
+"g": "bedtime",
+"u": ""
+}
+],
+"4": [
+{
+"t": "El gigante egoísta",
+"a": "Oscar Wilde, versión propia",
+"l": "Public domain",
+"g": "bedtime",
+"u": ""
+},
+{
+"t": "El ruiseñor",
+"a": "H. C. Andersen, versión propia",
+"l": "Public domain",
+"g": "bedtime",
+"u": ""
+}
+],
+"5": []
+}
+}

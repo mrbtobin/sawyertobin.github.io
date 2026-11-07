@@ -1,6 +1,6 @@
 /* Shellfie service worker: caches the app shell and stories so reading works offline. */
-const CACHE = "shellfie-v1";
-const SHELL = ["./", "index.html", "app.css", "app.js", "stories.js", "catalog.js", "manifest.webmanifest", "favicon.svg", "favicon-32.png", "icon-192.png", "icon-512.png", "apple-touch-icon.png"];
+const CACHE = "shellfie-v2";
+const SHELL = ["./", "index.html", "app.css", "app.js", "catalog.js", "manifest.webmanifest", "favicon.svg", "favicon-32.png", "icon-192.png", "icon-512.png", "apple-touch-icon.png"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
 self.addEventListener("fetch", e => {

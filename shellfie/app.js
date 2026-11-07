@@ -13,8 +13,17 @@ const from36 = (s) => new Date(parseInt(s, 36) * 1000);
 const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const GRADES = ["K", "1", "2", "3", "4", "5"];
 const GI = (g) => GRADES.indexOf(g);
-const STORIES = Object.fromEntries(window.SHELLFIE_STORIES.map(s => [s.id, s]));
 const CATALOG = window.SHELLFIE_CATALOG;
+const META = {};   // id → catalog entry (+ lang, grade): everything the shelves need without loading the book
+for (const L of ["en", "es"]) for (const g of Object.keys(CATALOG[L])) for (const e of CATALOG[L][g]) if (e.id) META[e.id] = Object.assign(e, { lang: L, grade: g });
+let BOOK = null;   // the one open book's JSON (dropped on teardown)
+async function loadBook(id) {
+  if (BOOK && BOOK.id === id) return BOOK;
+  const r = await fetch(`books/${encodeURIComponent(id)}.json`);
+  if (!r.ok) throw new Error("book " + r.status);
+  return await r.json();
+}
+const pcOf = id => META[id]?.pc || [1];
 
 /* ───────────── Strings (two complete language worlds) ───────────── */
 const STR = {
@@ -28,7 +37,7 @@ const STR = {
     gradeLong: { K: "Kindergarten", 1: "1st grade", 2: "2nd grade", 3: "3rd grade", 4: "4th grade", 5: "5th grade" },
     shelfTitle: g => `${STR.en.gradeLong[g]} bookshelf`, genreTitle: g => STR.en.genres[g],
     holdGate: "Grown-ups: press and hold", showRead: "Show books I've read", byGrade: "Grade → Genre", byGenre: "Genre → Grade",
-    genres: { fairy: "Fairy and Folk Tales", fables: "Fables", animal: "Animal Stories", everyday: "Everyday Life", adventure: "Adventure and Fantasy", poetry: "Poetry and Rhymes", nonfiction: "Nonfiction", seasons: "Seasons and Holidays" },
+    genres: { meet: "Meet the Animals", jobs: "When I Grow Up", bedtime: "Bedtime Stories", fairy: "Fairy and Folk Tales", fables: "Fables", animal: "Animal Stories", everyday: "Everyday Life", adventure: "Adventure and Fantasy", poetry: "Poetry and Rhymes", nonfiction: "Nonfiction", seasons: "Seasons and Holidays" },
     soon: "Soon", soonToast: "Coming soon! Shellfie is still learning this book.", allRead: "You read them all!", books: n => `${n} books`,
     yourGrade: "Your grade", picks: "Shellfie picks", picksGo: "Read", resume: "Keep going", page: (a, b) => `Page ${a} of ${b}`,
     ready: "Ready when you are", keepReading: "Keep reading", waitThis: "Wait, this one!", yourTurn: "Your turn!",
@@ -37,20 +46,34 @@ const STR = {
     youDidIt: "You did it!", chapterDone: "Chapter done!", shellsEarned: "Shells earned", nailed: "Words you nailed", tricky: "Tricky words to try again",
     readAgain: "Read it again", nextBook: "Next book", nextChapter: "Next chapter", home: "Home", myShells: "My shell collection",
     streak: n => `${n}-day streak`, streakLbl: "Reading streak", shells: n => `${n} shells`, special: "Special shells", pageShells: "Page shells", noneYet: "Read a whole book to win its special shell!",
-    keepGoing: "Keep going", chapter: "Chapter", skipped: "Read the skipped pages to win this book's special shell.",
+    keepGoing: "Keep going", chapter: "Chapter", offline: "Couldn't open this book. Check your internet and try again.",
+    skippedPart: "Oops! We skipped a part. Start here!", alreadyRead: "Already read!", skipped: "Read the skipped pages to win this book's special shell.",
     grownups: "For grown-ups",
     p: {
       report: "Reading report", minutes: "Minutes read", booksDone: "Books finished", pages: "Pages read", acc: "Best accuracy (avg)", wcpm: "Words correct / min",
       booksT: "Books", title: "Title", status: "Status", best: "Best", last: "Last", times: "Times", done: "Finished", inprog: "Reading", quizT: "Comprehension", score: "Score", date: "Date",
       practice: "Words to practice", word: "Word", count: "Times helped", lastSeen: "Last", helped: "What helped", log: "Help log (latest)", step: "Step",
       noData: "Nothing yet. Reading data shows up here after the first page.",
-      settings: "Settings", underline: "Dotted underline on hard words (K–2)", lang: "Language", listen: "Listening", engine: "Engine", voice: "Voice",
+      calm: "Calm reading (fewer animations and sounds; best for focus)", settings: "Settings", underline: "Dotted underline on hard words (K–2)", lang: "Language", listen: "Listening", engine: "Engine", voice: "Voice",
       eLocal: "On-device speech recognition. Audio stays on this device.", eCloud: "Browser speech recognition. This browser sends audio to its maker's speech service to turn it into text. Shellfie never stores or uploads recordings.",
       eTap: "Listening is off (no microphone or no speech support). Tap-for-help mode: tapping Next counts a page as read.",
       install: "Download on-device speech", installing: "Downloading…", installed: "On-device speech ready",
       noVoice: "No Mexican Spanish voice found on this device. Install one (iOS/macOS: Settings → Accessibility → Spoken Content → Voices → Spanish (Mexico)) for the best Spanish help.",
       privacy: "Privacy", privacyText: "No ads, no tracking, no accounts. Progress is saved only in this browser (a small cookie plus local storage). Recordings are never stored.",
       tip: "Tip", tipText: "On iPhone or iPad, tap Share → Add to Home Screen. Installed web apps keep their saved progress longer.",
+      style: "Reading style", styleAuto: "Automatic", styleNames: { speedy: "Speedy reader", steady: "Steady reader", careful: "Careful reader" },
+      styleShort: { speedy: "Speedy", steady: "Steady", careful: "Careful" },
+      styleWhy: { speedy: "Reads quickly and smoothly. Shellfie waits a little less before helping with a hard word.", steady: "Reads at a steady pace. Shellfie uses its normal timing.", careful: "Takes time with each word. Shellfie waits much longer before helping, so sounding words out is never interrupted." },
+      styleNone: "Not measured yet. Shellfie learns the reading style during the first ~120 words read aloud.",
+      styleStats: (w, g, e, n) => `About ${w} words a minute · typical pause ${(g / 1000).toFixed(1)} s · ${e} slips per 100 words · based on ${n} words.`,
+      styleWhen: d => `Last updated ${d}.`, styleForce: "Use style", styleForced: "chosen by a grown-up", patterns: "Speech patterns Shellfie accepts as correct",
+      patternsHelp: "These are ways of saying words, not reading mistakes. Shellfie turns them on when it hears them often; you can switch any of them on or off.",
+      pat: { th: "th sounds (the → de, think → fink or tink)", rw: "r sounds like w (rabbit → wabbit)", lw: "l sounds like w (little → wittle)", rl: "r and l swap (rice → lice)",
+             sh: "sh, s and th swaps (ship → sip, sun → thun)", v: "v sounds like w or b (very → wery)", fin: "dropped word endings (walked → walk, hand → han)", nr: "dropped r after vowels (car → cah)" },
+      lock: "Keep this profile (don't update it each day)", recheck: "Re-check during the next book", recheckOn: "Shellfie will re-measure during the next book.",
+      dev: "Developer", devOn: "Enable developer mode (detailed reading log)", devInfo: n => `${n} log entries from the last 3 days. Older entries are deleted automatically. The log stays on this device until you send it.`,
+      devTo: "Send logs to", devMail: "Email log", devCopy: "Copy log", devClear: "Clear log", devCopied: "Log copied", devCopyFail: "Couldn't copy. Use Email log instead.",
+      devMailBody: name => `The Shellfie log was saved as ${name} (check Downloads). Please attach it to this email.`,
       backup: "Backup", exp: "Export progress", imp: "Import progress", reset: "Erase all progress", resetQ: "Erase all reading progress on this device?", imported: "Progress imported", bad: "That file isn't a Shellfie backup",
       scaff: { syl: "syllables", snd: "sound it out", spell: "spelling", say: "hearing the word", self: "self-corrected" }
     }
@@ -65,7 +88,7 @@ const STR = {
     gradeLong: { K: "Kínder", 1: "1.er grado", 2: "2.º grado", 3: "3.er grado", 4: "4.º grado", 5: "5.º grado" },
     shelfTitle: g => `Librero de ${STR.es.gradeLong[g]}`, genreTitle: g => STR.es.genres[g],
     holdGate: "Adultos: mantengan presionado", showRead: "Mostrar libros leídos", byGrade: "Grado → Género", byGenre: "Género → Grado",
-    genres: { fairy: "Cuentos de hadas y folclor", fables: "Fábulas", animal: "Historias de animales", everyday: "La vida diaria", adventure: "Aventura y fantasía", poetry: "Poesía y rimas", nonfiction: "No ficción", seasons: "Temporadas y fiestas" },
+    genres: { meet: "Conoce a los animales", jobs: "Cuando sea grande", bedtime: "Cuentos para dormir", fairy: "Cuentos de hadas y folclor", fables: "Fábulas", animal: "Historias de animales", everyday: "La vida diaria", adventure: "Aventura y fantasía", poetry: "Poesía y rimas", nonfiction: "No ficción", seasons: "Temporadas y fiestas" },
     soon: "Pronto", soonToast: "¡Muy pronto! Shellfie todavía está aprendiendo este libro.", allRead: "¡Los leíste todos!", books: n => `${n} libros`,
     yourGrade: "Tu grado", picks: "Shellfie te recomienda", picksGo: "Leer", resume: "Seguir", page: (a, b) => `Página ${a} de ${b}`,
     ready: "Cuando quieras", keepReading: "Seguir leyendo", waitThis: "¡Espera, esta!", yourTurn: "¡Ahora tú!",
@@ -74,27 +97,41 @@ const STR = {
     youDidIt: "¡Lo lograste!", chapterDone: "¡Terminaste el capítulo!", shellsEarned: "Caparazones ganados", nailed: "Palabras que leíste solito", tricky: "Palabras para practicar",
     readAgain: "Leer otra vez", nextBook: "Otro libro", nextChapter: "Siguiente capítulo", home: "Inicio", myShells: "Mi colección de caparazones",
     streak: n => `${n} días seguidos`, streakLbl: "Racha de lectura", shells: n => `${n} caparazones`, special: "Caparazones especiales", pageShells: "Caparazones de página", noneYet: "¡Lee un libro completo para ganar su caparazón especial!",
-    keepGoing: "Seguir", chapter: "Capítulo", skipped: "Lee las páginas que saltaste para ganar el caparazón especial de este libro.",
+    keepGoing: "Seguir", chapter: "Capítulo", offline: "No se pudo abrir este libro. Revisa tu internet e intenta otra vez.",
+    skippedPart: "¡Ups! Nos saltamos un pedacito. ¡Empieza aquí!", alreadyRead: "¡Ya lo leíste!", skipped: "Lee las páginas que saltaste para ganar el caparazón especial de este libro.",
     grownups: "Para adultos",
     p: {
       report: "Reporte de lectura", minutes: "Minutos de lectura", booksDone: "Libros terminados", pages: "Páginas leídas", acc: "Mejor precisión (promedio)", wcpm: "Palabras correctas / min",
       booksT: "Libros", title: "Título", status: "Estado", best: "Mejor", last: "Última", times: "Veces", done: "Terminado", inprog: "Leyendo", quizT: "Comprensión", score: "Puntaje", date: "Fecha",
       practice: "Palabras para practicar", word: "Palabra", count: "Veces con ayuda", lastSeen: "Última vez", helped: "Qué ayudó", log: "Registro de ayuda (reciente)", step: "Paso",
       noData: "Todavía no hay datos. Aparecen aquí después de la primera página.",
-      settings: "Configuración", underline: "Subrayado punteado en palabras difíciles (K–2)", lang: "Idioma", listen: "Escucha", engine: "Motor", voice: "Voz",
+      calm: "Lectura tranquila (menos animaciones y sonidos; ideal para concentrarse)", settings: "Configuración", underline: "Subrayado punteado en palabras difíciles (K–2)", lang: "Idioma", listen: "Escucha", engine: "Motor", voice: "Voz",
       eLocal: "Reconocimiento de voz en el dispositivo. El audio no sale de este dispositivo.", eCloud: "Reconocimiento de voz del navegador. Este navegador envía el audio al servicio de voz de su fabricante para convertirlo en texto. Shellfie nunca guarda ni sube grabaciones.",
       eTap: "La escucha está apagada (sin micrófono o sin soporte de voz). Modo de tocar para ayuda: tocar Siguiente cuenta la página como leída.",
       install: "Descargar voz en el dispositivo", installing: "Descargando…", installed: "Voz en el dispositivo lista",
       noVoice: "No se encontró una voz de español de México en este dispositivo. Instala una (iOS/macOS: Configuración → Accesibilidad → Contenido leído → Voces → Español (México)) para la mejor ayuda en español.",
       privacy: "Privacidad", privacyText: "Sin anuncios, sin rastreo, sin cuentas. El progreso se guarda solo en este navegador (una pequeña cookie y almacenamiento local). Nunca se guardan grabaciones.",
       tip: "Consejo", tipText: "En iPhone o iPad, toca Compartir → Agregar a pantalla de inicio. Las apps web instaladas conservan el progreso por más tiempo.",
+      style: "Estilo de lectura", styleAuto: "Automático", styleNames: { speedy: "Lector veloz", steady: "Lector constante", careful: "Lector cuidadoso" },
+      styleShort: { speedy: "Veloz", steady: "Constante", careful: "Cuidadoso" },
+      styleWhy: { speedy: "Lee rápido y con fluidez. Shellfie espera un poco menos antes de ayudar con una palabra difícil.", steady: "Lee a un ritmo constante. Shellfie usa sus tiempos normales.", careful: "Se toma su tiempo con cada palabra. Shellfie espera mucho más antes de ayudar, para no interrumpir cuando separa en sílabas." },
+      styleNone: "Todavía no se mide. Shellfie aprende el estilo de lectura durante las primeras ~120 palabras leídas en voz alta.",
+      styleStats: (w, g, e, n) => `Unas ${w} palabras por minuto · pausa típica ${(g / 1000).toFixed(1)} s · ${e} errores por cada 100 palabras · con base en ${n} palabras.`,
+      styleWhen: d => `Última actualización: ${d}.`, styleForce: "Usar estilo", styleForced: "elegido por un adulto", patterns: "Formas de hablar que Shellfie acepta como correctas",
+      patternsHelp: "Son maneras de pronunciar, no errores de lectura. Shellfie las activa cuando las escucha seguido; puedes encender o apagar cualquiera.",
+      pat: { s: "s final suave o aspirada (los niños → lo niño)", ado: "-ado → -ao (cansado → cansao)", rl: "r y l se intercambian (puerta → puelta)", fin: "finales de palabra recortados" },
+      lock: "Conservar este perfil (no actualizarlo cada día)", recheck: "Volver a medir en el próximo libro", recheckOn: "Shellfie volverá a medir durante el próximo libro.",
+      dev: "Desarrollador", devOn: "Activar modo desarrollador (registro detallado de lectura)", devInfo: n => `${n} registros de los últimos 3 días. Los más viejos se borran solos. El registro se queda en este dispositivo hasta que lo envíes.`,
+      devTo: "Enviar registros a", devMail: "Enviar registro por correo", devCopy: "Copiar registro", devClear: "Borrar registro", devCopied: "Registro copiado", devCopyFail: "No se pudo copiar. Usa Enviar registro.",
+      devMailBody: name => `El registro de Shellfie se guardó como ${name} (revisa Descargas). Adjúntalo a este correo, por favor.`,
       backup: "Respaldo", exp: "Exportar progreso", imp: "Importar progreso", reset: "Borrar todo el progreso", resetQ: "¿Borrar todo el progreso de lectura en este dispositivo?", imported: "Progreso importado", bad: "Ese archivo no es un respaldo de Shellfie",
       scaff: { syl: "sílabas", snd: "sonidos", spell: "deletreo", say: "escuchar la palabra", self: "se corrigió solo" }
     }
   }
 };
-const GENRE_ORDER = ["fairy", "fables", "animal", "everyday", "adventure", "poetry", "nonfiction", "seasons"];
+const GENRE_ORDER = ["meet", "jobs", "bedtime", "fairy", "fables", "animal", "everyday", "adventure", "poetry", "nonfiction", "seasons"];
 const GENRE_STYLE = {
+  meet: ["#8be3cf", "#0f766e", "🔎"], jobs: ["#ffd36e", "#c2410c", "🧑‍🚒"], bedtime: ["#b4bcff", "#312e81", "🌙"],
   fairy: ["#c3a2ff", "#5b3fc9", "🧚"], fables: ["#ffd27a", "#d9731f", "🦊"], animal: ["#86e8bd", "#1e7a45", "🐾"], everyday: ["#9ddcff", "#2470c9", "🏡"],
   adventure: ["#ffab98", "#c2410c", "🧭"], poetry: ["#ffb3dc", "#c2337a", "🎵"], nonfiction: ["#c4ec7c", "#4b7d18", "🔬"], seasons: ["#ffc387", "#b8452b", "🍂"]
 };
@@ -102,7 +139,7 @@ const GRADE_GLOW = { K: "#9ff0c8", 1: "#d9f79a", 2: "#b8e6ff", 3: "#ffd8a8", 4: 
 
 /* ───────────── Tuning (Section 4, starting values; one table per grade) ───────────── */
 const TUNE = {
-  sim: { easy: .5, normal: .62, unique: .72, hard: .8 },
+  sim: { easy: .5, normal: .62, unique: .55, hard: .8 },
   hesitate: { K: 4000, 1: 3700, 2: 3400, 3: 3000, 4: 2700, 5: 2500 },
   window: { K: 6, 1: 6, 2: 10, 3: 10, 4: 15, 5: 15 },
   selfFix: { K: 3000, 1: 3000, 2: 3000, 3: 2000, 4: 2000, 5: 2000 },
@@ -121,7 +158,7 @@ function readCookie() {
   try { const m = document.cookie.match(/(?:^|;\s*)shellfie_v1=([^;]+)/); return m ? JSON.parse(decodeURIComponent(m[1])) : null; } catch { return null; }
 }
 const defaultLang = (navigator.language || "en").toLowerCase().startsWith("es") ? "es" : "en";
-let P = Object.assign({ v: 1, lang: defaultLang, grade: null, browse: "grade", genre: "fairy", showRead: 1, under: 1, onb: 0, b: {} }, LS.get("shellfie_v1", {}), readCookie() || {});
+let P = Object.assign({ v: 1, lang: defaultLang, grade: null, browse: "grade", genre: "fairy", showRead: 1, under: 1, calm: 1, onb: 0, b: {} }, LS.get("shellfie_v1", {}), readCookie() || {});
 function saveP() {
   LS.set("shellfie_v1", P);
   try { document.cookie = "shellfie_v1=" + encodeURIComponent(JSON.stringify(P)) + ";max-age=31536000;path=/;SameSite=Lax" + (location.protocol === "https:" ? ";Secure" : ""); } catch { }
@@ -132,6 +169,49 @@ function saveL() {
   LS.set("shellfie_log", L);
 }
 const T = () => STR[P.lang];
+
+/* ───────────── Developer log (parent area → developer mode). Rolling 3 days, kept on this device only. ─────────────
+   Each entry: [epoch ms, type, data]. Types: session, page, asr, align, miscue-accepted, jump, refocus, hop, hesitate,
+   ladder, quick-say, move-along, nudge, complete, skip-next, back, pause, resume, listener, tts, quiz, profile,
+   settings, error. "why" fields record the rule the app followed. */
+const APP_VERSION = "2026.11.07-b";
+const DEV_KEY = "shellfie_devlog", DEV_DAYS = 3;
+let DEVBUF = [], devT = null;
+const devOn = () => !!LS.get("shellfie_dev", 0);
+function dlog(type, data) {
+  if (!devOn()) return;
+  DEVBUF.push([Date.now(), type, data || {}]);
+  if (!devT) devT = setTimeout(devFlush, 2500);
+}
+function devFlush() {
+  devT = null; if (!DEVBUF.length) return;
+  try {
+    const arr = LS.get(DEV_KEY, []).concat(DEVBUF); DEVBUF = [];
+    const cut = Date.now() - DEV_DAYS * 864e5; let i = 0; while (i < arr.length && arr[i][0] < cut) i++;
+    let keep = arr.slice(i); if (keep.length > 30000) keep = keep.slice(-30000);
+    localStorage.setItem(DEV_KEY, JSON.stringify(keep));
+  } catch { DEVBUF = []; }
+}
+addEventListener("pagehide", devFlush);
+addEventListener("error", e => dlog("error", { msg: String(e.message), src: e.filename, line: e.lineno, col: e.colno }));
+addEventListener("unhandledrejection", e => dlog("error", { msg: "unhandled rejection: " + String(e.reason && (e.reason.stack || e.reason)) }));
+function devText() {
+  devFlush();
+  const arr = LS.get(DEV_KEY, []);
+  const pad = n => String(n).padStart(2, "0");
+  const fmt = ms => { const d = new Date(ms); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}.${String(d.getMilliseconds()).padStart(3, "0")}`; };
+  const head = [
+    "SHELLFIE DEVELOPER LOG", `app ${APP_VERSION} · exported ${fmt(Date.now())} (${Intl.DateTimeFormat().resolvedOptions().timeZone})`,
+    `device: ${navigator.userAgent}`, `screen ${screen.width}×${screen.height} · window ${innerWidth}×${innerHeight} · dpr ${devicePixelRatio} · ${matchMedia("(orientation: landscape)").matches ? "landscape" : "portrait"}`,
+    `speech recognition: ${SR ? "available" : "none"} · engine ${engineInfo()} · voices ${VOICES.length}`,
+    `settings: ${JSON.stringify({ lang: P.lang, grade: P.grade, under: P.under, calm: P.calm, showRead: P.showRead })}`,
+    `reader profile: ${JSON.stringify(P.prof || null)} · calibrating: ${CAL ? JSON.stringify({ words: CAL.words }) : "no"}`,
+    `progress: ${Object.keys(P.b).length} books touched · ${Math.round(L.sec / 60)} min read · ${L.help.length} help events`,
+    `entries: ${arr.length} (last ${DEV_DAYS} days)`, "time | +since previous | type | details", "─".repeat(60)];
+  let prev = 0;
+  const lines = arr.map(([t, ty, d]) => { const gap = prev ? "+" + ((t - prev) / 1000).toFixed(1) + "s" : ""; prev = t; return `${fmt(t)} ${gap.padStart(8)} ${ty.padEnd(16)} ${JSON.stringify(d)}`; });
+  return head.concat(lines).join("\n");
+}
 
 /* ───────────── Text tools: normalize, phonetic keys, syllables, tiers ───────────── */
 const NUMW = {
@@ -173,6 +253,105 @@ function sim(hn, w, lang) {
   if (b.length <= 2 || a.length <= 2) return 0;
   const k = key(hn, lang);
   return Math.max(ratio(a, b), k && w.k ? ratio(k, w.k) * .95 : 0);
+}
+
+/* ───────────── Speech patterns: accept how a child talks (accent, dialect, speech-therapy sounds) ─────────────
+   Each pattern rewrites the PAGE word into the ways a child might say it. A heard word that matches a rewrite is
+   counted as read correctly. Easy/Normal/Unique words accept every pattern; Hard words accept the patterns in the
+   reader's profile (so real decoding mistakes on hard words are still noticed). */
+const endDrop = w => {
+  const o = [];
+  if (w.length > 3) {
+    o.push(w.replace(/ing$/, "in"), w.replace(/ed$/, ""), w.replace(/(?<=\w)s$/, ""), w.replace(/[^aeiouy]$/, ""), w.replace(/([^aeiouy])[^aeiouy]$/, "$1"));
+  }
+  return o;
+};
+const PATTERNS = {
+  en: {
+    th: w => [w.replace(/^th/, "d"), w.replace(/th/g, "t"), w.replace(/th/g, "f"), w.replace(/th/g, "d"), w.replace(/th/g, "s"), w.replace(/th$/, "f")],
+    rw: w => [w.replace(/r(?=[aeiouy])/g, "w")],
+    lw: w => [w.replace(/l(?=[aeiouy])/g, "w"), w.replace(/l(?=[aeiouy])/g, "y")],
+    rl: w => [w.replace(/r/g, "l"), w.replace(/l/g, "r")],
+    sh: w => [w.replace(/sh/g, "s"), w.replace(/ch/g, "sh"), w.replace(/s(?!h)/g, "th")],
+    v: w => [w.replace(/v/g, "w"), w.replace(/v/g, "b")],
+    fin: endDrop,
+    nr: w => [w.replace(/([aeiou])r(?![aeiou])/g, "$1"), w.replace(/([aeiou])r(?![aeiou])/g, "$1h"), w.replace(/er$/, "a")]
+  },
+  es: {
+    s: w => [w.replace(/s$/, ""), w.replace(/s(?=[^aeiouáéíóú])/g, ""), w.replace(/s(?=[^aeiouáéíóú])/g, "j")],
+    ado: w => [w.replace(/ado$/, "ao"), w.replace(/ada$/, "á"), w.replace(/ido$/, "ío")],
+    rl: w => [w.replace(/r(?![aeiouáéíóú])/g, "l"), w.replace(/rr/g, "r"), w.replace(/^r/, "d")],
+    fin: endDrop
+  }
+};
+function variantsOf(w, lang) {
+  if (w.vars) return w.vars;
+  const P1 = PATTERNS[lang], out = [], seen = new Set([w.n]);
+  const add = (v, f) => { if (v && v.length >= 2 && !seen.has(v)) { seen.add(v); out.push([v, f]); } };
+  for (const f in P1) for (const v of P1[f](w.n)) {
+    add(v, f);
+    for (const g in P1) if (g !== f) for (const v2 of P1[g](v)) add(v2, f + "+" + g);
+  }
+  return (w.vars = out);
+}
+function patternMatch(hn, w, lang) {
+  // returns the pattern name(s) that explain the heard word, or null
+  if (!hn || hn.length < 2 || w.n.length < 2 || Math.abs(hn.length - w.n.length) > 4) return null;
+  const h0 = hn[0], w0 = w.n[0];
+  const okStart = h0 === w0 || (w.n.startsWith("th") && "dtfs".includes(h0)) || (w0 === "r" && "wld".includes(h0)) || (w0 === "l" && "wyr".includes(h0)) ||
+    (w0 === "v" && "wb".includes(h0)) || (w0 === "s" && h0 === "t") || (w0 === "c" && h0 === "s");
+  if (!okStart) return null;
+  const a = lang === "es" ? stripAcc(hn) : hn;
+  for (const [v, f] of variantsOf(w, lang)) {
+    const b = lang === "es" ? stripAcc(v) : v;
+    if (a === b || (b.length >= 5 && ratio(a, b) >= .86)) return f;
+  }
+  // a dropped ending heard as a clean prefix ("jump" for "jumping")
+  if (w.n.startsWith(hn) && hn.length >= 3 && hn.length >= .6 * w.n.length) return "fin";
+  return null;
+}
+
+/* ───────────── Reader profile (saved in the shellfie_v1 cookie as P.prof) ─────────────
+   Measured over the first ~120 words of a new reader, the first reading of each day, or the next book after a
+   parent asks for a re-check. It sets a style that tunes wait times and help, plus the speech patterns to accept. */
+const STYLES = {
+  speedy:  { hes: .85, idle: 1,   fix: .8, wait: 1   },
+  steady:  { hes: 1,   idle: 1,   fix: 1,  wait: 1   },
+  careful: { hes: 2.4, idle: 2.2, fix: 1.6, wait: 1.6 }
+};
+const CAL_WORDS = 120;
+const TSC = () => window.__SHELLFIE_TIMESCALE || 1;
+const hesitateMs = g => TUNE.hesitate[g] * STY().hes * TSC();
+const idlePause = () => TUNE.idlePause * STY().idle * TSC();
+const selfFixMs = g => TUNE.selfFix[g] * STY().fix * TSC();
+const todayStr = () => new Date().toISOString().slice(0, 10);
+function prof() { return P.prof || null; }
+function styleName() { const p = prof(); return (p && p.force) || (p && p.st) || "steady"; }
+const LEARNING = { hes: 1.8, idle: 1.8, fix: 1.3, wait: 1.3 };   // gentle timing until Shellfie knows the reader
+function STY() { const p = prof(); if (CAL && !(p && p.force) && !(p && p.st)) return LEARNING; return STYLES[styleName()] || STYLES.steady; }
+let CAL = null;   // calibration in progress (kept across books until ~120 words are measured)
+function patternOn(f) {
+  const p = prof(); if (!p) return false;
+  return f.split("+").every(x => (p.fo && x in p.fo) ? !!p.fo[x] : (p.f || []).includes(x));
+}
+function needsCalibration() { const p = prof(); return !p || !!p.re || (!p.lock && p.d !== todayStr()); }
+function finishCalibration(cal, partial) {
+  if (!cal || cal.words < (partial ? 40 : CAL_WORDS)) return false;
+  const mins = Math.max(cal.ms / 60000, .05), wcpm = Math.round(cal.words / mins);
+  const gaps = cal.gaps.slice().sort((a, b) => a - b), med = gaps.length ? gaps[gaps.length >> 1] : 600;
+  const slips = Math.round((cal.subs + cal.helps) / cal.words * 1000) / 10;
+  const feats = Object.entries(cal.feat).filter(([, n]) => n >= 2 && n / cal.words * 100 >= 1.2).map(([f]) => f);
+  const old = prof();
+  let st = wcpm >= 110 && med < 450 ? "speedy" : (wcpm < 50 || med > 1100) ? "careful" : "steady";
+  const blend = old && !old.re && old.n >= CAL_WORDS;
+  const nw = blend ? Math.round(old.w * .7 + wcpm * .3) : wcpm, ng = blend ? Math.round(old.g * .7 + med * .3) : med;
+  if (blend) st = nw >= 110 && ng < 450 ? "speedy" : (nw < 50 || ng > 1100) ? "careful" : "steady";
+  P.prof = Object.assign({}, old || {}, {
+    st, w: nw, g: ng, e: blend ? Math.round((old.e * .7 + slips * .3) * 10) / 10 : slips,
+    f: [...new Set([...(blend ? old.f || [] : []), ...feats])], n: (old?.n || 0) + cal.words, d: todayStr(), re: 0
+  });
+  saveP();
+  return true;
 }
 
 /* Syllables. Spanish rules are regular; English is a heuristic split (vowel groups, blends and digraphs kept together). */
@@ -250,19 +429,24 @@ function tierFor(w, idx, grade, lang, sentStart) {
 
 /* Tokenize a page into lines of words with tiers and sentence ids */
 function tokenize(text, grade, lang) {
-  const lines = text.split("\n"); const words = []; let sent = 0, start = true; const html = [];
-  for (const line of lines) {
-    const toks = line.split(/\s+/).filter(Boolean); const parts = [];
+  const paras = text.split(/\n\s*\n/); const words = []; let sent = 0, start = true; const html = [];
+  let pi = -1;
+  for (const para of paras) {
+    pi++;
+    if (para.startsWith("## ")) { html.push(`<p class="ph">${h(para.slice(3))}</p>`); sent++; start = true; continue; }
+    const parts = [];
+    const toks = para.replace(/\n/g, " \u2028 ").split(/[ \t]+/).filter(Boolean);
     for (const t of toks) {
+      if (t === "\u2028") { parts.push("<br>"); continue; }
       const n = norm(t, lang);
       if (!n) { parts.push(`<span class="pw">${h(t)}</span>`); continue; }
-      const w = { t, n, k: key(n, lang), st: 0, sent, i: words.length };
+      const w = { t, n, k: key(n, lang), st: 0, sent, i: words.length, para: pi };
       w.tier = tierFor(w, words.length, grade, lang, start);
       start = false;
       parts.push(`<span class="w" data-i="${w.i}">${h(t)}</span>`); words.push(w);
       if (/[.!?…]["”»)]*$/.test(t) || /[.!?]["”»]?$/.test(t)) { sent++; start = true; }
     }
-    html.push(`<p>${parts.join(" ")}</p>`);
+    html.push(`<p>${parts.join(" ").replace(/ <br> /g, "<br>")}</p>`);
   }
   // cap Hard words at ~8% of the page; demote the least hard
   const hard = words.filter(w => w.tier === "hard");
@@ -275,7 +459,7 @@ function tokenize(text, grade, lang) {
 let AC = null;
 function ac() { if (!AC || AC.state === "closed") { try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch { AC = null; } } if (AC && AC.state === "suspended") AC.resume(); return AC; }
 function tone(freqs, { type = "sine", dur = .12, gap = .07, vol = .18 } = {}) {
-  const c = ac(); if (!c) return; let t = c.currentTime + .01;
+  const c = ac(); if (!c) return; let t = c.currentTime + .01; if (P.calm) vol *= .5;
   for (const f of freqs) { const o = c.createOscillator(), g = c.createGain(); o.type = type; o.frequency.setValueAtTime(f, t); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + .015); g.gain.exponentialRampToValueAtTime(.001, t + dur); o.connect(g).connect(c.destination); o.start(t); o.stop(t + dur + .02); t += gap; }
 }
 const SFX = {
@@ -305,9 +489,11 @@ function pickVoice(lang) {
 }
 function speak(text, { rate = .9, lang = P.lang } = {}) {
   return new Promise(res => {
+    if (window.__SHELLFIE_TEST) return res();
     if (!("speechSynthesis" in window)) return res();
     try {
-      const u = new SpeechSynthesisUtterance(text); const v = pickVoice(lang); if (v) u.voice = v; u.lang = v ? v.lang : (lang === "es" ? "es-MX" : "en-US"); u.rate = rate; u.pitch = 1.05;
+      const u = new SpeechSynthesisUtterance(text); const v = pickVoice(lang);
+      dlog("tts", { text: text.slice(0, 60), voice: v ? v.name + " " + v.lang : "default", rate }); if (v) u.voice = v; u.lang = v ? v.lang : (lang === "es" ? "es-MX" : "en-US"); u.rate = rate; u.pitch = 1.05;
       let done = false; const fin = () => { if (!done) { done = true; res(); } };
       u.onend = fin; u.onerror = fin; setTimeout(fin, 1800 + text.length * 140 / rate);
       speechSynthesis.speak(u);
@@ -324,8 +510,8 @@ class WebSpeechListener {
     r.onresult = e => { this.fails = 0; this.onResult(e); };
     r.onspeechstart = () => this.onActivity?.("speech");
     r.onstart = () => this.onActivity?.("start");
-    r.onerror = e => { if (e.error === "not-allowed" || e.error === "service-not-allowed") { this.active = false; this.onActivity?.("denied"); } else if (e.error !== "no-speech" && e.error !== "aborted") this.fails++; };
-    r.onend = () => { this.onActivity?.("end"); if (this.active && !this.paused && this.fails < 6) setTimeout(() => { if (this.active && !this.paused) this._start(); }, 120); };
+    r.onerror = e => { dlog("listener", { event: "error", code: e.error }); if (e.error === "not-allowed" || e.error === "service-not-allowed") { this.active = false; this.onActivity?.("denied"); } else if (e.error !== "no-speech" && e.error !== "aborted") this.fails++; };
+    r.onend = () => { dlog("listener", { event: "end", willRestart: this.active && !this.paused }); this.onActivity?.("end"); if (this.active && !this.paused && this.fails < 6) setTimeout(() => { if (this.active && !this.paused) this._start(); }, 120); };
   }
   async start(uniqueWords = []) {
     this.active = true;
@@ -333,6 +519,7 @@ class WebSpeechListener {
       if (SR.available) {
         const st = await SR.available({ langs: [this.rec.lang], processLocally: true });
         if (st === "available") { this.rec.processLocally = true; this.local = true; }
+        dlog("listener", { event: "on-device check", status: st });
       }
     } catch { }
     this.setPhrases(uniqueWords);
@@ -375,6 +562,10 @@ function mountTurtles(root = document) {
 }
 function mood(el, state) {
   const t = el?.querySelector?.(".turtle") || el; if (!t) return;
+  if (P.calm && SCREEN === "reader" && el && el.id === "rAvatar") {
+    state = state && state.includes("sleeping") ? "sleeping" : (state ? "listening" : "");
+    if (t._mood === state) return; t._mood = state;
+  } else t._mood = null;
   t.classList.remove("listening", "following", "thinking", "celebrating", "sleeping");
   if (state) { void t.getBoundingClientRect(); t.classList.add(...state.split(" ")); }
 }
@@ -383,7 +574,7 @@ function mood(el, state) {
 let toastT;
 function toast(msg) { const t = $("#toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 2600); }
 function confetti(n = 46) {
-  if (REDUCED) return; const c = document.createElement("div"); c.className = "confetti";
+  if (REDUCED) return; if (P.calm) n = Math.min(n, 14); const c = document.createElement("div"); c.className = "confetti";
   for (let i = 0; i < n; i++) {
     const s = document.createElementNS("http://www.w3.org/2000/svg", "svg"); s.setAttribute("viewBox", "0 0 64 64");
     s.innerHTML = '<use href="#i-shell"/>'; const el = document.createElement("i"); el.appendChild(s);
@@ -399,6 +590,8 @@ function applyI18n() {
 let SCREEN = null;
 function show(id) {
   $$(".screen").forEach(s => s.hidden = s.id !== id); SCREEN = id;
+  document.body.classList.toggle("reading", id === "reader");
+  document.body.classList.toggle("calm", !!P.calm);
   const sc = $("#" + id + " .scroll"); if (sc && id !== "shelf") sc.scrollTop = 0;
 }
 
@@ -419,6 +612,13 @@ function pagesRead(id) { return L.pr[id] || (L.pr[id] = {}); }
 function markPageRead(id, ch, pg) { const pr = pagesRead(id); (pr[ch] = pr[ch] || []); if (!pr[ch].includes(pg)) pr[ch].push(pg); saveL(); }
 function storyComplete(s) { const pr = L.pr[s.id] || {}; return s.chapters.every((c, ci) => (pr[ci] || []).length >= c.pages.length); }
 function firstUnread(s) { const pr = L.pr[s.id] || {}; for (let ci = 0; ci < s.chapters.length; ci++) for (let pi = 0; pi < s.chapters[ci].pages.length; pi++) if (!(pr[ci] || []).includes(pi)) return [ci, pi]; return [0, 0]; }
+function dailyChapter(s) {
+  // 365 Bedtime Stories: open on tonight's story (chapter titles start "NOVEMBER 7:")
+  const d = new Date(), tag = d.toLocaleString("en-US", { month: "long" }).toUpperCase() + " " + d.getDate() + ":";
+  let i = s.chapters.findIndex(c => (c.title || "").toUpperCase().startsWith(tag));
+  if (i < 0) { const doy = Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 864e5); i = Math.min(s.chapters.length - 1, Math.round(doy / 366 * s.chapters.length)); }
+  return i;
+}
 function bumpStreak() {
   const d = new Date(); const today = d.toISOString().slice(0, 10); if (L.streak.d === today) return;
   const y = new Date(d - 864e5).toISOString().slice(0, 10); L.streak.n = L.streak.d === y ? L.streak.n + 1 : 1; L.streak.d = today; saveL();
@@ -498,16 +698,16 @@ const MONTH = () => new Date().getMonth();
 const SEASON_MONTHS = { halloween: [9, 10], muertos: [9, 10], thanksgiving: [10], diwali: [9, 10], winter: [11], reyes: [0], lunar: [0, 1], spring: [2, 3, 4], fall: [8, 9, 10], independencia: [8] };
 const inSeason = s => (SEASON_MONTHS[s] || []).includes(MONTH());
 function coverHTML(b, g) {
-  const st = b.id ? bookState(b.id) : null, story = b.id ? STORIES[b.id] : null;
+  const st = b.id ? bookState(b.id) : null, pc = b.id ? pcOf(b.id) : null;
   const [c1, c2, gi] = GENRE_STYLE[b.g];
   const done = st?.[0] === 2, prog = st?.[0] === 1;
   const cls = ["book", !b.id && "soon", done && "read"].filter(Boolean).join(" ");
   const acc = done && st[3] != null ? st[3] : null;
-  const pg = prog ? (() => { let n = 0; for (let ci = 0; ci < st[1]; ci++) n += story.chapters[ci].pages.length; return n + st[2] + 1; })() : 0;
+  const pg = prog ? (() => { let n = 0; for (let ci = 0; ci < st[1] && ci < pc.length; ci++) n += pc[ci]; return n + st[2] + 1; })() : 0;
   return `<button class="${cls}" data-id="${b.id || ""}" data-g="${g}" title="${h(b.t)}">
     <div class="cover" style="--cv:linear-gradient(160deg,${c1},${c2})">
       ${b.star ? `<span class="star">⭐</span>` : ""}${!b.id ? `<span class="tag">${h(T().soon)}</span>` : ""}
-      <span class="em">${story?.icon || gi}</span><span class="ttl">${h(b.t)}</span></div>
+      <span class="em">${b.icon || gi}</span><span class="ttl">${h(b.t)}</span></div>
     ${done ? `<svg class="badge" viewBox="0 0 48 48"><circle cx="24" cy="24" r="21" fill="#fff" stroke="#10221a" stroke-width="3"/>
       ${acc != null ? `<circle cx="24" cy="24" r="17" fill="none" stroke="#f5b72e" stroke-width="4" stroke-dasharray="${(acc * 106.8).toFixed(1)} 200" transform="rotate(-90 24 24)" stroke-linecap="round"/>` : ""}
       <use href="#i-shell" x="11" y="10" width="26" height="26"/><path d="M30 33l3 3 6-7" fill="none" stroke="#1e7a45" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>` : ""}
@@ -572,24 +772,34 @@ function bindShelf() {
 
 /* ───────────── Reader ───────────── */
 let R = null, LISTENER = null, tickT = null, hiddenT = null;
-function openBook(id, { restart = false, ch: atCh = null } = {}) {
-  const s = STORIES[id]; if (!s) return;
+let opening = 0;
+async function openBook(id, { restart = false, ch: atCh = null } = {}) {
+  if (!META[id]) return;
+  const ticket = ++opening;
+  let s;
+  try { s = await loadBook(id); } catch { toast(T().offline); return; }
+  if (ticket !== opening) return;
+  BOOK = s;
   const st = bookState(id);
   let ch = 0, pg = 0;
   if (atCh != null) ch = atCh;
   else if (!restart && st && st[0] === 1) { ch = st[1] || 0; pg = st[2] || 0; }
+  else if (s.daily) ch = dailyChapter(s);
   if (ch >= s.chapters.length) { ch = 0; pg = 0; }
   if (pg >= s.chapters[ch].pages.length) pg = 0;
   setBook(id, { 0: st?.[0] || 1, 1: ch, 2: pg });
-  R = { s, ch, pg, sub: 0, parts: null, words: [], anchor: 0, tent: new Set(), ladder: null, epoch: 0, processed: -1, lastProg: now(), started: false, completing: false, sentNotified: new Set(),
+  R = { lenient: new Set(), attempts: {}, s, ch, pg, sub: 0, parts: null, words: [], anchor: 0, tent: new Set(), ladder: null, epoch: 0, processed: -1, lastProg: now(), started: false, completing: false, sentNotified: new Set(),
     tap: engineInfo() === "tap" || !SR, sess: { c: 0, h: 0, shells: 0, sec: 0, nailed: new Set(), helped: [], pages: 0, t0: now() } };
+  if (!R.tap && needsCalibration() && !CAL) CAL = { words: 0, ms: 0, gaps: [], subs: 0, helps: 0, feat: {}, started: now() };
+  R.cal = R.tap ? null : CAL;
   if (["reader", "quiz", "results"].includes(SCREEN)) history.replaceState({ s: "reader" }, ""); else history.pushState({ s: "reader" }, "");
   show("reader"); mountTurtles($("#reader"));
   $("#rTitle").textContent = s.title; $("#rShells span").textContent = L.shells + L.sp.length;
   $("#rMode").hidden = !R.tap; $("#rMode").textContent = T().tapMode;
+  dlog("session", { book: id, title: s.title, lang: s.lang, grade: s.grade, ch, pg, chapters: s.chapters.length, tap: R.tap, style: styleName(), profile: P.prof || null, calibrating: !!R.cal, calWords: CAL ? CAL.words : 0, view: `${innerWidth}x${innerHeight}` });
   renderPage();
   if (!R.tap) startListening();
-  clearInterval(tickT); tickT = setInterval(tick, 250);
+  clearInterval(tickT); tickT = setInterval(tick, Math.max(20, 250 * TSC()));
 }
 function startListening() {
   try {
@@ -612,6 +822,7 @@ function teardown() {
   try { speechSynthesis.cancel(); } catch { }
   if (AC) { try { AC.close(); } catch { } AC = null; }
   if (R) { flushTime(); R = null; }
+  BOOK = null; opening++;
   $("#help").hidden = true; $("#help").innerHTML = ""; $("#rPause").hidden = true; $("#pageText").innerHTML = "";
 }
 function flushTime() { if (!R) return; L.sec += Math.round(R.sess.sec); R.sess.sec = 0; saveL(); }
@@ -623,7 +834,7 @@ function splitPage(full, g, lang) {
   // Auto-fit (Section 11): if a page only fits a small screen below the grade's size floor, split it at sentence boundaries.
   const pt = $("#pageText"), floor = TUNE.font[g][0] * .85;
   const fitSize = txt => { pt.className = "page-text"; pt.innerHTML = `<div class="inner">${tokenize(txt, g, lang).html}</div>`; fitText(pt, g); return parseFloat(pt.style.fontSize); };
-  if (full.includes("\n") || fitSize(full) >= floor) return [full];
+  if (/[^\n]\n[^\n]/.test(full) || fitSize(full) >= floor) return [full];
   const sents = full.match(/[^.!?…]+[.!?…]+["”»]?\s*|[^.!?…]+$/g) || [full];
   for (let k = 2; k <= sents.length; k++) {
     const per = full.split(/\s+/).length / k, parts = []; let cur = "", n = 0;
@@ -643,20 +854,22 @@ function renderPage(dir = 0, sub = 0) {
     if (dir > 0) leaf.innerHTML = `<div class="page-text ${pt.className.replace("page-text", "")}" style="${pt.getAttribute("style") || ""}">${pt.innerHTML}</div>`;
   }
   R.parts = splitPage(full, g, s.lang); R.sub = sub === "last" ? R.parts.length - 1 : Math.min(sub, R.parts.length - 1);
-  const text = R.parts[R.sub], isPoem = text.includes("\n");
+  const text = R.parts[R.sub], isPoem = /[^\n]\n[^\n]/.test(text);
   const { words, html } = tokenize(text, g, s.lang);
   pt.className = "page-text" + (isPoem ? " poem" : "") + (P.under && GI(g) <= 2 ? " dots" : "");
   pt.innerHTML = `<div class="inner">${html}</div>`;
-  R.words = words; R.anchor = 0; R.tent.clear(); R.started = false; R.completing = false; R.sentNotified.clear(); R.lastProg = now(); R.pageT0 = now(); R.ladder = null;
+  R.words = words; R.anchor = 0; R.jump = null; R.focusing = false; R.tent.clear(); R.pageLadders = 0; R.attempts = {};
+  words.forEach(w => { if (R.lenient.has(w.n) && w.tier !== "easy") w.tier = "easy"; }); R.started = false; R.completing = false; R.sentNotified.clear(); R.lastProg = now(); R.pageT0 = now(); R.ladder = null;
   words.forEach(w => w.el = pt.querySelector(`[data-i="${w.i}"]`));
   if (R.s.chapters[R.ch].title && R.pg === 0 && R.sub === 0) pt.querySelector(".inner").insertAdjacentHTML("afterbegin", `<p style="font-size:.6em;font-family:var(--ui);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--forest-3);margin-bottom:.6em">${h(T().chapter)} ${R.ch + 1} · ${h(R.s.chapters[R.ch].title)}</p>`);
   fitText(pt, g);
   if (doFlip) {
     if (dir < 0) leaf.innerHTML = `<div class="${pt.className}" style="${pt.getAttribute("style") || ""}">${pt.innerHTML}</div>`;
     $("#stage").appendChild(leaf); SFX.flip(dir < 0);
-    leaf.classList.add(REDUCED ? (dir > 0 ? "slide-f" : "slide-b") : (dir > 0 ? "fwd" : "back"));
-    setTimeout(() => leaf.remove(), REDUCED ? 360 : 540);
+    leaf.classList.add(REDUCED || P.calm ? (dir > 0 ? "slide-f" : "slide-b") : (dir > 0 ? "fwd" : "back"));
+    setTimeout(() => leaf.remove(), REDUCED || P.calm ? 360 : 540);
   }
+  dlog("page", { ch: R.ch, pg: R.pg, sub: R.sub, parts: R.parts.length, words: words.length, hard: words.filter(w => w.tier === "hard").map(w => w.n), names: words.filter(w => w.tier === "unique").map(w => w.n), lenient: [...R.lenient], font: pt.style.fontSize, dir });
   updateCursor(); updateProgress();
   $("#rPrev").disabled = R.ch === 0 && R.pg === 0 && R.sub === 0;
   LISTENER?.setPhrases(uniqueWords());
@@ -675,7 +888,7 @@ function updateProgress() { const frac = (R.sub + (R.completing ? 1 : 0)) / (R.p
 function cursorIndex() {
   // the next word to read: first unread word at/after the anchor; pending Hard/Unique words before it pulse
   for (let i = R.anchor; i < R.words.length; i++) if (!R.words[i].st && !R.tent.has(i)) return i;
-  const pend = R.words.find(w => !w.st && (w.tier === "hard" || w.tier === "unique")); return pend ? pend.i : -1;
+  const pend = R.words.find(w => !w.st && !R.tent.has(w.i)); return pend ? pend.i : -1;
 }
 function updateCursor() {
   if (!R) return; const c = cursorIndex();
@@ -688,73 +901,202 @@ function updateCursor() {
   });
 }
 
-/* Alignment: match hypothesis words into a lookahead window from the anchor (tier-weighted), with a whole-page fallback for skipped lines. */
+/* Alignment (Section 4): match the latest hypothesis words to unread page words. A candidate is scored by how many
+   following words also line up (a short Smith–Waterman-style run), so one common word ("the") never drags the cursor
+   somewhere wrong, while a run of 3+ matching words anywhere on the page is trusted (skipped line / paragraph).
+   Words already read are transparent: after a refocus, reading flows straight past the part read earlier. */
+const isReq = w => w.tier === "hard";          // only Hard words are required / corrected
+const isName = w => w.tier === "unique";       // names & rare words: accepted generously, never block a page
+function matchAt(hyps, i, k, lang) {
+  const w = R.words[k];
+  for (let j = 1; j <= 3 && i + j <= hyps.length; j++) {
+    const hw = j === 1 ? hyps[i] : hyps.slice(i, i + j).join("");
+    const s = sim(hw, w, lang);
+    if (s >= TUNE.sim[w.tier]) return [s, j];
+  }
+  // how this child says it (accent, dialect, speech sounds, dropped endings) counts as read
+  const f = patternMatch(hyps[i], w, lang);
+  if (f && (w.tier !== "hard" || patternOn(f) || R.cal)) return [.8, 1, f];
+  return null;
+}
+function runLen(hyps, i, k, lang, max = 5) {
+  // consecutive matches from (hyp i, word k) over unread words; one slip (a skipped or extra word) is allowed
+  let n = 0, a = i, b = k, slack = 1; const W = R.words;
+  while (a < hyps.length && b < W.length && n < max) {
+    if (W[b].st) { b++; continue; }
+    const m = matchAt(hyps, a, b, lang);
+    if (m) { n++; a += m[1]; b++; continue; }
+    if (slack-- > 0) { let nb = b + 1; while (nb < W.length && W[nb].st) nb++; if (nb < W.length && matchAt(hyps, a, nb, lang)) { b = nb; continue; } a++; continue; }
+    break;
+  }
+  return n;
+}
+function nextUnread(k) { while (k < R.words.length && R.words[k].st) k++; return k; }
 function align(hyps, start) {
-  const words = R.words, win = TUNE.window[R.s.grade], lang = R.s.lang, marks = [], subs = [];
-  let p = start;
-  // pending Hard/Unique words before the anchor (child went back to a skipped word)
-  const pend = words.filter(w => !w.st && w.i < start && (w.tier === "hard" || w.tier === "unique"));
+  const W = R.words, n = W.length, win = TUNE.window[R.s.grade], lang = R.s.lang, marks = [], subs = [], spans = [], feats = [];
+  let p = nextUnread(start), lastHit = -1;
   for (let i = 0; i < hyps.length; i++) {
-    let best = -1, bs = 0, used = 1;
-    for (const w of pend) { const s = sim(hyps[i], w, lang); if (s >= TUNE.sim[w.tier] && s > bs) { best = w.i; bs = s; } }
-    if (best >= 0) { marks.push(best); continue; }
-    for (let k = p; k < Math.min(words.length, p + win); k++) {
-      for (let j = 1; j <= 3 && i + j <= hyps.length; j++) {
-        const hw = j === 1 ? hyps[i] : hyps.slice(i, i + j).join("");
-        const s = sim(hw, words[k], lang);
-        if (s >= TUNE.sim[words[k].tier]) { const sc = s - (k - p) * .05 - (j - 1) * .02; if (sc > bs) { bs = sc; best = k; used = j; } }
-      }
+    let best = -1, bs = -1, used = 1, feat = null;
+    // near: the next `win` unread words from p
+    let cnt = 0; const near = new Set();
+    for (let k = p; k < n && cnt < win; k++) {
+      if (W[k].st || marks.includes(k)) continue; cnt++; near.add(k);
+      const m = matchAt(hyps, i, k, lang); if (!m) continue;
+      const r = runLen(hyps, i, k, lang);
+      const sc = m[0] + .35 * Math.min(r, 4) - (cnt - 1) * .06 - (m[1] - 1) * .02;
+      if (sc > bs) { bs = sc; best = k; used = m[1]; feat = m[2]; }
     }
-    if (best < 0 && i + 1 < hyps.length) { // skipped a line? look across the page for two consecutive matches
-      for (let k = p + win; k < words.length - 1; k++) {
-        if (sim(hyps[i], words[k], lang) >= TUNE.sim[words[k].tier] && sim(hyps[i + 1], words[k + 1], lang) >= TUNE.sim[words[k + 1].tier]) { best = k; break; }
-      }
+    // an extra word ("um", a stray "and"): if the next hyp word lines up nearby, just skip this one
+    if (best < 0 && i + 1 < hyps.length) {
+      let c2 = 0, ok = false;
+      for (let k = p; k < n && c2 < win && !ok; k++) { if (W[k].st) continue; c2++; if (matchAt(hyps, i + 1, k, lang) && runLen(hyps, i + 1, k, lang) >= 2) ok = true; }
+      if (ok) continue;
+    }
+    // far: anywhere else on the page (ahead = skipped lines; behind = going back to a skipped part) needs a run of 3
+    const need = Math.min(3, hyps.length - i);
+    if (need >= 2) for (let k = 0; k < n; k++) {
+      if (W[k].st || near.has(k) || marks.includes(k)) continue;
+      const m = matchAt(hyps, i, k, lang); if (!m) continue;
+      const r = runLen(hyps, i, k, lang); if (r < need || (W[k].tier === "easy" && r < 4 && need >= 3)) continue;
+      const sc = m[0] + .35 * Math.min(r, 5) - .75;
+      if (sc > bs) { bs = sc; best = k; used = m[1]; feat = m[2]; }
+    }
+    // a single skipped Hard/Unique word said on its own ("…what was that word? mattresses!")
+    if (best < 0) for (let k = 0; k < p; k++) {
+      const w = W[k]; if (w.st || !isReq(w) || marks.includes(k)) continue;
+      const s = sim(hyps[i], w, lang); if (s >= Math.max(.85, TUNE.sim[w.tier]) && s > bs) { bs = s; best = k; used = 1; }
     }
     if (best >= 0) {
-      // substitution on a Hard/Unique word: hyp[i-1] said instead of words[best-1]
-      if (best === p + 1 && i > 0 && !words[p].st && (words[p].tier === "hard" || words[p].tier === "unique") && sim(hyps[i - 1], words[p], lang) < .66 && !marks.includes(p)) subs.push(p);
-      for (let u = 0; u < used; u++) marks.push(best); p = best + 1; i += used - 1;
+      // substitution on a Hard/Unique word: the child said something else where it belongs, then carried on
+      const pu = nextUnread(p);
+      if (best > pu && nextUnread(pu + 1) === best && i > 0 && lastHit !== i - 1 && isReq(W[pu]) && !marks.includes(pu) && sim(hyps[i - 1], W[pu], lang) < .66) subs.push(pu);
+      marks.push(best); spans.push([best, i, i + used - 1]); if (feat) feats.push(feat.split("+")[0]); p = best + 1; lastHit = i + used - 1; i += used - 1;
     }
   }
-  return { marks: [...new Set(marks)], end: p, subs };
+  return { marks: [...new Set(marks)], end: p, subs, spans, feats };
 }
 function onSpeech(e) {
   if (!R || R.completing || R.paused) return;
   const res = e.results; let interim = [];
+  if (devOn()) { const last = res[res.length - 1]; if (last && (last.isFinal || !R._lastAsrLog || now() - R._lastAsrLog > 1200)) { R._lastAsrLog = now(); dlog("asr", { final: !!last.isFinal, text: last[0]?.transcript, conf: last[0]?.confidence != null ? Math.round(last[0].confidence * 100) / 100 : null, alts: [...last].slice(1).map(a => a.transcript), idx: res.length - 1 }); } }
   for (let i = Math.max(e.resultIndex, R.epoch); i < res.length; i++) {
     const r = res[i]; const words = (r[0]?.transcript || "").split(/\s+/).map(w => norm(w, R.s.lang)).filter(Boolean);
     if (r.isFinal) { if (i > R.processed) { R.processed = i; commit(words, true); } }
     else interim.push(...words);
   }
+  if (!R || R.completing) return;
   // interim results move the highlight optimistically; finals confirm or roll back
   R.tent.clear();
   if (interim.length) { const { marks } = align(interim, R.anchor); marks.forEach(m => { if (!R.words[m].st) R.tent.add(m); }); }
   updateCursor();
 }
+const JUMP_MIN = 4;   // skipping this many unread words or more counts as a jump (1–3 are forgiven, as before)
 function commit(hyps, final) {
-  const before = R.anchor;
-  const { marks, subs } = align(hyps, R.anchor);
+  const before = R.anchor, cur0 = cursorIndex();
+  const { marks, subs, spans, feats } = align(hyps, R.anchor);
   if (!marks.length) return;
+  if (R.cal) for (const f of feats) R.cal.feat[f] = (R.cal.feat[f] || 0) + 1;
   const t = now(); let progressed = false;
-  for (const m of marks.sort((a, b) => a - b)) {
-    const w = R.words[m]; if (w.st) continue;
-    if (R.ladder && R.ladder.idx === m) { if (R.ladder.step === 1) { R.ladder.fixed = true; w.st = 1; selfFix(w); progressed = true; } else R.heard = now(); continue; }
-    w.st = 1; R.sess.c++; if (w.tier === "hard" || w.tier === "unique") R.sess.nailed.add(w.t.replace(/[^\p{L}\p{N}'-]/gu, ""));
-    progressed = true;
-    if (m >= R.anchor) {
-      // Easy words between two matched words count as read (implicit)
-      for (let k = R.anchor; k < m; k++) { const s = R.words[k]; if (!s.st && s.tier === "easy" && (k === 0 || R.words[k - 1].st || marks.includes(k - 1))) { s.st = 1; R.sess.c++; } }
-      R.anchor = m + 1;
+  // Recognizer drops: page words sitting between two words heard back-to-back (no other word heard in between) are
+  // treated as read: an uncertain judgment counts as correct (Section 2). The same at the seam with the last result.
+  const implicit = [];
+  const gapFill = (a, b) => { const g = []; for (let k = a + 1; k < b; k++) if (!R.words[k].st) g.push(k); if (g.length && g.length <= 2) implicit.push(...g); };
+  spans.sort((x, y) => x[0] - y[0]);
+  const miscues = [];
+  for (let j = 1; j < spans.length; j++) {
+    const hg = spans[j][1] - spans[j - 1][2] - 1;
+    if (spans[j][0] <= spans[j - 1][0]) continue;
+    if (hg === 0) gapFill(spans[j - 1][0], spans[j][0]);
+    else {
+      // something else was said where 1–2 everyday words (or a name) belong: keep reading, don't correct it
+      const g = []; for (let k = spans[j - 1][0] + 1; k < spans[j][0]; k++) if (!R.words[k].st) g.push(k);
+      if (g.length && g.length <= 2 && hg <= g.length + 1 && g.every(k => !isReq(R.words[k]))) { implicit.push(...g); miscues.push(...g.map(k => [R.words[k].n, hyps.slice(spans[j - 1][2] + 1, spans[j][1]).join(" ")])); }
     }
   }
+  if (spans.length && spans[0][1] === 0 && before > 0 && R.words[before - 1]?.st && spans[0][0] >= before) gapFill(before - 1, spans[0][0]);
+  const sorted = marks.sort((a, b) => a - b);
+  // jump detection: the first newly matched word lies well past where the child should be
+  const first = sorted.find(m => !R.words[m].st);
+  if (first != null && cur0 >= 0 && first > cur0 && !R.jump) {
+    const gap = R.words.slice(cur0, first).filter(w => !w.st).length;
+    if (gap >= JUMP_MIN) { R.jump = { from: cur0, at: first, since: 0, t, sent: R.words[first].sent }; dlog("jump", { skipped: gap, from: R.words[cur0].n, to: R.words[first].n, why: `skipped ${gap} unread words (≥ ${JUMP_MIN})` }); }
+  }
+  // going back into the skipped part on their own cancels the refocus
+  if (R.jump && first != null && first >= R.jump.from && first < R.jump.at && !R.jump.refocused) R.jump = null;
+  for (const m of sorted) {
+    const w = R.words[m]; if (w.st) continue;
+    if (R.ladder && R.ladder.idx === m) { if (R.ladder.step === 1) { R.ladder.fixed = true; w.st = 1; selfFix(w); progressed = true; } else R.heard = now(); continue; }
+    w.st = 1; R.sess.c++; if (isReq(w)) R.sess.nailed.add(w.t.replace(/[^\p{L}\p{N}'-]/gu, ""));
+    progressed = true; if (R.jump) R.jump.since++;
+    // Easy words between two matched words count as read (implicit)
+    for (let k = Math.max(0, m - 2); k < m; k++) { const s = R.words[k]; if (!s.st && s.tier === "easy" && (k === 0 || R.words[k - 1].st || marks.includes(k - 1)) && (!R.jump || k >= R.jump.at || k < R.jump.from)) { s.st = 1; R.sess.c++; } }
+    R.anchor = m + 1;
+  }
+  if (progressed && R.cal) {
+    const nNew = sorted.filter(m => R.words[m].st).length || 1;
+    if (R.started) { const gap = t - R.lastProg; if (gap < idlePause()) { R.cal.ms += gap / TSC(); R.cal.gaps.push(gap / TSC() / nNew); } }
+    R.cal.words += nNew;
+    if (final && subs.length) R.cal.subs++;
+    if (R.cal.words >= CAL_WORDS && finishCalibration(R.cal)) { dlog("profile", { why: "calibrated", prof: P.prof }); R.cal = CAL = null; }
+  }
   if (progressed) {
-    if (R.started) { const gap = t - R.lastProg; if (gap < TUNE.idlePause) R.sess.sec += gap / 1000; }
+    if (R.started) { const gap = t - R.lastProg; if (gap < idlePause()) R.sess.sec += gap / 1000; }
     R.started = true; R.lastProg = t; bumpStreak(); mood($("#rAvatar"), "listening following");
   }
-  if (final && subs.length && !R.ladder) runLadder(subs[0], "listen");
+  for (const k of implicit) { const w = R.words[k]; if (!w.st && !(R.ladder && R.ladder.idx === k)) { w.st = 1; R.sess.c++; } }
+  if (miscues.length) { R.sess.miscues = (R.sess.miscues || 0) + miscues.length; dlog("miscue-accepted", { pairs: miscues, why: "everyday word or name: benefit of the doubt" }); }
+  dlog("align", { heard: hyps.join(" "), final, matched: sorted.map(m => R.words[m].n), implicit: implicit.map(k => R.words[k].n), subs: subs.map(k => R.words[k].n), feats, anchor: [before, R.anchor], cursor: cursorIndex() });
+  // move along: count tries on a Hard word; after 3 tries Shellfie just gives the word
+  for (const k of subs) {
+    R.attempts[k] = (R.attempts[k] || 0) + 1;
+    if (R.ladder && R.ladder.idx === k && R.attempts[k] >= 3) { R.ladder.giveUp = true; dlog("move-along", { word: R.words[k].n, tries: R.attempts[k] }); }
+  }
+  hopReadRun();
+  if (final && subs.length && !R.ladder && !R.words[subs[0]].st) runLadder(subs[0], "listen");
   updateCursor();
-  checkSentenceEnd(before);
+  if (R.jump && !R.jump.refocused) {
+    // let them finish the sentence they jumped into (or ~8 words), then bring them back
+    const last = R.words[R.anchor - 1], next = R.words[R.anchor];
+    const sentDone = !next || (last && next.sent !== last.sent);
+    if ((sentDone && R.jump.since >= 3) || R.jump.since >= 8 || R.anchor >= R.words.length) { refocus(); return; }
+  }
+  if (!R.jump) checkSentenceEnd(before);
   checkComplete();
+}
+function hopReadRun() {
+  // after a refocus, when the child reaches the part they already read, hop the highlight past it
+  if (!R.jump || !R.jump.refocused) return;
+  if (R.anchor < R.jump.at || !R.words[R.anchor]?.st) { if (R.anchor >= R.jump.at) R.jump = null; return; }
+  const startRun = R.anchor; let k = R.anchor; while (k < R.words.length && R.words[k].st) k++;
+  R.anchor = k; R.jump = null;
+  if (k - startRun >= 3) {
+    for (let i = startRun; i < k; i++) { const el = R.words[i].el; el.classList.remove("hop"); void el.offsetWidth; el.classList.add("hop"); }
+    bubbleAt(R.words[startRun].el, "✓ " + T().alreadyRead); SFX.sparkle(); dlog("hop", { over: k - startRun, why: "reached the part already read after a refocus" });
+  }
+}
+function bubbleAt(el, text) {
+  const r = el.getBoundingClientRect(), st = $("#stage").getBoundingClientRect();
+  const b = document.createElement("div"); b.className = "hopbubble"; b.textContent = text;
+  b.style.left = Math.max(8, r.left - st.left) + "px"; b.style.top = Math.max(4, r.top - st.top - 44) + "px";
+  $("#stage").appendChild(b); setTimeout(() => b.remove(), 2200);
+}
+async function refocus() {
+  // zoom back to the first skipped word, in place, so the child sees exactly where to start
+  if (!R || !R.jump) return;
+  dlog("refocus", { from: R.words[R.jump.from]?.n, at: R.words[R.jump.at]?.n, wordsReadAfterJump: R.jump.since, why: "child skipped ahead; bring them back to the first skipped word" });
+  const J = R.jump; J.refocused = true; R.tent.clear(); R.sess.refocus = (R.sess.refocus || 0) + 1;
+  R.anchor = J.from; updateCursor();
+  const target = R.words[nextUnread(J.from)]; if (!target) { R.jump = null; checkComplete(); return; }
+  LISTENER?.pause(); R.focusing = true;
+  const stage = $("#stage"); stage.classList.add("focusing"); target.el.classList.add("focus");
+  target.el.scrollIntoView?.({ block: "nearest" });
+  pointBack(target); mood($("#rAvatar"), "thinking");
+  await speak(T().skippedPart, { rate: 1 });
+  await sleep(window.__SHELLFIE_TEST ? 30 : REDUCED ? 200 : 700);
+  if (!R) return;
+  stage.classList.remove("focusing"); target.el.classList.remove("focus"); target.el.classList.add("refocus");
+  setTimeout(() => target.el?.classList.remove("refocus"), 4000);
+  R.focusing = false; R.lastProg = now(); if (!R.tap) LISTENER?.resume(); mood($("#rAvatar"), "listening");
 }
 function checkSentenceEnd(before) {
   // after the child finishes a sentence, point back to a skipped Hard/Unique word in it
@@ -762,9 +1104,10 @@ function checkSentenceEnd(before) {
   const last = R.words[R.anchor - 1]; if (!last) return;
   const sentDone = !R.words[R.anchor] || R.words[R.anchor].sent !== last.sent || R.anchor >= R.words.length;
   if (!sentDone) return;
-  const skipped = R.words.find(w => !w.st && w.sent === last.sent && (w.tier === "hard" || w.tier === "unique") && w.i < R.anchor);
-  if (skipped && !R.sentNotified.has(skipped.i)) {
-    R.sentNotified.add(skipped.i); pointBack(skipped);
+  const skipped = R.words.find(w => !w.st && w.sent === last.sent && isReq(w) && w.i < R.anchor);
+  if (skipped && !R.sentNotified.has(skipped.i) && !R.sentNotified.has("nudged")) {
+    R.sentNotified.add("nudged"); dlog("nudge", { word: skipped.n, why: "skipped a Hard word in a finished sentence" });
+    R.sentNotified.add(skipped.i); pointBack(skipped); R.sess.nudges = (R.sess.nudges || 0) + 1;
     LISTENER?.pause(); speak(T().waitThis, { rate: 1 }).then(() => LISTENER?.resume());
   }
 }
@@ -776,29 +1119,41 @@ function pointBack(w) {
 }
 function isComplete() {
   const ws = R.words; if (!ws.length) return true;
-  if (ws.some(w => (w.tier === "hard" || w.tier === "unique") && !w.st)) return false;
-  const rest = ws.filter(w => w.tier !== "hard" && w.tier !== "unique"); const miss = rest.filter(w => !w.st).length;
+  if (ws.some(w => isReq(w) && !w.st)) return false;
+  const rest = ws.filter(w => !isReq(w)); const miss = rest.filter(w => !w.st).length;
   const allowed = Math.max(Math.floor(rest.length * .1), Math.min(2, Math.floor(rest.length / 3)));
-  return miss <= allowed && R.anchor >= ws.length - 1;
+  // no unread stretch of 3+ words anywhere (a skipped line must be read), and the page end reached
+  let run = 0, maxRun = 0; for (const w of ws) { run = w.st ? 0 : run + 1; maxRun = Math.max(maxRun, run); }
+  const endReached = ws[ws.length - 1].st || (ws.length > 1 && ws[ws.length - 2].st);
+  return miss <= allowed && maxRun < 3 && endReached;
 }
 function checkComplete() {
-  if (!R || R.completing || R.ladder) return;
+  if (!R || R.completing || R.ladder || R.focusing) return;
   if (!isComplete()) {
-    if (R.anchor >= R.words.length) { const p = R.words.find(w => !w.st && (w.tier === "hard" || w.tier === "unique")); if (p && !R.sentNotified.has("end" + p.i)) { R.sentNotified.add("end" + p.i); pointBack(p); } }
+    if (R.anchor >= R.words.length) {
+      // reached the end with something missing: bring them back to the earliest unread stretch
+      let k = R.words.findIndex((w, i) => !w.st && (isReq(w) || (R.words[i + 1] && !R.words[i + 1].st && R.words[i + 2] && !R.words[i + 2].st)));
+      if (k >= 0 && !R.sentNotified.has("end" + k)) {
+        R.sentNotified.add("end" + k);
+        if (!isReq(R.words[k])) { R.jump = { from: k, at: R.words.length, since: 99, refocused: false }; refocus(); }
+        else pointBack(R.words[k]);
+      }
+    }
     return;
   }
   completePage();
 }
 async function completePage(byTap = false) {
   R.completing = true; R.tent.clear(); updateCursor();
-  if (R.sub < R.parts.length - 1) { SFX.sparkle(); updateProgress(); await sleep(byTap ? 150 : 500); if (R) advance(1); return; }
+  dlog("complete", { ch: R.ch, pg: R.pg, sub: R.sub, byTap, ms: Math.round((now() - R.pageT0) / TSC()), unread: R.words.filter(w => !w.st).map(w => w.n), helped: R.words.filter(w => w.st === 2).map(w => w.n) });
+  if (R.sub < R.parts.length - 1) { SFX.sparkle(); updateProgress(); await sleep((byTap ? 150 : 500) * TSC()); if (R) advance(1); return; }
   markPageRead(R.s.id, R.ch, R.pg); R.sess.pages++;
   L.shells++; R.sess.shells++; saveL(); bumpStreak();
   const sh = $("#rShells"); sh.querySelector("span").textContent = L.shells + L.sp.length; sh.classList.remove("pop"); void sh.offsetWidth; sh.classList.add("pop"); SFX.shell();
   const nx = $("#rNext"); nx.classList.remove("blink"); void nx.offsetWidth; nx.classList.add("blink");
   updateProgress();
-  if (!byTap && Math.random() < .35) { mood($("#rAvatar"), "celebrating"); }
-  await sleep(byTap ? 150 : 650);
+  if (!byTap && !P.calm && Math.random() < .35) { mood($("#rAvatar"), "celebrating"); }
+  await sleep((byTap ? 150 : 650) * TSC());
   if (!R) return;
   advance(1);
 }
@@ -822,13 +1177,22 @@ function endChapter() {
 function tick() {
   if (!R || R.tap || R.completing || R.paused || R.ladder) return;
   const t = now(), idle = t - R.lastProg;
-  if (idle > TUNE.idlePause && t - R.pageT0 > TUNE.idlePause) { pauseReading(); return; }
-  if (R.started && idle > 1600) mood($("#rAvatar"), "listening thinking");
+  if (idle > idlePause() && t - R.pageT0 > idlePause()) { pauseReading(); return; }
+  if (R.focusing) return;
+  if (R.jump && !R.jump.refocused && R.jump.since >= 2 && idle > 2500 * STY().wait * TSC()) { refocus(); return; }
+  if (R.started && idle > 1600 * TSC()) mood($("#rAvatar"), "listening thinking");
+  if (R.jump) return;
   const c = cursorIndex(); if (c < 0 || !R.started) return;
   const w = R.words[c];
-  if ((w.tier === "hard" || w.tier === "unique") && idle > TUNE.hesitate[R.s.grade] && !w.hesitated) { w.hesitated = true; runLadder(c, "listen"); }
+  if ((isReq(w) || isName(w)) && idle > hesitateMs(R.s.grade) && !w.hesitated) {
+    w.hesitated = true;
+    const quick = isName(w) || (R.pageLadders || 0) >= 2;
+    dlog("hesitate", { word: w.n, tier: w.tier, idleMs: Math.round(idle / TSC()), thresholdMs: Math.round(hesitateMs(R.s.grade) / TSC()), style: styleName(), action: quick ? "quick-say" : "help-ladder", pageHelps: R.pageLadders || 0 });
+    if (quick) quickSay(c); else runLadder(c, "listen");
+  }
 }
 function pauseReading() {
+  dlog("pause", { why: "no progress", idleMs: Math.round((now() - R.lastProg) / TSC()), limitMs: Math.round(idlePause() / TSC()) });
   R.paused = true; LISTENER?.pause(); flushTime();
   $("#rPause").hidden = false; mood($("#rAvatar"), "sleeping");
 }
@@ -840,17 +1204,22 @@ function resumeReading() {
 async function runLadder(idx, from) {
   if (!R || R.ladder || R.completing) return;
   const w = R.words[idx]; if (!w || w.st) return;
+  R.pageLadders = (R.pageLadders || 0) + 1; R.sess.ladders = (R.sess.ladders || 0) + 1; (R.sess.ladderIdx = R.sess.ladderIdx || []).push(idx); if (R.cal && from === "listen") R.cal.helps++;
+  const helpT0 = now();
   const L0 = R.ladder = { idx, step: from === "tap" ? 2 : 1, how: from === "tap" ? "tap" : "listen", fixed: false };
   const id = R.s.id, lang = R.s.lang, g = R.s.grade;
   const clean = w.t.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, "");
   if (L0.step === 1) {
     w.el.classList.remove("prompt"); void w.el.offsetWidth; w.el.classList.add("prompt"); mood($("#rAvatar"), "listening thinking");
-    const t0 = now(); while (now() - t0 < TUNE.selfFix[g] + 1200) { await sleep(120); if (!R || R.ladder !== L0) return; if (L0.fixed || w.st) { endLadder(L0); return; } }
+    dlog("ladder", { word: w.n, tier: w.tier, from, step: 1, waitMs: Math.round((selfFixMs(g) + 1200 * TSC()) / TSC()) });
+    const t0 = now(); while (now() - t0 < selfFixMs(g) + 1200 * TSC()) { await sleep(120 * TSC()); if (!R || R.ladder !== L0) return; if (L0.fixed || w.st) { dlog("ladder", { word: w.n, end: "self-corrected" }); endLadder(L0); return; } if (L0.giveUp) break; }
     w.el.classList.remove("prompt"); L0.step = 2;
   }
+  if (L0.giveUp) L0.skip = false;
   if (!R || R.ladder !== L0) return;
-  // Step 2: scaffold
+  // Step 2: scaffold (skipped when the child already tried 3 times: just give the word)
   LISTENER?.pause(); mood($("#rAvatar"), "");
+  dlog("ladder", { word: w.n, step: L0.giveUp ? 3 : 2, why: L0.giveUp ? "3 tries: give the word" : "scaffold" });
   const syl = syllables(clean, lang);
   const missedBefore = (L.counts[w.n]?.n || 0) > 0;
   let how = lang === "es" ? "syl" : (IRREG.has(w.n) ? "say" : "snd");
@@ -860,7 +1229,8 @@ async function runLadder(idx, from) {
     <div class="say">${turtleSVG("listening")}<span id="helpSay"></span></div><button class="btn ghost skip" id="helpSkip">${h(T().keepGoing)} ›</button>`;
   $("#helpSkip").onclick = () => { L0.skip = true; speechSynthesis.cancel(); };
   const sylEls = $$(".syl", help);
-  if (how === "syl" || how === "snd") {
+  if (L0.giveUp) { /* straight to the model */ }
+  else if (how === "syl" || how === "snd") {
     if (syl.length > 1) { for (let i = 0; i < syl.length && !L0.skip; i++) { sylEls.forEach(e => e.classList.remove("on")); sylEls[i].classList.add("on"); await speak(syl[i], { rate: .72, lang }); await sleep(120); } }
     sylEls.forEach(e => e.classList.add("on"));
   } else if (how === "spell") {
@@ -873,21 +1243,47 @@ async function runLadder(idx, from) {
   if (!L0.skip) await speak(clean, { rate: .88, lang });
   if (!R || R.ladder !== L0) return;
   $("#helpSay").textContent = T().yourTurn;
-  if (!L0.skip && !R.tap) { await speak(T().yourTurn, { rate: 1, lang }); LISTENER?.resume(); const t0 = now(); R.heard = 0; while (now() - t0 < 3000 && !L0.skip) { await sleep(120); if (R?.heard) { await sleep(900); break; } } }
-  else if (!L0.skip) await sleep(900);
+  if (!L0.skip && !R.tap) { await speak(T().yourTurn, { rate: 1, lang }); LISTENER?.resume(); const t0 = now(); R.heard = 0; while (now() - t0 < 3000 * TSC() && !L0.skip) { await sleep(120 * TSC()); if (R?.heard) { await sleep(900 * TSC()); break; } } }
+  else if (!L0.skip) await sleep(900 * TSC());
   if (!R || R.ladder !== L0) return;
   help.hidden = true; help.innerHTML = "";
   if (!w.st) { w.st = 2; R.sess.h++; R.sess.helped.push(clean); }
-  logHelp(w.n, id, L0.step, how);
+  logHelp(w.n, id, L0.step, L0.giveUp ? "say" : how);
+  lenient(w.n);
+  dlog("ladder", { word: w.n, end: L0.skip ? "child tapped keep going" : "modeled", how });
   if (w.i >= R.anchor) R.anchor = w.i + 1;
   R.ladder = null; R.lastProg = now(); if (!R.tap) LISTENER?.resume(); mood($("#rAvatar"), R.tap ? "" : "listening");
+  R.sess.helpMs = (R.sess.helpMs || 0) + (now() - helpT0) / TSC();
   updateCursor(); checkComplete();
+}
+async function quickSay(idx) {
+  // a light touch: say the word once, count it, keep the child reading (names, or after 2 helps on a page)
+  if (!R || R.ladder) return;
+  const w = R.words[idx]; if (!w || w.st) return;
+  const L0 = R.ladder = { idx, step: 3, quick: true }; const qT0 = now();
+  R.sess.quick = (R.sess.quick || 0) + 1;
+  w.el.classList.add("sparkle");
+  LISTENER?.pause();
+  await speak(w.t.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, ""), { rate: .9, lang: R.s.lang });
+  if (!R || R.ladder !== L0) return;
+  w.el.classList.remove("sparkle");
+  if (!w.st) { w.st = 2; R.sess.h++; }
+  lenient(w.n);
+  if (w.i >= R.anchor) R.anchor = w.i + 1;
+  R.ladder = null; R.lastProg = now(); if (!R.tap) LISTENER?.resume();
+  dlog("quick-say", { word: w.n, tier: w.tier }); R.sess.helpMs = (R.sess.helpMs || 0) + (now() - qT0) / TSC() + 1500;
+  updateCursor(); checkComplete();
+}
+function lenient(n) {
+  // benefit of the doubt for this word for the rest of the story
+  R.lenient.add(n);
+  for (const x of R.words) if (x.n === n && !x.st && x.tier !== "easy") x.tier = "easy";
 }
 function selfFix(w) {
   w.el.classList.remove("prompt"); w.el.classList.add("sparkle"); setTimeout(() => w.el?.classList.remove("sparkle"), 1000); SFX.sparkle();
   R.sess.c++; logHelp(w.n, R.s.id, 1, "self");
 }
-function endLadder(L0) { if (R && R.ladder === L0) { R.ladder = null; R.lastProg = now(); mood($("#rAvatar"), "listening"); updateCursor(); checkComplete(); } }
+function endLadder(L0) { if (R && R.ladder === L0) { R.sess.helpMs = (R.sess.helpMs || 0) + 2500; R.ladder = null; R.lastProg = now(); mood($("#rAvatar"), "listening"); updateCursor(); checkComplete(); } }
 
 function bindReader() {
   $("#rHome").onclick = () => history.back();
@@ -895,6 +1291,7 @@ function bindReader() {
     if (!R || R.ladder) return; ac();
     if (R.completing) return;
     if (R.tap) { completePage(true); return; } // tap-for-help mode: Next counts the page
+    dlog("skip-next", { ch: R.ch, pg: R.pg, read: R.words.filter(w => w.st).length, of: R.words.length, why: "Next tapped before the page was finished (not counted as read)" });
     advance(1); // skipping does not mark words read and does not count toward completion
   };
   $("#rPrev").onclick = () => { if (!R || R.ladder) return; ac(); advance(-1); };
@@ -926,6 +1323,7 @@ function startQuiz() {
   const chap = R.s.chapters[R.ch];
   const items = chap.quiz.map(q => { const ord = q.o.map((_, i) => i).sort(() => Math.random() - .5); return { ...q, ord }; });
   Q = { items, i: 0, right: 0 };
+  if (!items.length) { Q = null; showResults(); return; }
   history.replaceState({ s: "quiz" }, ""); show("quiz"); $("#quizTitle").textContent = T().quiz; renderQ();
 }
 function renderQ() {
@@ -941,6 +1339,7 @@ function renderQ() {
 }
 function answer(o) {
   const q = Q.items[Q.i]; if (q.answered) return; q.answered = true; speechSynthesis.cancel();
+  dlog("quiz", { book: R.s.id, ch: R.ch, q: q.q, chose: q.o[o], right: o === q.a, auto: !!q.auto });
   const ok = o === q.a; if (ok) Q.right++;
   $$(".opt").forEach(b => { const v = +b.dataset.o; b.disabled = true; if (v === q.a) b.classList.add("right"); else if (v === o) b.classList.add("wrong"); });
   if (ok) { SFX.sparkle(); speak(T().praise[Math.floor(Math.random() * T().praise.length)], { rate: 1, lang: R.s.lang }); setTimeout(nextQ, 1300); }
@@ -960,13 +1359,14 @@ function answer(o) {
 function nextQ() {
   if (!Q) return; Q.i++;
   if (Q.i < Q.items.length) { renderQ(); return; }
-  L.quiz.push([R.s.id, R.ch, Q.right, ts36()]); saveL();
+  L.quiz.push([R.s.id, R.ch, Q.right, ts36(), Q.items.length]); saveL();
   Q = null; showResults();
 }
 
 /* ───────────── Results ───────────── */
 function showResults() {
   const s = R.s, t = T(), lastChapter = R.ch >= s.chapters.length - 1;
+  if (R.cal && lastChapter && finishCalibration(R.cal, true)) { dlog("profile", { why: "calibrated at end of book", prof: P.prof }); R.cal = CAL = null; }
   flushTime();
   const words = R.sess.c + R.sess.h; const acc = words ? R.sess.c / words : null;
   let gotSpecial = false, complete = false;
@@ -1016,15 +1416,15 @@ function goCollection() {
       <div class="res-tile"><small>${h(t.special)}</small><div class="big">⭐ ${L.sp.length}</div></div>
       <div class="res-tile"><small>${h(t.streakLbl)}</small><div class="big"><svg><use href="#i-flame"/></svg>${streakNow()}</div></div></div>
     ${L.sp.length ? "" : `<p class="hint" style="margin:0">${h(t.noneYet)}</p>`}
-    <div class="shell-grid">${books.map(b => { const got = L.sp.includes(b.id); return `<div class="shell-cell ${got ? "" : "locked"}" title="${h(b.t)}">${got ? `<svg viewBox="0 0 64 64"><use href="#i-shell"/></svg>` : `<span style="position:static;font-size:30px">${STORIES[b.id].icon}</span>`}<span>${h(b.t)}</span></div>`; }).join("")}</div>`;
+    <div class="shell-grid">${books.map(b => { const got = L.sp.includes(b.id); return `<div class="shell-cell ${got ? "" : "locked"}" title="${h(b.t)}">${got ? `<svg viewBox="0 0 64 64"><use href="#i-shell"/></svg>` : `<span style="position:static;font-size:30px">${b.icon || "📘"}</span>`}<span>${h(b.t)}</span></div>`; }).join("")}</div>`;
 }
 
 /* ───────────── Parent panel ───────────── */
 function fmtDate(t36) { const d = from36(t36); return d.toLocaleString(P.lang === "es" ? "es-MX" : "en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }); }
-function titleOf(id) { return STORIES[id]?.title || id; }
+function titleOf(id) { return META[id]?.t || id; }
 async function openParent() {
   const dlg = $("#parent"), t = T(), p = t.p; applyI18n(); mountTurtles(dlg);
-  const ids = Object.keys(P.b).filter(id => STORIES[id]);
+  const ids = Object.keys(P.b).filter(id => META[id]);
   const done = ids.filter(id => P.b[id][0] === 2);
   const accs = done.map(id => P.b[id][3]).filter(v => v != null);
   const pages = Object.values(L.pr).reduce((a, c) => a + Object.values(c).reduce((x, y) => x + y.length, 0), 0);
@@ -1041,21 +1441,26 @@ async function openParent() {
       <div class="kpi"><b>${streakNow()}</b><span>🔥 ${h(t.streak(streakNow()).replace(/^\d+-?\s?/, ""))}</span></div></div></section>
     <section><h3>${h(p.booksT)}</h3>${ids.length ? `<div class="tbl"><table><tr><th>${h(p.title)}</th><th>${h(p.status)}</th><th class="num">${h(p.best)}</th><th class="num">${h(p.last)}</th><th class="num">${h(p.wcpm)}</th><th class="num">${h(p.times)}</th></tr>
       ${ids.map(id => { const b = P.b[id], r = L.runs[id] || {}; return `<tr><td>${h(titleOf(id))}</td><td>${h(b[0] === 2 ? p.done : p.inprog)}</td><td class="num">${pct(b[3])}</td><td class="num">${pct(b[4])}</td><td class="num">${r.wcpm || "–"}</td><td class="num">${r.n || 0}</td></tr>`; }).join("")}</table></div>` : `<p class="empty">${h(p.noData)}</p>`}</section>
-    <section><h3>${h(p.quizT)}</h3>${L.quiz.length ? `<div class="tbl"><table><tr><th>${h(p.title)}</th><th class="num">${h(p.score)}</th><th>${h(p.date)}</th></tr>${L.quiz.slice(-12).reverse().map(([id, ch, sc, d]) => `<tr><td>${h(titleOf(id))}${STORIES[id]?.chapters.length > 1 ? ` · ${h(t.chapter)} ${ch + 1}` : ""}</td><td class="num">${sc}/3</td><td>${h(fmtDate(d))}</td></tr>`).join("")}</table></div>` : `<p class="empty">${h(p.noData)}</p>`}</section>
+    <section><h3>${h(p.quizT)}</h3>${L.quiz.length ? `<div class="tbl"><table><tr><th>${h(p.title)}</th><th class="num">${h(p.score)}</th><th>${h(p.date)}</th></tr>${L.quiz.slice(-12).reverse().map(([id, ch, sc, d, n]) => `<tr><td>${h(titleOf(id))}${pcOf(id).length > 1 ? ` · ${h(t.chapter)} ${ch + 1}` : ""}</td><td class="num">${sc}/${n || 3}</td><td>${h(fmtDate(d))}</td></tr>`).join("")}</table></div>` : `<p class="empty">${h(p.noData)}</p>`}</section>
     <section><h3>${h(p.practice)}</h3>${words.length ? `<div class="tbl"><table><tr><th>${h(p.word)}</th><th class="num">${h(p.count)}</th><th>${h(p.lastSeen)}</th><th>${h(p.helped)}</th></tr>${words.map(([w, c]) => `<tr><td><b>${h(w)}</b></td><td class="num">${c.n}</td><td>${h(fmtDate(c.l))}</td><td>${h(topHow(c))}</td></tr>`).join("")}</table></div>` : `<p class="empty">${h(p.noData)}</p>`}</section>
     <section><h3>${h(p.log)}</h3>${L.help.length ? `<div class="tbl"><table><tr><th>${h(p.date)}</th><th>${h(p.word)}</th><th>${h(p.title)}</th><th class="num">${h(p.step)}</th></tr>${L.help.slice(-20).reverse().map(([w, id, d, st]) => `<tr><td>${h(fmtDate(d))}</td><td>${h(w)}</td><td>${h(titleOf(id))}</td><td class="num">${st}</td></tr>`).join("")}</table></div>` : `<p class="empty">${h(p.noData)}</p>`}</section>
     <section><h3>${h(p.settings)}</h3>
       <div class="setting"><span>${h(p.lang)}</span><div class="seg" id="pLang"><button data-l="en" aria-pressed="${P.lang === "en"}">English</button><button data-l="es" aria-pressed="${P.lang === "es"}">Español</button></div></div>
       <div class="setting"><span>${h(p.underline)}</span><button class="toggle" id="pUnder" role="switch" aria-checked="${!!P.under}"><span class="sw"></span></button></div>
+      <div class="setting"><span>${h(p.calm)}</span><button class="toggle" id="pCalm" role="switch" aria-checked="${!!P.calm}"><span class="sw"></span></button></div>
       <div class="setting"><span>${h(t.showRead)}</span><button class="toggle" id="pShowRead" role="switch" aria-checked="${!!P.showRead}"><span class="sw"></span></button></div></section>
+    ${styleSectionHTML(p)}
     <section><h3>${h(p.listen)}</h3>
       <p><b>${h(p.engine)}:</b> ${h(eng === "tap" ? p.eTap : (localState === "available" ? p.eLocal : p.eCloud))}</p>
       ${eng !== "tap" && (localState === "downloadable") ? `<div class="rowbtns"><button class="btn ghost" id="pInstall">${h(p.install)}</button></div>` : ""}
       <p><b>${h(p.voice)}:</b> ${h(v ? `${v.name} (${v.lang})` : "–")}</p>
       ${P.lang === "es" && !(v && /es[-_](MX|US|419)/i.test(v.lang)) ? `<p class="hint">${h(p.noVoice)}</p>` : ""}</section>
     <section><h3>${h(p.privacy)}</h3><p>${h(p.privacyText)}</p><h3 style="margin-top:12px">${h(p.tip)}</h3><p>${h(p.tipText)}</p></section>
+    ${devSectionHTML(p)}
     <section><h3>${h(p.backup)}</h3><div class="rowbtns"><button class="btn ghost" id="pExp">⬇ ${h(p.exp)}</button><button class="btn ghost" id="pImp">⬆ ${h(p.imp)}</button><button class="btn ghost" id="pReset" style="color:#b42318">${h(p.reset)}</button></div></section>`;
+  bindStyleSection(p); bindDevSection(p);
   $("#pLang").onclick = e => { const b = e.target.closest("button"); if (!b) return; P.lang = b.dataset.l; saveP(); openParent(); refreshBehind(); };
+  $("#pCalm").onclick = () => { P.calm = P.calm ? 0 : 1; saveP(); dlog("settings", { calm: P.calm }); $("#pCalm").setAttribute("aria-checked", !!P.calm); document.body.classList.toggle("calm", !!P.calm); };
   $("#pUnder").onclick = () => { P.under = P.under ? 0 : 1; saveP(); $("#pUnder").setAttribute("aria-checked", !!P.under); };
   $("#pShowRead").onclick = () => { P.showRead = P.showRead ? 0 : 1; saveP(); $("#pShowRead").setAttribute("aria-checked", !!P.showRead); refreshBehind(); };
   $("#pInstall") && ($("#pInstall").onclick = async e => { const b = e.currentTarget; b.textContent = p.installing; try { const ok = await SR.install({ langs: [P.lang === "es" ? "es-MX" : "en-US"], processLocally: true }); b.textContent = ok ? p.installed : p.install; } catch { b.textContent = p.install; } });
@@ -1066,6 +1471,54 @@ async function openParent() {
   $("#pImp").onclick = () => $("#importFile").click();
   $("#pReset").onclick = () => { if (confirm(p.resetQ)) { const lang = P.lang; localStorage.removeItem("shellfie_log"); P = { v: 1, lang, grade: null, browse: "grade", genre: "fairy", showRead: 1, under: 1, onb: 1, b: {} }; L = { help: [], counts: {}, sec: 0, quiz: [], shells: 0, sp: [], streak: { d: "", n: 0 }, pr: {}, wc: {}, runs: {} }; saveP(); saveL(); openParent(); refreshBehind(); } };
   if (!dlg.open) dlg.showModal();
+}
+function styleSectionHTML(p) {
+  const pr = prof(), cur = styleName(), auto = !(pr && pr.force);
+  const pats = Object.keys(PATTERNS[P.lang]);
+  return `<section><h3>${h(p.style)}</h3>
+    ${pr && (pr.st || pr.force) ? `<p><b>${h(p.styleNames[cur])}</b>${auto ? "" : ` (${h(p.styleForced)})`}. ${h(p.styleWhy[cur])}</p>` : `<p>${h(p.styleNone)}</p>`}
+    ${pr && pr.st ? `<p class="empty">${h(p.styleStats(pr.w, pr.g, pr.e, pr.n))} ${h(p.styleWhen(pr.d))}</p>` : ""}
+    ${pr && pr.re ? `<p class="hint">${h(p.recheckOn)}</p>` : ""}
+    <div class="setting"><span>${h(p.styleForce)}</span><div class="seg" id="pStyle">${["auto", "speedy", "steady", "careful"].map(k => `<button data-s="${k}" aria-pressed="${k === "auto" ? auto : (!auto && cur === k)}">${h(k === "auto" ? p.styleAuto : p.styleShort[k])}</button>`).join("")}</div></div>
+    <h3 style="margin-top:12px">${h(p.patterns)}</h3><p>${h(p.patternsHelp)}</p>
+    ${pats.map(f => `<div class="setting"><span>${h(p.pat[f])}</span><button class="toggle" data-pat="${f}" role="switch" aria-checked="${patternOn(f)}"><span class="sw"></span></button></div>`).join("")}
+    <div class="setting"><span>${h(p.lock)}</span><button class="toggle" id="pLock" role="switch" aria-checked="${!!(pr && pr.lock)}"><span class="sw"></span></button></div>
+    <div class="rowbtns" style="margin-top:10px"><button class="btn ghost" id="pRecheck">↻ ${h(p.recheck)}</button></div></section>`;
+}
+function bindStyleSection(p) {
+  const ensure = () => (P.prof = P.prof || { f: [], n: 0 });
+  $("#pStyle").onclick = e => { const b = e.target.closest("button"); if (!b) return; const pr = ensure(); if (b.dataset.s === "auto") delete pr.force; else pr.force = b.dataset.s; saveP(); openParent(); };
+  $$("[data-pat]").forEach(b => b.onclick = () => { const pr = ensure(); pr.fo = pr.fo || {}; pr.fo[b.dataset.pat] = !patternOn(b.dataset.pat); saveP(); openParent(); });
+  $("#pLock").onclick = () => { const pr = ensure(); pr.lock = pr.lock ? 0 : 1; saveP(); openParent(); };
+  $("#pRecheck").onclick = () => { const pr = ensure(); pr.re = 1; pr.lock = 0; saveP(); toast(p.recheckOn); openParent(); };
+}
+function devSectionHTML(p) {
+  const on = devOn(), n = on ? (LS.get(DEV_KEY, []).length + DEVBUF.length) : 0;
+  return `<details class="devbox" ${on ? "open" : ""}><summary>${h(p.dev)}</summary>
+    <div class="setting"><span>${h(p.devOn)}</span><button class="toggle" id="pDev" role="switch" aria-checked="${on}"><span class="sw"></span></button></div>
+    ${on ? `<p class="empty">${h(p.devInfo(n))}</p>
+    <div class="setting"><span>${h(p.devTo)}</span><input id="pDevTo" type="email" inputmode="email" autocomplete="email" placeholder="name@example.com" value="${h(LS.get("shellfie_devto", ""))}"></div>
+    <div class="rowbtns"><button class="btn ghost" id="pDevMail">✉ ${h(p.devMail)}</button><button class="btn ghost" id="pDevCopy">⧉ ${h(p.devCopy)}</button><button class="btn ghost" id="pDevClear">${h(p.devClear)}</button></div>` : ""}
+  </details>`;
+}
+function bindDevSection(p) {
+  $("#pDev").onclick = () => { const on = !devOn(); LS.set("shellfie_dev", on ? 1 : 0); if (on) dlog("settings", { devMode: true, version: APP_VERSION }); openParent(); };
+  if (!devOn()) return;
+  $("#pDevTo").onchange = e => LS.set("shellfie_devto", e.target.value.trim());
+  $("#pDevCopy").onclick = async () => { try { await navigator.clipboard.writeText(devText()); toast(p.devCopied); } catch { toast(p.devCopyFail); } };
+  $("#pDevClear").onclick = () => { localStorage.removeItem(DEV_KEY); DEVBUF = []; openParent(); };
+  $("#pDevMail").onclick = async () => {
+    const txt = devText(), name = `shellfie-log-${new Date().toISOString().slice(0, 16).replace(/[:T]/g, "-")}.txt`;
+    const to = ($("#pDevTo").value || "").trim(); LS.set("shellfie_devto", to);
+    const subject = `Shellfie log ${new Date().toLocaleString()}`;
+    const file = new File([txt], name, { type: "text/plain" });
+    // iPhone / iPad / Android: the share sheet attaches the file to Mail directly
+    if (navigator.canShare && navigator.canShare({ files: [file] })) { try { await navigator.share({ files: [file], title: subject, text: subject }); return; } catch (e) { if (e && e.name === "AbortError") return; } }
+    // elsewhere: download the file, then open an email draft that asks to attach it (with a short summary inline)
+    const a = document.createElement("a"); a.href = URL.createObjectURL(file); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    const summary = txt.split("\n").slice(0, 10).join("\n");
+    location.href = `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(p.devMailBody(name) + "\n\n" + summary)}`;
+  };
 }
 function refreshBehind() { applyI18n(); if (SCREEN === "grades") goGrades(); else if (SCREEN === "shelf") goShelf(); }
 function bindParent() {
@@ -1094,7 +1547,7 @@ $("#quizHome").onclick = () => history.back();
 /* For testing the listener without a microphone: Shellfie.hear("the little red hen", true) */
 window.Shellfie = { hear(text, final = true) { if (!R) return; const fake = { resultIndex: 0, results: [Object.assign([{ transcript: text }], { isFinal: final })] }; R.epoch = 0; R.processed = -1; onSpeech(fake); }, state: () => R, syllables, tokenize,
   next() { if (R) advance(1); },
-  open(id, ch = 0, pg = 0) { if (R) teardown(); P.b[id] = [P.b[id]?.[0] || 1, ch, pg, P.b[id]?.[3] ?? null, P.b[id]?.[4] ?? null]; openBook(id); } };
+  async open(id, ch = 0, pg = 0) { if (R) teardown(); P.b[id] = [P.b[id]?.[0] || 1, ch, pg, P.b[id]?.[3] ?? null, P.b[id]?.[4] ?? null]; await openBook(id); } };
 
 /* ───────────── Boot ───────────── */
 mountTurtles(); bindGrades(); bindShelf(); bindReader(); bindParent(); applyI18n();
