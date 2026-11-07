@@ -19,12 +19,14 @@ Run the manual cases below on actual devices with current supported OS/browser v
 
 Browser support for speech recognition, network access, policy, language and OS microphone permission varies. A browser allowing microphone capture does not guarantee its speech recognition service is available. Record what actually happens; do not mark unsupported combinations as passing listening.
 
+For the initial friends-and-family rollout, prioritize iPhone/iPad and Android tests; desktop Chrome is the next priority. Do not mark a row passed without a real-device run.
+
 ## Manual cases
 
 Use the deployed HTTPS site or localhost, with a working microphone, audible reading voice, and a book in the chosen language. Start with a fresh site permission and profile where stated. Repeat each case for every applicable matrix row and orientation. Do not record children or collect their voices for QA without appropriate consent.
 
 1. **First visit, allow:** Clear site data and microphone permission. Start onboarding and allow the browser/OS request. Speak during the meter check, choose a book and read several lines. Expect visible meter movement, recognized words/highlighting and page progress without a false warning. Note whether browser and OS prompts appeared or were previously granted.
-2. **Already allowed:** Reload with permission allowed and open a book. Read aloud. Expect recognition without another permission prompt and no enable-mic warning. This specifically covers the reported Mac Chrome issue.
+2. **Already allowed:** Reload with permission allowed and open a book. Read aloud. Expect recognition without another permission prompt and no enable-mic warning. This specifically covers the reported Mac Chrome issue. Include a book with names, such as “Max Teaches the Thriller Dance,” and check the developer log for `phrases-not-supported`.
 3. **Deny and recover:** Deny microphone access in a fresh profile. Expect an understandable way to continue without the mic and instructions to restore access. Enable access in site and OS settings, return and retry (reload if the browser requires it); read aloud and confirm progress.
 4. **Skip and retry:** Choose read without microphone, use tap-for-help, then enable listening using the on-screen control or open another book. Expect a working retry and no lost reading state.
 5. **Quiet and resumed reading:** Leave the book open quietly for at least a minute, then resume reading. A normal pause may appear, but silence alone must not be reported as a microphone failure. Resume and verify words are recognized.
@@ -49,6 +51,8 @@ node shellfie/tools/test_feedback.js
 ```
 
 Set `CHROMIUM_PATH` to an installed Chromium executable if Playwright's browser is unavailable; set `BASE` to override the local URL. These checks simulate recognition events and do not test actual microphone audio or browser speech services. `microphone.js` exits nonzero on failure. The older scripts print their results and must be reviewed for failed checks and browser errors.
+
+13. **Slow permission decision:** On a fresh site permission, wait at least 5 seconds before allowing microphone access. Expect the browser prompt to remain usable without Shellfie interrupting it with a retry screen; then confirm actual reading is recognized.
 
 ## Run record
 

@@ -182,7 +182,7 @@ const T = () => STR[P.lang];
    Each entry: [epoch ms, type, data]. Types: session, page, asr, align, miscue-accepted, jump, refocus, hop, hesitate,
    ladder, quick-say, move-along, nudge, complete, skip-next, back, pause, resume, listener, tts, quiz, profile,
    settings, error. "why" fields record the rule the app followed. */
-const APP_VERSION = "2026.11.07-f";
+const APP_VERSION = "2026.11.07-g";
 const APP_BUILT = "2026-11-07T21:00Z";   // when this version was published
 const DEV_KEY = "shellfie_devlog", DEV_DAYS = 3;
 let DEVBUF = [], devT = null;
@@ -558,8 +558,8 @@ class WebSpeechListener {
     this._start();
   }
   setPhrases(words) {
-    // Bias only Unique words (names, rare nouns). Never Hard words: biasing would "hear" them even when misread.
-    try { if (window.SpeechRecognitionPhrase && words.length) this.rec.phrases = words.slice(0, 40).map(w => new SpeechRecognitionPhrase(w, 3)); } catch { }
+    // Some browsers expose phrase biasing but reject it when recognition starts.
+    // Recognition without hints is preferable to failing to listen at all.
   }
   _start() {
     if (!this.rec || this.running || this.starting) return;
@@ -857,16 +857,21 @@ async function openBook(id, { restart = false, ch: atCh = null } = {}) {
   clearInterval(tickT); tickT = setInterval(tick, Math.max(20, 250 * TSC()));
 }
 function startListening() {
-  try { navigator.permissions?.query({ name: "microphone" }).then(p => { dlog("mic", { permission: p.state }); p.onchange = () => dlog("mic", { permission: p.state, changed: true }); }).catch(() => { }); } catch { }
   try {
     LISTENER = new WebSpeechListener(P.lang, onSpeech, onActivity);
+    const current = LISTENER;
+    try { navigator.permissions?.query({ name: "microphone" }).then(p => {
+      if (LISTENER !== current) return;
+      current.permission = p.state; current.permissionSince = now(); dlog("mic", { permission: p.state });
+      p.onchange = () => { if (LISTENER === current) { current.permission = p.state; current.permissionSince = current.alive = now(); dlog("mic", { permission: p.state, changed: true }); } };
+    }).catch(() => {}); } catch {}
     LISTENER.start(uniqueWords());
     mood($("#rAvatar"), "listening");
     dlog("mic", { state: "starting", engine: "webspeech", recognizer: SR && SR.name, why: "book opened" });
     const L0 = LISTENER;
     setTimeout(() => {
       if (!R || LISTENER !== L0 || R.tap || R.paused) return;
-      if (!L0.running && !L0.results) { dlog("mic", { state: "did not start", waitedMs: 2500, why: "no start event from the recognizer; ask for a tap so the browser can turn the microphone on" }); showMicAsk(); }
+      if (!L0.running && !L0.results && L0.permission !== "prompt") { dlog("mic", { state: "did not start", waitedMs: 2500, why: "no start event from the recognizer; ask for a tap so the browser can turn the microphone on" }); showMicAsk(); }
     }, 2500 * TSC());
   } catch (e) { dlog("mic", { state: "start threw", err: String(e && (e.name || e.message || e)), why: "show the microphone button" }); showMicAsk(); }
 }
@@ -881,6 +886,10 @@ function onActivity(kind) {
    After repeated unsuccessful restarts, offer the reader a retry. */
 function micWatchdog(t) {
   const Lr = LISTENER; if (!Lr || !Lr.active || Lr.paused || Lr.blocked || !R || R.paused) return;
+  if (Lr.permission === "prompt") {
+    if (t - Lr.permissionSince > 60000 * TSC()) showMicAsk();
+    return;
+  }
   const quiet = t - Lr.alive;
   // A running recognizer can legitimately be silent while a child thinks.
   if (!Lr.running && quiet > (Lr.starting ? 12000 : 3000) * TSC()) {
@@ -1419,6 +1428,7 @@ function tick() {
   }
 }
 function pauseReading() {
+  if (LISTENER && LISTENER.permission === "prompt" && !LISTENER.running) return;
   if (LISTENER && !LISTENER.running && !R.tap) { if ($("#micAsk")) return; dlog("mic", { state: "dead at idle pause", running: LISTENER.running, watchdog: R.watchdog || 0, why: "no progress and the microphone is not running: ask to turn it back on" }); showMicAsk(); return; }
   dlog("pause", { why: "no progress", idleMs: Math.round((now() - R.lastProg) / TSC()), limitMs: Math.round(idlePause() / TSC()) });
   R.paused = true; LISTENER?.pause(); flushTime();
