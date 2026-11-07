@@ -35,7 +35,7 @@
 Status values: `queued` (free to take) · `claimed` (someone is writing it) · `done` (book file exists) · `blocked: <why>`.
 
 <!-- queue:start -->
-**Queue summary:** 176 queued · 0 claimed · 0 done (176 rows). Regenerate with `python3 shellfie/tools/make_queue.py`.
+**Queue summary:** 174 queued · 2 claimed · 0 done (176 rows). Regenerate with `python3 shellfie/tools/make_queue.py`.
 
 ### English
 
@@ -55,7 +55,7 @@ Status values: `queued` (free to take) · `claimed` (someone is writing it) · `
 | `en-k-gappu-can-t-dance` | Gappu Can't Dance | everyday | CC BY 4.0: re-author as an original retelling, keep attribution in `credit`. Anupa Lal, Pratham Books · [link](https://freekidsbooks.org/?s=gappu+cant+dance) | 5–14 words/page, ~8–14 pages | queued |  |  |
 | `en-k-smile-please` | Smile Please! | everyday | CC BY 4.0: re-author as an original retelling, keep attribution in `credit`. Pratham Books · [link](https://freekidsbooks.org/?s=smile+please) | 5–14 words/page, ~8–14 pages | queued |  |  |
 | `en-k-moon-cap` | The Moon and the Cap | adventure | CC BY 4.0: re-author as an original retelling, keep attribution in `credit`. Pratham Books · [link](https://freekidsbooks.org/?s=moon+and+the+cap) | 5–14 words/page, ~8–14 pages | queued |  |  |
-| `en-k-three-billy-goats-gruff` | The Three Billy Goats Gruff | fairy | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Asbjørnsen and Moe, tr. Dasent, retelling · [link](https://www.gutenberg.org/ebooks/search/?query=popular+tales+from+the+norse) | 5–14 words/page, ~8–14 pages | queued |  |  |
+| `en-k-three-billy-goats-gruff` | The Three Billy Goats Gruff | fairy | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Asbjørnsen and Moe, tr. Dasent, retelling · [link](https://www.gutenberg.org/ebooks/search/?query=popular+tales+from+the+norse) | 5–14 words/page, ~8–14 pages | claimed | Codex 2026-11-07 |  |
 | `en-k-twinkle-twinkle-little-star` | Twinkle, Twinkle, Little Star and Mary Had a Little Lamb | poetry | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Jane Taylor (1806); Sarah Josepha Hale (1830) · [link](https://en.wikisource.org/w/index.php?search=the+star+jane+taylor) | 5–14 words/page, ~8–14 pages | queued |  |  |
 | `en-k-three-little-kittens` | The Three Little Kittens | poetry | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Eliza Lee Follen (1843) · [link](https://en.wikisource.org/w/index.php?search=three+little+kittens+follen) | 5–14 words/page, ~8–14 pages | queued |  |  |
 | `en-k-owl-pussy-cat` | The Owl and the Pussy-cat | poetry | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Edward Lear (1871) · [link](https://www.gutenberg.org/ebooks/search/?query=nonsense+songs+lear) | 5–14 words/page, ~8–14 pages | queued |  |  |
@@ -68,7 +68,7 @@ Status values: `queued` (free to take) · `claimed` (someone is writing it) · `
 | Book id | Title | Genre | Source / how | Pages | Status | Claimed by | Notes |
 |---|---|---|---|---|---|---|---|
 | `en-1-annual-haircut-day` | Annual Haircut Day | everyday | CC BY 4.0: re-author as an original retelling, keep attribution in `credit`. Sheila Dhir, Pratham Books · [link](https://freekidsbooks.org/?s=annual+haircut+day) | 12–35 words/page | queued |  |  |
-| `en-1-stone-soup` | Stone Soup | fairy | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. European folk tale, retelling · [link](https://en.wikisource.org/w/index.php?search=stone+soup) | 12–35 words/page | queued |  |  |
+| `en-1-stone-soup` | Stone Soup | fairy | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. European folk tale, retelling · [link](https://en.wikisource.org/w/index.php?search=stone+soup) | 12–35 words/page | claimed | Codex 2026-11-07 |  |
 | `en-1-great-race` | The Great Race (Lunar New Year zodiac tale) | seasons | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Chinese folk tale, retelling · [link](https://en.wikisource.org/w/index.php?search=chinese+zodiac+race+legend) | 12–35 words/page | queued |  |  |
 | `en-1-jingle-bells` | Jingle Bells (winter) | seasons | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. James Lord Pierpont (1857) · [link](https://en.wikisource.org/w/index.php?search=jingle+bells+pierpont) | 12–35 words/page | queued |  |  |
 | `en-1-months` | The Months (a poem for every season) | seasons | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Sara Coleridge (1834) · [link](https://en.wikisource.org/w/index.php?search=sara+coleridge+the+months) | 12–35 words/page | queued |  |  |
