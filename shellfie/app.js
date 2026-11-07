@@ -1821,6 +1821,12 @@ window.Shellfie = { hear(text, final = true) { if (!R) return; const fake = { re
   next() { if (R) advance(1); },
   async open(id, ch = 0, pg = 0) { if (R) teardown(); P.b[id] = [P.b[id]?.[0] || 1, ch, pg, P.b[id]?.[3] ?? null, P.b[id]?.[4] ?? null]; await openBook(id); } };
 
+/* Keep accidental pinch gestures from changing the app's layout on iOS. Single
+   finger scrolling and the reader's word taps remain available. */
+document.addEventListener("gesturestart", e => e.preventDefault(), { passive: false });
+document.addEventListener("gesturechange", e => e.preventDefault(), { passive: false });
+document.addEventListener("touchmove", e => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
+
 /* ───────────── Boot ───────────── */
 mountTurtles(); bindGrades(); bindShelf(); bindReader(); bindParent(); applyI18n();
 history.replaceState({ s: "grades" }, "");

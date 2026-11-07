@@ -475,3 +475,92 @@ body.reading.calm #reader:not(.tapmode) .r-nav.nxt{opacity:.35}
 .w.nudge{animation:wnudge .8s ease}
 @keyframes wnudge{30%{transform:scale(1.15);text-shadow:0 0 18px var(--lime)}}
 @media (min-aspect-ratio:5/4){#reader:not(.tapmode) .r-nav.nxt{width:54px;height:72px}}
+
+/* Fresh Shell: a quieter, clearer home for the stories. */
+:root{
+  --ink:#173326; --ink-2:#4c6655; --ink-3:#617769;
+  --forest:#215b36; --forest-2:#174629; --forest-3:#33784a;
+  --sage:#edf4ec; --sage-2:#e1ede0; --paper:#fffef9;
+  --glass:#f7faf5; --glass-2:#fff; --line:#d6e4d7;
+  --stroke:1px; --r:18px; --r-lg:22px;
+  --shadow:0 8px 24px rgba(29,73,42,.07);
+  --glow:0 0 0 4px rgba(47,139,79,.32);
+  --ui:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+html{touch-action:manipulation;-webkit-text-size-adjust:100%}
+button{touch-action:manipulation}
+.sky{background:#edf4ec}
+.sky i{display:none}
+.screen{animation:none}
+.wordmark{text-transform:none;letter-spacing:-.045em;color:var(--forest)}
+.wordmark b{color:inherit}
+.btn,.btn.ghost{border:0;box-shadow:none;background:var(--forest);color:#fff;letter-spacing:0}
+.btn.ghost{background:#e5efe5;color:var(--forest)}
+.btn:hover{filter:brightness(1.08)}
+.btn:active{transform:scale(.98);box-shadow:none}
+.icon-btn{background:#fff;border:1px solid var(--line);box-shadow:none;color:var(--forest)}
+.icon-btn:active{transform:scale(.96);box-shadow:none}
+.hero-ring::before{border:0;background:#f9fcf7;box-shadow:var(--shadow)}
+.hero-ring::after{display:none}
+.hero-ring .arc text{fill:var(--forest);font-size:22px}
+#onboard p{line-height:1.5}
+.topbar{max-width:1200px;width:100%;margin:0 auto;padding:16px 0 14px}
+.brand .wordmark{font-size:25px}
+.lang,.seg,.toggle{border:1px solid var(--line);background:#fff;box-shadow:none}
+.lang{padding:4px}
+.lang button{font-size:16px}
+.lang .pill{top:4px;bottom:4px;left:4px;background:var(--forest);box-shadow:none}
+#grades .scroll{gap:20px;padding-top:12px}
+.greet h1{font-size:clamp(30px,5vw,42px);letter-spacing:-.045em}
+.greet p{font-size:16px;line-height:1.5}
+.grade-grid{max-width:720px;gap:12px}
+.grade-tile{aspect-ratio:auto;min-height:136px;align-items:flex-start;gap:2px;padding:18px 22px;text-align:left;border:1px solid var(--line);border-radius:20px;background:#fff;box-shadow:var(--shadow);backdrop-filter:none}
+.grade-tile::before{display:none}
+.grade-tile:hover{transform:translateY(-2px);box-shadow:0 10px 25px rgba(29,73,42,.13)}
+.grade-tile:active{transform:scale(.98);box-shadow:var(--shadow)}
+.grade-tile .num{width:auto;aspect-ratio:auto;background:none;border:0;box-shadow:none;color:var(--forest);font-size:42px;line-height:1.1}
+.grade-tile .lbl{font-size:13px;letter-spacing:0;text-transform:none;color:var(--ink-2)}
+.grade-tile .ribbon{border:0;background:#ddf3d3;color:var(--forest)}
+.stat{border:1px solid var(--line);background:#fff;box-shadow:none;font-size:15px}
+.shelf-controls,.genre-chips,#shelfScroll{width:100%;max-width:1200px;margin-left:auto;margin-right:auto}
+.shelf-controls{gap:10px;padding:4px 0 14px}
+.seg button{min-height:44px;padding:9px 16px}
+.toggle{min-height:44px}
+.toggle .sw{border:0;background:#d4e0d4}
+.toggle .sw::after{border:0;box-shadow:0 1px 3px #0003}
+.toggle[aria-checked=true] .sw{background:#78c991}
+.genre-chips button{border:1px solid var(--line);background:white}
+.genre-chips button[aria-pressed=true]{background:var(--forest)}
+.picks{border:1px solid #cde2ce;background:#e3f2e1;box-shadow:none;padding:16px;border-radius:20px}
+.picks::after{display:none}
+.picks small,.shelf h3{letter-spacing:.06em}
+.picks .go{min-height:44px!important}
+.cover{border:0;border-radius:16px;box-shadow:0 4px 12px #1733261a}
+.cover::before,.cover::after{display:none}
+.book:hover .cover{transform:translateY(-3px)}
+.book.read .cover{filter:grayscale(.65);opacity:.75}
+.book .by{font-size:13px}
+#reader{background:#edf4ec}
+.page{border:1px solid #dce7db;box-shadow:0 12px 32px rgba(29,73,42,.09)}
+.page::before{display:none}
+.r-avatar,.r-nav,.r-shells{border:1px solid var(--line);box-shadow:none;background:#fff}
+.r-nav.nxt{background:var(--forest)}
+.r-progress i{background:var(--forest-3);box-shadow:none}
+.r-nav:active{box-shadow:none}
+body.reading.calm .page{border-color:#dce7db;box-shadow:0 12px 32px rgba(29,73,42,.09)}
+body.reading.calm .r-avatar,body.reading.calm .r-nav,body.reading.calm #rHome{opacity:.85}
+.qcard,.res-tile,.shell-cell,.panel{border:1px solid var(--line);box-shadow:var(--shadow);background:#fff}
+.opt,.speak,.wordpills button{border:1px solid var(--line);box-shadow:none}
+.opt.right{box-shadow:0 0 0 3px #a8e4ba}
+.panel header{background:#edf6ec}
+.help .zoom{border:1px solid var(--line);box-shadow:var(--shadow)}
+.picks .turtle,.turtle.celebrating{animation:none}
+@media (max-width:520px){.grade-grid{gap:10px}.grade-tile{min-height:108px;padding:14px 18px}.grade-tile .num{font-size:36px}}
+@media (orientation:landscape) and (max-height:520px){
+  #grades .scroll{gap:10px}.grade-grid{grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+  .grade-tile{aspect-ratio:auto;min-height:90px;padding:10px;align-items:center;text-align:center}
+  .grade-tile .num{width:auto;font-size:30px}.grade-tile .lbl{font-size:11px}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+/* iOS otherwise zooms when a small text field receives focus. */
+input,select,textarea{font-size:16px}
