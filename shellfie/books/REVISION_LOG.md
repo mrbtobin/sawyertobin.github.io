@@ -50,3 +50,11 @@ Record each future story or quiz change here, including book ID and title, date,
 ## en-3-max-drills — Max Practices the Big Five
 
 - **2026-11-07; earthquake drill, shelter-in-place explanation and quiz 1.** Changed the earthquake cue to “Drop, cover, and hold on,” removed an unverified claim that all county schools use identical wording, and replaced the promise of ordinary recess or knowing exactly what to do with following adults’ instructions. Reason: [Earthquake Country Alliance safety guidance](https://www.earthquakecountry.org/step5/) and [Shellfie grade 3, safety and quiz guidance](../standards/grade-placement.md). Updated `tools/authored/mckinley_en.js` and built JSON; grade 3 retained provisionally, educator review pending. School-specific procedures still need local verification.
+
+## en-3-selfish-giant — The Selfish Giant
+
+- **2026-11-07; new grade 3 adaptation.** Wrote a short adaptation of the garden episode in Oscar Wilde’s 1888 public-domain story, using [Project Gutenberg #902](https://www.gutenberg.org/ebooks/902). Omitted the original ending, including its religious imagery, to present a shorter selected episode; the credit explicitly discloses the omission, which is not a judgment that religious content is unsuitable. Reason: user preference for shorter adaptations and [Shellfie grade 3 reader/task guidance](../standards/grade-placement.md). Source: `tools/authored/queue_codex_older.js`. The grade is provisional and the adaptation has not had educator or literary review.
+
+## en-5-casey-at-bat — Casey at the Bat
+
+- **2026-11-07; new grade 5 selected poem.** Used the 1888 Ernest Lawrence Thayer poem in [The Wit and Humor of America, Volume VI, Project Gutenberg #19324](https://www.gutenberg.org/ebooks/19324). Omitted the stanza in which spectators call for killing the umpire; credit identifies it as a selection and discloses the omission. Retained the poem’s outcome and other original wording, including its religious reference. Reason: [Shellfie all-grade safety and grade 5 reader/task guidance](../standards/grade-placement.md#shellfie-editorial-content-guidance). Source: `tools/authored/queue_codex_older.js`. The grade is provisional; historical, educator and literary review remain open.

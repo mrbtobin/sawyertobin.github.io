@@ -11,7 +11,9 @@ class QueueBooksTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         js = 'global.window={SHELLFIE_STORIES:[]};require(process.argv[1]);process.stdout.write(JSON.stringify(window.SHELLFIE_STORIES));'
-        cls.books = json.loads(subprocess.check_output(['node','-e',js,str(root/'tools/authored/queue_codex.js')],text=True))
+        cls.books = []
+        for filename in ('queue_codex.js', 'queue_codex_older.js'):
+            cls.books.extend(json.loads(subprocess.check_output(['node','-e',js,str(root/'tools/authored'/filename)],text=True)))
         raw = (root/'catalog.js').read_text(encoding='utf-8')
         cls.catalog, _ = json.JSONDecoder().raw_decode(raw[raw.index('=')+1:].strip())
 
@@ -30,7 +32,7 @@ class QueueBooksTests(unittest.TestCase):
                         self.assertEqual(len(q['o']),3)
                         self.assertEqual(len(set(q['o'])),3)
                         self.assertIn(q['a'],range(3))
-                    lower,upper=(5,14) if book['grade']=='K' else (12,35)
+                    lower,upper={'K':(5,14),'1':(12,35),'3':(60,130),'5':(170,300)}[book['grade']]
                     for page in chapter['pages']:
                         n=len(re.findall(r"\b[\w]+(?:['’][\w]+)?\b",page))
                         self.assertTrue(lower<=n<=upper, f"{book['id']}: {n} words: {page}")
