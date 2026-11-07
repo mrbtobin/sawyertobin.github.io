@@ -82,3 +82,7 @@ Record each future story or quiz change here, including book ID and title, date,
 ## es-2-cempasuchil — La leyenda del cempasúchil
 
 - **2026-11-07; last page and quiz 2.** Framed the belief about flowers guiding souls as part of a tradition practiced by some families, while preserving the religious/cultural reference. Reason: respectful cultural context and accurate quiz framing under [Shellfie inclusion and quiz guidance](../standards/grade-placement.md#shellfie-editorial-content-guidance). Updated `tools/authored/retellings.js` and built JSON; grade 2 remains provisional, cultural and Spanish-language educator review pending.
+
+## es-3-volcanes — La leyenda de los volcanes
+
+- **2026-11-07; pages 3–4 and quiz 1.** Clarified that Iztaccíhuatl dies instead of describing death only as sleep, while retaining the legend, remembrance and the geographic name “Mujer Dormida.” Aligned the torch question and evidence. Reason: age-appropriate, clear treatment of non-graphic death under [Shellfie grade 2–3 content guidance](../standards/grade-placement.md#shellfie-editorial-content-guidance). Updated `tools/authored/retellings.js` and built JSON; grade 3 remains provisional, and Spanish-language educator and cultural review remain open.
