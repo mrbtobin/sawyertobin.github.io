@@ -45,6 +45,7 @@ From the repository root, install Playwright and its Chromium browser in your de
 ```sh
 python3 -m http.server 8765
 node shellfie/tests/microphone.js
+node shellfie/tests/microphone_virtual.js
 node shellfie/tools/test_mic_start.js
 node shellfie/tools/test_ios.js
 node shellfie/tools/test_feedback.js
@@ -57,3 +58,5 @@ Set `CHROMIUM_PATH` to an installed Chromium executable if Playwright's browser 
 ## Run record
 
 2026-11-07: simulated Chromium on Linux: microphone lifecycle, mic-start, iOS-event, and feedback simulations passed. Device matrix and live audio cases remain open. See the task report for any additional test results and limitations.
+
+2026-11-07: Chromium on Linux with fake audio input and simulated recognition passed iPhone, iPad, and Android screen profiles in portrait and landscape, plus desktop and Chromebook-sized profiles. Chromium permission-denied onboarding fallback passed. These are Chromium emulations, not iOS, Android, Safari, Edge, or real speech-service tests. A separate attempt to start the actual Chromium speech service returned `audio-capture`; live transcription remains unverified.
