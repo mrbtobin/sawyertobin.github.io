@@ -18,3 +18,35 @@ Record each future story or quiz change here, including book ID and title, date,
 ## en-1-stone-soup — Stone Soup
 
 - **2026-11-07; new first-grade original retelling.** Wrote a short adaptation of the traditional shared-meal folktale with a make-believe stone and actual food ingredients; the credit explicitly says not to put stones in food. Reason: [Shellfie grade 1, reader/task and safety guidance](../standards/grade-placement.md). Source: `tools/authored/queue_codex.js`; quiz, grade/page checks and catalog consistency: `tests/test_queue_books.py`. Grade is provisional, awaiting educator review.
+
+## en-k-bryant-the-gingerbread-man — The Gingerbread Man
+
+- **2026-11-07; entire story and quiz; public-domain Sara Cone Bryant edition, Project Gutenberg #473.** Reviewed the full two-part original and its quiz. Removed the author-facing preface and replaced the long, repeated chase and piece-by-piece ending with a 13-page gentle adaptation in which the fox safely helps the gingerbread boy. Replaced the generated quiz with three story-supported questions and disclosed the shortened, changed ending in the credit. Retained the existing K assignment provisionally: short clear sentences, familiar sequence, basic character and event questions, and a reassuring outcome fit the [Shellfie K and all-grade guidance](../standards/grade-placement.md); a qualified educator has not reviewed it. Exact replacement is in `tools/gingerbread_adaptation.json`, applied by `tools/approved_adaptations.py`; original remains in Git history. The previously generated quiz included a sequencing question whose answer was not reliably first, so it was replaced rather than carried forward.
+
+## en-1-tortoise-hare — The Tortoise and the Hare
+
+- **2026-11-07; entire story and quiz; public-domain The Aesop for Children (1919), Project Gutenberg #19994.** After reading the previous full text and quiz, selected the existing Shellfie retelling in `tools/authored/retellings.js` instead of the longer, more archaic public-domain wording. The shorter version keeps the race and lesson, is labeled as a retelling and retains the source credit; its quiz asks supported character, event and vocabulary questions. Reason: [Shellfie grade 1 reader/task guidance](../standards/grade-placement.md#grade-placement-and-age-suitability-k5) and California RL.1–3/10; grade 1 remains provisional. `build_library.py` now selects this retelling on rebuild. Educator review remains open.
+
+## en-1-lion-mouse — The Lion and the Mouse
+
+- **2026-11-07; entire story and quiz; public-domain The Aesop for Children (1919), Project Gutenberg #19994.** After reading the prior full text and quiz, selected the existing Shellfie retelling in `tools/authored/retellings.js`, with the lion placing a paw beside the mouse rather than threatening to eat or kill her. The net, rescue and kindness lesson remain; the source credit identifies the material as a shortened adaptation. Reason: [Shellfie K–1 content and grade 1 reader/task guidance](../standards/grade-placement.md#shellfie-editorial-content-guidance); grade 1 remains provisional. `build_library.py` now selects this retelling on rebuild. Educator review remains open.
+
+## en-k-be-firefighter — Be a Firefighter!
+
+- **2026-11-07; gear pages, training page and quiz 2.** Removed the scene of incomplete gear on a call, clarified the purpose of the air tank without promising an absolute seal, and described training as variable. Reason: [Shellfie K–1 safety and quiz guidance](../standards/grade-placement.md#shellfie-editorial-content-guidance). Updated authoritative `tools/authored/jobs.js` and built JSON; K grade retained provisionally, educator review pending.
+
+## en-k-be-teacher — Be a Teacher
+
+- **2026-11-07; training page and quiz 2.** Mentioned teacher preparation and the required credential, and made the quiz answer gender-neutral. Reason: [Shellfie inclusion and quiz guidance](../standards/grade-placement.md#shellfie-editorial-content-guidance). Updated `tools/authored/jobs.js` and built JSON; K grade retained provisionally, educator review pending.
+
+## en-k-meet-owl — Meet Ollie the Owl
+
+- **2026-11-07; eyesight/flight pages and quiz 2.** Changed absolute claims about sight in darkness and noiseless flight to seeing well in dim light and flying quietly; revised the question and evidence to match. Reason: accurate, age-appropriate nonfiction and [Shellfie quiz guidance](../standards/grade-placement.md#shellfie-editorial-content-guidance). Updated `tools/authored/meet.js` and built JSON; K grade retained provisionally, educator review pending.
+
+## en-k-meet-penguin — Meet Penny the Penguin
+
+- **2026-11-07; predator page.** Changed “spotted seal” to “leopard seal” for an Antarctic predator. Reason: accurate age-appropriate nonfiction; [Shellfie placement workflow](../standards/grade-placement.md#placement-workflow). Updated `tools/authored/meet.js` and built JSON; K grade retained provisionally, educator review pending.
+
+## en-3-max-drills — Max Practices the Big Five
+
+- **2026-11-07; earthquake drill, shelter-in-place explanation and quiz 1.** Changed the earthquake cue to “Drop, cover, and hold on,” removed an unverified claim that all county schools use identical wording, and replaced the promise of ordinary recess or knowing exactly what to do with following adults’ instructions. Reason: [Earthquake Country Alliance safety guidance](https://www.earthquakecountry.org/step5/) and [Shellfie grade 3, safety and quiz guidance](../standards/grade-placement.md). Updated `tools/authored/mckinley_en.js` and built JSON; grade 3 retained provisionally, educator review pending. School-specific procedures still need local verification.

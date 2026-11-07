@@ -47,3 +47,15 @@ def adapt_quiz(book):
                     if question.get('a') == index:
                         raise ValueError('Approved replacement is only valid for a distractor')
                     question['o'][index] = NEW_OPTION
+
+
+def adapt_gingerbread(book):
+    """Replace the mature, two-part source with a disclosed kindergarten adaptation."""
+    if book['id'] != 'en-k-bryant-the-gingerbread-man':
+        return
+    chapter = json.loads((Path(__file__).parent / 'gingerbread_adaptation.json').read_text(encoding='utf-8'))
+    book['chapters'] = [chapter]
+    book['author'] = 'Sara Cone Bryant; adapted for Shellfie'
+    note = 'A shortened, gentle adaptation for young readers; the ending has been changed.'
+    if note not in book.get('credit', ''):
+        book['credit'] = (book.get('credit', '').rstrip() + ' ' + note).strip()

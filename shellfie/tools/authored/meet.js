@@ -55,7 +55,7 @@ window.SHELLFIE_STORIES.push(
     "Penny makes a nest out of little stones.",
     "She saw a nice stone in Pete's nest. She took it!",
     "Then Pete took it back. Then Penny took it back!",
-    "In the sea, Penny looks out for a big spotted seal. Swim, Penny, swim!",
+    "In the sea, Penny looks out for a leopard seal. Swim, Penny, swim!",
     "On the ice, Penny slides on her belly. Wheee!"
   ], quiz:[
     { k:"literal", q:"What does Penny eat?", o:["Fish and krill","Grass and leaves","Nuts and seeds"], a:0, ev:"She eats fish and tiny shrimp called krill." },
@@ -68,9 +68,9 @@ window.SHELLFIE_STORIES.push(
     "Meet Ollie the Owl! Hoo, hoo!",
     "Ollie sleeps all day in a tall tree.",
     "At night, Ollie wakes up. Good morning, Ollie!",
-    "Ollie has big eyes. He can see in the dark.",
+    "Ollie has big eyes. He can see well in dim light.",
     "He can turn his head way, way around.",
-    "His soft feathers make no sound when he flies.",
+    "His soft feathers help him fly quietly.",
     "Ollie hunts mice, rabbits, and bugs.",
     "He gulps a mouse down whole!",
     "Later, he spits up a little ball of fur and bones. Ew!",
@@ -79,7 +79,7 @@ window.SHELLFIE_STORIES.push(
     "The sun comes up. Ollie goes to sleep. Good night, Ollie!"
   ], quiz:[
     { k:"literal", q:"When is Ollie awake?", o:["At night","In the morning","At lunch"], a:0, ev:"At night, Ollie wakes up." },
-    { k:"infer", q:"Why can mice not hear Ollie coming?", o:["His feathers make no sound","He walks on tiptoes","He sings a song"], a:0, ev:"His soft feathers make no sound when he flies." },
+    { k:"infer", q:"Why is Ollie hard to hear when he flies?", o:["His feathers help him fly quietly","He walks on tiptoes","He sings a song"], a:0, ev:"His soft feathers help him fly quietly." },
     { k:"vocab", q:"What does \"hunts\" mean?", o:["Looks for food to catch","Takes a nap","Builds a nest"], a:0, ev:"Ollie hunts mice, rabbits, and bugs." }
   ]}]},
 
