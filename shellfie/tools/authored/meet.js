@@ -220,9 +220,9 @@ window.SHELLFIE_STORIES.push(
     "¡Conoce a Bruno el Búho! ¡Uh, uh!",
     "Bruno duerme todo el día en un árbol alto.",
     "En la noche, Bruno despierta. ¡Buenos días, Bruno!",
-    "Bruno tiene ojos grandes. Puede ver en la oscuridad.",
+    "Bruno tiene ojos grandes. Puede ver bien con poca luz.",
     "Puede girar la cabeza muy, muy lejos.",
-    "Sus plumas suaves no hacen ruido cuando vuela.",
+    "Sus plumas suaves lo ayudan a volar casi sin ruido.",
     "Bruno caza ratones, conejos y bichos.",
     "¡Se traga un ratón enterito!",
     "Después escupe una bolita de pelo y huesos. ¡Guácala!",
@@ -231,7 +231,7 @@ window.SHELLFIE_STORIES.push(
     "Sale el sol. Bruno se va a dormir. ¡Buenas noches, Bruno!"
   ], quiz:[
     { k:"literal", q:"¿Cuándo está despierto Bruno?", o:["En la noche","En la mañana","A mediodía"], a:0, ev:"En la noche, Bruno despierta." },
-    { k:"infer", q:"¿Por qué los ratones no oyen a Bruno?", o:["Sus plumas no hacen ruido","Camina de puntitas","Canta muy bajito"], a:0, ev:"Sus plumas suaves no hacen ruido cuando vuela." },
+    { k:"infer", q:"¿Por qué es difícil oír a Bruno cuando vuela?", o:["Sus plumas lo ayudan a volar casi sin ruido","Camina de puntitas","Canta muy bajito"], a:0, ev:"Sus plumas suaves lo ayudan a volar casi sin ruido." },
     { k:"vocab", q:"¿Qué quiere decir «caza»?", o:["Busca animales para comer","Duerme una siesta","Hace un nido"], a:0, ev:"Bruno caza ratones, conejos y bichos." }
   ]}]},
 

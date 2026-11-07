@@ -283,10 +283,10 @@ window.SHELLFIE_STORIES.push(
     "Todas las tardes subían juntos a una montaña. Allá arriba le llevaban flores al dios del sol, Tonatiuh, que los miraba con cariño. Se prometieron que siempre estarían juntos.",
     "Cuando crecieron, Huitzilin tuvo que irse muy lejos y ya no regresó. Xóchitl estaba muy triste. Subió a la montaña y le pidió a Tonatiuh que la volviera a reunir con su amigo.",
     "El sol le mandó un rayo dorado y Xóchitl se convirtió en una flor de pétalos naranjas, brillantes como el sol. Entonces llegó un colibrí, se posó en la flor, y la flor se abrió. ¡Era Huitzilin!",
-    "Por eso, en el Día de Muertos, adornamos los altares con flores de cempasúchil. Su color y su aroma ayudan a las almas a encontrar el camino a casa, para estar otra vez con quienes las quieren."
+    "En el Día de Muertos, muchas familias adornan los altares con flores de cempasúchil. Según esta tradición, su color y su aroma ayudan a las almas a encontrar el camino a casa, para estar otra vez con quienes las quieren."
   ], quiz:[
     { k:"literal", q:"¿En qué se convirtió Xóchitl?", o:["En una flor naranja","En un colibrí","En una montaña","En el sol"], a:0, ev:"Xóchitl se convirtió en una flor de pétalos naranjas" },
-    { k:"infer", q:"¿Por qué ponemos cempasúchil en los altares?", o:["Para ayudar a las almas a encontrar el camino","Porque es la flor más barata","Para que lleguen colibríes","Porque no tiene olor"], a:0, ev:"Su color y su aroma ayudan a las almas a encontrar el camino a casa" },
+    { k:"infer", q:"Según esta tradición, ¿por qué algunas familias ponen cempasúchil en los altares?", o:["Para ayudar a las almas a encontrar el camino","Porque es la flor más barata","Para que lleguen colibríes","Porque no tiene olor"], a:0, ev:"su color y su aroma ayudan a las almas a encontrar el camino a casa" },
     { k:"vocab", q:"¿Qué es un «colibrí»?", o:["Un pájaro muy pequeño","Una flor","Un dios","Una montaña"], a:0, ev:"Él se llamaba Huitzilin, que quiere decir colibrí." }
   ]}]},
 

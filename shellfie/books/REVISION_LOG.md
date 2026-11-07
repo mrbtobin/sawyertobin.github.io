@@ -70,3 +70,15 @@ Record each future story or quiz change here, including book ID and title, date,
 ## es-5-regalo-reyes — El regalo de los Reyes Magos
 
 - **2026-11-07; final page.** Replaced the assertion that the Reyes Magos invented gift-giving with a description of the narrator's comparison to figures in Christian tradition. This preserves the religious reference while avoiding an unsupported historical claim. Reason: [Shellfie accuracy, inclusion and grade 5 guidance](../standards/grade-placement.md). Updated `tools/authored/retellings.js` and built JSON; grade 5 remains provisional, educator and cultural review pending.
+
+## es-k-conoce-buho — Conoce a Bruno el Búho
+
+- **2026-11-07; eyesight/flight pages and quiz 2.** Clarified that the owl sees well in low light and flies nearly silently, replacing absolute claims; aligned quiz and evidence. Reason: accurate nonfiction and [Shellfie quiz guidance](../standards/grade-placement.md#shellfie-editorial-content-guidance). Updated `tools/authored/meet.js` and built JSON; K remains provisional, Spanish-language educator review pending.
+
+## es-3-max-simulacros — Max practica los simulacros
+
+- **2026-11-07; drill and shelter-in-place explanation.** Removed the unverified claim that every county school uses identical wording and the suggestion that sheltering always means normal rainy-day recess; emphasize listening to adults' instructions. Reason: [Shellfie safety guidance](../standards/grade-placement.md#shellfie-editorial-content-guidance), consistent with the English revision. Updated `tools/authored/mckinley_es.js` and built JSON; grade 3 remains provisional, local and Spanish-language educator review pending.
+
+## es-2-cempasuchil — La leyenda del cempasúchil
+
+- **2026-11-07; last page and quiz 2.** Framed the belief about flowers guiding souls as part of a tradition practiced by some families, while preserving the religious/cultural reference. Reason: respectful cultural context and accurate quiz framing under [Shellfie inclusion and quiz guidance](../standards/grade-placement.md#shellfie-editorial-content-guidance). Updated `tools/authored/retellings.js` and built JSON; grade 2 remains provisional, cultural and Spanish-language educator review pending.
