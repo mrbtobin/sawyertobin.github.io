@@ -57,7 +57,7 @@ def existing_rows():
             continue
         cells = [c.strip() for c in re.split(r"(?<!\\)\|", line.strip().strip("|"))]
         if len(cells) >= 7:
-            rows[cells[0].strip("`")] = {"status": cells[5], "claimed": cells[6], "notes": cells[7] if len(cells) > 7 else ""}
+            rows[cells[0].strip("`")] = {"status": cells[5], "claimed": cells[6], "notes": cells[7] if len(cells) > 7 else "", "line": line.strip()}
     return rows
 
 
@@ -100,8 +100,19 @@ def build():
                 counts["done" if status.startswith("done") else "claimed" if status.startswith("claimed") else "queued"] += 1
                 src = f"{kind}. {auth}" + (f" · [link]({url})" if url else "")
                 out.append(f"| `{bid}` | {esc(e['t'])} | {esc(e.get('g', ''))} | {esc(src)} | {BANDS[g]} | {esc(status)} | {esc(p.get('claimed', ''))} | {esc(p.get('notes', ''))} |")
+    if done_prev:
+        out.append("\n### Completed\n")
+        out.append("| Book id | Title | Genre | Source / how | Pages | Status | Claimed by | Notes |")
+        out.append("|---|---|---|---|---|---|---|---|")
+        for bid in done_prev:
+            row = prev[bid]
+            line = row['line']
+            if not row['status'].startswith('done'):
+                line = line.replace('| ' + row['status'] + ' |', '| done |', 1)
+            out.append(line)
+        counts['done'] += len(done_prev)
     head = (f"{START}\n**Queue summary:** {counts['queued']} queued · {counts['claimed']} claimed · {counts['done']} done "
-            f"({len(items)} rows). Regenerate with `python3 shellfie/tools/make_queue.py`.\n")
+            f"({len(items) + len(done_prev)} rows). Regenerate with `python3 shellfie/tools/make_queue.py`.\n")
     return head + "\n".join(out) + f"\n\n{END}\n"
 
 

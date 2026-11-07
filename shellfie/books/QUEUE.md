@@ -35,12 +35,12 @@
 Status values: `queued` (free to take) · `claimed` (someone is writing it) · `done` (book file exists) · `blocked: <why>`.
 
 <!-- queue:start -->
-**Queue summary:** 174 queued · 2 claimed · 0 done (176 rows). Regenerate with `python3 shellfie/tools/make_queue.py`.
+**Queue summary:** 174 queued · 0 claimed · 2 done (176 rows). Regenerate with `python3 shellfie/tools/make_queue.py`.
 
 ### English
 
 
-#### English · Kindergarten (18 to write)
+#### English · Kindergarten (17 to write)
 
 | Book id | Title | Genre | Source / how | Pages | Status | Claimed by | Notes |
 |---|---|---|---|---|---|---|---|
@@ -55,7 +55,6 @@ Status values: `queued` (free to take) · `claimed` (someone is writing it) · `
 | `en-k-gappu-can-t-dance` | Gappu Can't Dance | everyday | CC BY 4.0: re-author as an original retelling, keep attribution in `credit`. Anupa Lal, Pratham Books · [link](https://freekidsbooks.org/?s=gappu+cant+dance) | 5–14 words/page, ~8–14 pages | queued |  |  |
 | `en-k-smile-please` | Smile Please! | everyday | CC BY 4.0: re-author as an original retelling, keep attribution in `credit`. Pratham Books · [link](https://freekidsbooks.org/?s=smile+please) | 5–14 words/page, ~8–14 pages | queued |  |  |
 | `en-k-moon-cap` | The Moon and the Cap | adventure | CC BY 4.0: re-author as an original retelling, keep attribution in `credit`. Pratham Books · [link](https://freekidsbooks.org/?s=moon+and+the+cap) | 5–14 words/page, ~8–14 pages | queued |  |  |
-| `en-k-three-billy-goats-gruff` | The Three Billy Goats Gruff | fairy | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Asbjørnsen and Moe, tr. Dasent, retelling · [link](https://www.gutenberg.org/ebooks/search/?query=popular+tales+from+the+norse) | 5–14 words/page, ~8–14 pages | claimed | Codex 2026-11-07 |  |
 | `en-k-twinkle-twinkle-little-star` | Twinkle, Twinkle, Little Star and Mary Had a Little Lamb | poetry | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Jane Taylor (1806); Sarah Josepha Hale (1830) · [link](https://en.wikisource.org/w/index.php?search=the+star+jane+taylor) | 5–14 words/page, ~8–14 pages | queued |  |  |
 | `en-k-three-little-kittens` | The Three Little Kittens | poetry | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Eliza Lee Follen (1843) · [link](https://en.wikisource.org/w/index.php?search=three+little+kittens+follen) | 5–14 words/page, ~8–14 pages | queued |  |  |
 | `en-k-owl-pussy-cat` | The Owl and the Pussy-cat | poetry | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Edward Lear (1871) · [link](https://www.gutenberg.org/ebooks/search/?query=nonsense+songs+lear) | 5–14 words/page, ~8–14 pages | queued |  |  |
@@ -63,12 +62,11 @@ Status values: `queued` (free to take) · `claimed` (someone is writing it) · `
 | `en-k-over-river-through-wood` | Over the River and Through the Wood (Thanksgiving) | seasons | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Lydia Maria Child (1844) · [link](https://en.wikisource.org/w/index.php?search=over+the+river+and+through+the+wood) | 5–14 words/page, ~8–14 pages | queued |  |  |
 | `en-k-visit-from-st-nicholas` | A Visit from St. Nicholas ("'Twas the Night Before Christmas") | seasons | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Clement Clarke Moore (1823) · [link](https://www.gutenberg.org/ebooks/search/?query=night+before+christmas) | 5–14 words/page, ~8–14 pages | queued |  |  |
 
-#### English · Grade 1 (6 to write)
+#### English · Grade 1 (5 to write)
 
 | Book id | Title | Genre | Source / how | Pages | Status | Claimed by | Notes |
 |---|---|---|---|---|---|---|---|
 | `en-1-annual-haircut-day` | Annual Haircut Day | everyday | CC BY 4.0: re-author as an original retelling, keep attribution in `credit`. Sheila Dhir, Pratham Books · [link](https://freekidsbooks.org/?s=annual+haircut+day) | 12–35 words/page | queued |  |  |
-| `en-1-stone-soup` | Stone Soup | fairy | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. European folk tale, retelling · [link](https://en.wikisource.org/w/index.php?search=stone+soup) | 12–35 words/page | claimed | Codex 2026-11-07 |  |
 | `en-1-great-race` | The Great Race (Lunar New Year zodiac tale) | seasons | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Chinese folk tale, retelling · [link](https://en.wikisource.org/w/index.php?search=chinese+zodiac+race+legend) | 12–35 words/page | queued |  |  |
 | `en-1-jingle-bells` | Jingle Bells (winter) | seasons | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. James Lord Pierpont (1857) · [link](https://en.wikisource.org/w/index.php?search=jingle+bells+pierpont) | 12–35 words/page | queued |  |  |
 | `en-1-months` | The Months (a poem for every season) | seasons | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Sara Coleridge (1834) · [link](https://en.wikisource.org/w/index.php?search=sara+coleridge+the+months) | 12–35 words/page | queued |  |  |
@@ -278,5 +276,12 @@ Status values: `queued` (free to take) · `claimed` (someone is writing it) · `
 | `es-5-maese-perez-organista` | Maese Pérez el organista (Nochebuena) | seasons | Dominio público: re-author as an original retelling, keep attribution in `credit`. Gustavo Adolfo Bécquer (1861) · [link](https://es.wikisource.org/w/index.php?search=Maese+Perez+el+organista) | 170–300 words/page | queued |  |  |
 | `es-5-cuento-navidad` | Un cuento de Navidad (capítulos abreviados) | seasons | Fuente de dominio público: re-author as an original retelling, keep attribution in `credit`. Charles Dickens (1843), traducción propia · [link](https://www.gutenberg.org/ebooks/search/?query=a+christmas+carol) | 170–300 words/page | queued |  |  |
 | `es-5-leyenda-sleepy-hollow` | La leyenda de Sleepy Hollow (Halloween) | seasons | Fuente de dominio público: re-author as an original retelling, keep attribution in `credit`. Washington Irving (1820), traducción propia · [link](https://www.gutenberg.org/ebooks/search/?query=legend+of+sleepy+hollow) | 170–300 words/page | queued |  |  |
+
+### Completed
+
+| Book id | Title | Genre | Source / how | Pages | Status | Claimed by | Notes |
+|---|---|---|---|---|---|---|---|
+| `en-k-three-billy-goats-gruff` | The Three Billy Goats Gruff | fairy | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Asbjørnsen and Moe, tr. Dasent, retelling · [link](https://www.gutenberg.org/ebooks/search/?query=popular+tales+from+the+norse) | 5–14 words/page, ~8–14 pages | done | Codex 2026-11-07 |  |
+| `en-1-stone-soup` | Stone Soup | fairy | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. European folk tale, retelling · [link](https://en.wikisource.org/w/index.php?search=stone+soup) | 12–35 words/page | done | Codex 2026-11-07 |  |
 
 <!-- queue:end -->
