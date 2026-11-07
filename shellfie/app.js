@@ -551,21 +551,15 @@ class WebSpeechListener {
       if (e.error === "not-allowed" || e.error === "service-not-allowed" || e.error === "audio-capture") { this.blocked = true; this.onActivity?.("blocked:" + e.error); } if (e.error === "not-allowed" || e.error === "service-not-allowed") { this.active = false; this.onActivity?.("denied"); } else if (e.error !== "no-speech" && e.error !== "aborted") this.fails++; };
     r.onend = () => { this.running = false; this.starting = false; this.aborting = false; this.endAt = now(); dlog("listener", { event: "end", willRestart: this.active && !this.paused && !this.blocked, sessionMs: this.sessionStart ? now() - this.sessionStart : 0, results: this.results }); this.onActivity?.("end"); if (this.blocked) return; this.restarts++; if (this.active && !this.paused && this.fails < 6) setTimeout(() => { if (this.active && !this.paused) this._start(); }, 120); };
   }
-  async start(uniqueWords = []) {
+  start(uniqueWords = []) {
     this.active = true;
-    try {
-      if (SR.available) {
-        const st = await SR.available({ langs: [this.rec.lang], processLocally: true });
-        if (st === "available") { this.rec.processLocally = true; this.local = true; }
-        dlog("listener", { event: "on-device check", status: st });
-      }
-    } catch { }
+    // Start synchronously so a retry button retains the browser user gesture.
     this.setPhrases(uniqueWords);
     this._start();
   }
   setPhrases(words) {
-    // Bias only Unique words (names, rare nouns). Never Hard words: biasing would "hear" them even when misread.
-    try { if (window.SpeechRecognitionPhrase && words.length) this.rec.phrases = words.slice(0, 40).map(w => new SpeechRecognitionPhrase(w, 3)); } catch { }
+    // Some browsers expose phrase biasing but reject it when recognition starts.
+    // Recognition without hints is preferable to failing to listen at all.
   }
   _start() {
     if (!this.rec || this.running || this.starting) return;
@@ -581,7 +575,7 @@ class WebSpeechListener {
   restart(why) { dlog("listener", { event: "watchdog-restart", why }); this.aborting = true; try { this.rec.abort(); } catch { } this.running = false; this.starting = false; this.alive = now(); setTimeout(() => { if (this.active && !this.paused) this._start(); }, 250); }
   pause() { this.paused = true; this.aborting = true; try { this.rec.abort(); } catch { } }
   resume() { if (!this.active) return; this.paused = false; this._start(); }
-  async destroy() { this.active = false; this.paused = true; try { this.rec.onend = null; this.rec.onresult = null; this.rec.abort(); } catch { } this.rec = null; }
+  destroy() { this.active = false; this.paused = true; try { this.rec.onend = this.rec.onresult = this.rec.onerror = this.rec.onstart = this.rec.onspeechstart = this.rec.onaudiostart = this.rec.onaudioend = this.rec.onnomatch = null; this.rec.abort(); } catch { } this.rec = null; }
 }
 function fmtWhen(d) { try { return new Date(d).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" }); } catch { return String(d); } }
 async function showVersion() {
@@ -693,10 +687,10 @@ function initOnboard() {
     ac(); SFX.chirp(); // the tap unlocks audio playback
     try { navigator.storage?.persist?.(); } catch { }
     const lvl = $(".miclevel"), bar = lvl.querySelector("i"), hero = $("#onboard [data-turtle]");
-    let ok = false;
+    let ok = false, stream;
     if (navigator.mediaDevices?.getUserMedia) {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         ok = true; lvl.hidden = false; $("#letsRead").hidden = true; mood(hero, "listening");
         $("#onboard p").textContent = T().micCheck;
         const c = ac(), src = c.createMediaStreamSource(stream), an = c.createAnalyser(); an.fftSize = 512; src.connect(an);
@@ -708,8 +702,9 @@ function initOnboard() {
             if (now() - t0 < 3000) requestAnimationFrame(tick); else res();
           }; tick();
         });
-        stream.getTracks().forEach(t => t.stop()); src.disconnect();
+        src.disconnect();
       } catch { ok = false; }
+      finally { stream?.getTracks().forEach(t => t.stop()); }
     }
     if (!SR || !ok) {
       dlog("mic", { state: "onboarding check failed", recognizer: !!SR, why: !SR ? "no speech recognition in this browser" : "microphone not allowed yet; will ask again when a book opens" });
@@ -835,6 +830,8 @@ async function openBook(id, { restart = false, ch: atCh = null } = {}) {
   let s;
   try { s = await loadBook(id); } catch { toast(T().offline); return; }
   if (ticket !== opening) return;
+  if (LISTENER) { LISTENER.destroy(); LISTENER = null; }
+  $("#micAsk")?.remove();
   BOOK = s;
   const st = bookState(id);
   let ch = 0, pg = 0;
@@ -860,35 +857,45 @@ async function openBook(id, { restart = false, ch: atCh = null } = {}) {
   clearInterval(tickT); tickT = setInterval(tick, Math.max(20, 250 * TSC()));
 }
 function startListening() {
-  try { navigator.permissions?.query({ name: "microphone" }).then(p => { dlog("mic", { permission: p.state }); p.onchange = () => dlog("mic", { permission: p.state, changed: true }); }).catch(() => { }); } catch { }
   try {
     LISTENER = new WebSpeechListener(P.lang, onSpeech, onActivity);
+    const current = LISTENER;
+    try { navigator.permissions?.query({ name: "microphone" }).then(p => {
+      if (LISTENER !== current) return;
+      current.permission = p.state; current.permissionSince = now(); dlog("mic", { permission: p.state });
+      p.onchange = () => { if (LISTENER === current) { current.permission = p.state; current.permissionSince = current.alive = now(); dlog("mic", { permission: p.state, changed: true }); } };
+    }).catch(() => {}); } catch {}
     LISTENER.start(uniqueWords());
     mood($("#rAvatar"), "listening");
     dlog("mic", { state: "starting", engine: "webspeech", recognizer: SR && SR.name, why: "book opened" });
     const L0 = LISTENER;
     setTimeout(() => {
       if (!R || LISTENER !== L0 || R.tap || R.paused) return;
-      if (!L0.running && !L0.results) { dlog("mic", { state: "did not start", waitedMs: 2500, why: "no start event from the recognizer; ask for a tap so the browser can turn the microphone on" }); showMicAsk(); }
+      if (!L0.running && !L0.results && L0.permission !== "prompt") { dlog("mic", { state: "did not start", waitedMs: 2500, why: "no start event from the recognizer; ask for a tap so the browser can turn the microphone on" }); showMicAsk(); }
     }, 2500 * TSC());
   } catch (e) { dlog("mic", { state: "start threw", err: String(e && (e.name || e.message || e)), why: "show the microphone button" }); showMicAsk(); }
 }
 function uniqueWords() { return R ? R.words.filter(w => w.tier === "unique").map(w => w.t.replace(/[^\p{L}\p{N}'-]/gu, "")) : []; }
 function onActivity(kind) {
   if (!R) return;
-  if (kind === "start") { R.epoch = 0; R.processed = -1; R.used = {}; R.resLen = {}; R.sealed = {}; }
+  if (kind === "start") { R.watchdog = 0; R.epoch = 0; R.processed = -1; R.used = {}; R.resLen = {}; R.sealed = {}; }
   if (kind === "speech") { R.heard = now(); }
   if (kind === "denied" || String(kind).startsWith("blocked")) { dlog("mic", { state: "blocked", why: kind, asks: R.micAsks || 0 }); showMicAsk(); }
 }
-/* Microphone watchdog: if the listener has gone quiet (ended and never restarted, or no events for a long time),
-   restart it; after 3 restarts with no sign of life, ask the child to tap so the browser can ask for the mic again. */
+/* Restart a listener that ended or is stuck starting. Silence while running is normal.
+   After repeated unsuccessful restarts, offer the reader a retry. */
 function micWatchdog(t) {
   const Lr = LISTENER; if (!Lr || !Lr.active || Lr.paused || Lr.blocked || !R || R.paused) return;
+  if (Lr.permission === "prompt") {
+    if (t - Lr.permissionSince > 60000 * TSC()) showMicAsk();
+    return;
+  }
   const quiet = t - Lr.alive;
-  if ((!Lr.running && !Lr.starting && quiet > 3000 * TSC()) || quiet > 12000 * TSC()) {
+  // A running recognizer can legitimately be silent while a child thinks.
+  if (!Lr.running && quiet > (Lr.starting ? 12000 : 3000) * TSC()) {
     R.watchdog = (R.watchdog || 0) + 1;
     if (R.watchdog > 3) { dlog("mic", { state: "unresponsive", quietMs: quiet, why: "3 restarts with no sign of life" }); showMicAsk(); return; }
-    Lr.restart(Lr.running ? "no events for " + Math.round(quiet / 1000) + "s" : "ended and did not restart");
+    Lr.restart(Lr.starting ? "stuck starting" : "ended and did not restart");
   }
 }
 function showMicAsk() {
@@ -1421,7 +1428,8 @@ function tick() {
   }
 }
 function pauseReading() {
-  if (LISTENER && (!LISTENER.running || (R.watchdog || 0) > 0) && !R.tap) { if ($("#micAsk")) return; dlog("mic", { state: "dead at idle pause", running: LISTENER.running, watchdog: R.watchdog || 0, why: "no progress and the microphone is not running: ask to turn it back on" }); showMicAsk(); return; }
+  if (LISTENER && LISTENER.permission === "prompt" && !LISTENER.running) return;
+  if (LISTENER && !LISTENER.running && !R.tap) { if ($("#micAsk")) return; dlog("mic", { state: "dead at idle pause", running: LISTENER.running, watchdog: R.watchdog || 0, why: "no progress and the microphone is not running: ask to turn it back on" }); showMicAsk(); return; }
   dlog("pause", { why: "no progress", idleMs: Math.round((now() - R.lastProg) / TSC()), limitMs: Math.round(idlePause() / TSC()) });
   R.paused = true; LISTENER?.pause(); flushTime();
   $("#rPause").hidden = false; mood($("#rAvatar"), "sleeping");
