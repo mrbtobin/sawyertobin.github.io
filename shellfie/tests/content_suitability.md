@@ -7,6 +7,7 @@ These cases help reviewers assess age suitability for California public-school r
 From the repository root:
 
 ```sh
+python3 -m unittest discover -s shellfie/tests -p 'test_*adaptations.py'
 python3 -m unittest discover -s shellfie/tests -p 'test_content_screen.py'
 python3 shellfie/tests/content_screen.py --json > /tmp/shellfie-content-review.json
 ```

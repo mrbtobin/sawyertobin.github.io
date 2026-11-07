@@ -13,6 +13,7 @@ RULES = {
     'sexual content': r'\b(?:pornograph\w*|sexual(?:ly)? assault|rape[ds]?|raping|molest(?:ed|ation)|violaci[oó]n sexual|abus[oa] sexual|pornograf[ií]a)\b',
     'self-harm': r'\b(?:suicid(?:e|al|io|arse)|kill (?:myself|yourself|himself|herself|themselves)|matarse|quitarse la vida)\b',
     'graphic violence or threats': r'\b(?:behead(?:ed|ing)?|decapitat\w*|disembowel\w*|tortur(?:e[ds]?|ing)|slaughter(?:ed|ing)?|murder(?:ed|ing)?|assassinat\w*|decapitad[oa]s?|torturad[oa]s?|asesinad[oa]s?)\b',
+    'possible graphic injury': r'\b(?:body (?:into|in) (?:four )?(?:quarters|pieces)|sew(?:ed|n)? (?:the )?(?:body|quarters) (?:back )?together|poured (?:boiling|hot) oil|pierced (?:him|her|them) to the heart)\b',
     'violence for grade-level review': r'\b(?:kill(?:s|ed|ing)?|stab(?:s|bed|bing)?|shoot(?:s|ing)?|shot|strangl(?:e[ds]?|ing)|matar(?:on|lo|la|los|las)?|mat[oó]|apu[ñn]alad[oa]s?|dispar[oó]|disparar)\b|pierced (?:him|her|them) to the heart',
     'weapons and explosives': r'\b(?:firearms?|handguns?|pistols?|rifles?|shotguns?|machine guns?|bombs?|explosives?|pistolas?|escopetas?|fusiles?|bombas?|explosivos?)\b',
     'substances': r'\b(?:cocaine|heroin|methamphetamine|cannabis|marijuana|coca[ií]na|hero[ií]na|metanfetamina|marihuana)\b',
