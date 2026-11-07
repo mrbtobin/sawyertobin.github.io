@@ -437,7 +437,7 @@ for sid, head, ic, cat, g, gen in [("es-3-bebe-pomposo", "Bebé y el señor don 
                                    ("es-3-cuentos-elefantes", "Cuentos de elefantes", "🐘", "Cuentos de elefantes", "3", "nonfiction"),
                                    ("es-4-menique", "Meñique", "🪓", "Meñique", "4", "fairy"),
                                    ("es-4-camaron", "El camarón encantado", "🦐", "El camarón encantado", "4", "fairy"),
-                                   ("es-4-muneca-negra", "La muñeca negra", "🪆", "La muñeca negra", "4", "everyday"),
+                                   ("es-4-muneca-negra", "La muñeca negra", "🪆", "La muñeca negra", "5", "everyday"),
                                    ("es-4-tres-heroes", "Tres héroes", "🎖️", "Tres héroes: Bolívar, Hidalgo, San Martín", "4", "nonfiction"),
                                    ("es-4-juego-nuevo", "Un juego nuevo y otros viejos", "🎲", "Un juego nuevo y otros viejos", "4", "nonfiction"),
                                    ("es-4-zapaticos", "Los zapaticos de rosa", "🩰", "Los zapaticos de rosa", "4", "poetry"),

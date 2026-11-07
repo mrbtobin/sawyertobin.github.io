@@ -58,3 +58,15 @@ Record each future story or quiz change here, including book ID and title, date,
 ## en-5-casey-at-bat — Casey at the Bat
 
 - **2026-11-07; new grade 5 selected poem.** Used the 1888 Ernest Lawrence Thayer poem in [The Wit and Humor of America, Volume VI, Project Gutenberg #19324](https://www.gutenberg.org/ebooks/19324). Omitted the stanza in which spectators call for killing the umpire; credit identifies it as a selection and discloses the omission. Retained the poem’s outcome and other original wording, including its religious reference. Reason: [Shellfie all-grade safety and grade 5 reader/task guidance](../standards/grade-placement.md#shellfie-editorial-content-guidance). Source: `tools/authored/queue_codex_older.js`. The grade is provisional; historical, educator and literary review remain open.
+
+## es-4-muneca-negra — La muñeca negra
+
+- **2026-11-07; grade placement, no story text changes; public-domain José Martí (1889), Project Gutenberg #19898.** Moved the provisional shelf recommendation from grade 4 to grade 5 after reading the complete text and quiz: lengthy, intricate nineteenth-century sentences, figurative language, historical vocabulary and shifts between narration and imagined scenes require substantial context and support. Reason: [Shellfie grade placement workflow](../standards/grade-placement.md#placement-workflow), especially qualitative complexity and reader/task matching. A Spanish-language educator should review whether even grade 5 is appropriate. The stable ID retains `es-4` to avoid breaking saved links and progress; the book metadata, catalog, and `build_library.py` recipe use grade 5. A rebuild may repaginate using the grade 5 band and should be reviewed before publishing.
+
+## es-1-leon-raton — El león y el ratón
+
+- **2026-11-07; page 2.** Replaced the lion's direct threat to eat the mouse with a non-threatening interaction, while keeping the rescue and lesson. Reason: [Shellfie K–1 safety guidance](../standards/grade-placement.md#shellfie-editorial-content-guidance) and consistency with the English adaptation. Updated `tools/authored/retellings.js` and built JSON; grade 1 is provisional, and Spanish-language educator review is pending.
+
+## es-5-regalo-reyes — El regalo de los Reyes Magos
+
+- **2026-11-07; final page.** Replaced the assertion that the Reyes Magos invented gift-giving with a description of the narrator's comparison to figures in Christian tradition. This preserves the religious reference while avoiding an unsupported historical claim. Reason: [Shellfie accuracy, inclusion and grade 5 guidance](../standards/grade-placement.md). Updated `tools/authored/retellings.js` and built JSON; grade 5 remains provisional, educator and cultural review pending.

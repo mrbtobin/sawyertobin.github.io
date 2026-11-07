@@ -47,4 +47,23 @@ class ReviewedRetellingsTests(unittest.TestCase):
             self.assertIn(q['ev'],text)
             self.assertIn(q['a'],range(len(q['o'])))
 
+    def test_spanish_changes_and_grade_move_are_consistent(self):
+        js='global.window={SHELLFIE_STORIES:[]};require(process.argv[1]);process.stdout.write(JSON.stringify(window.SHELLFIE_STORIES));'
+        source=json.loads(subprocess.check_output(['node','-e',js,str(root/'tools/authored/retellings.js')],text=True))
+        ids={'es-1-leon-raton','es-5-regalo-reyes'}
+        for b in source:
+            if b['id'] not in ids: continue
+            built=json.loads((root/'books'/f"{b['id']}.json").read_text(encoding='utf-8'))
+            self.assertEqual(built,dict(b,human=False))
+            for q in b['chapters'][0]['quiz']: self.assertIn(q['ev'],' '.join(b['chapters'][0]['pages']))
+        self.assertEqual(len([b for b in source if b['id'] in ids]),2)
+        book=json.loads((root/'books'/'es-4-muneca-negra.json').read_text(encoding='utf-8'))
+        self.assertEqual(book['grade'],'5')
+        base=json.loads((root/'tools/catalog_base.json').read_text(encoding='utf-8'))
+        self.assertEqual(len([e for e in base['es']['5'] if e['t']==book['title']]),1)
+        self.assertFalse(any(e['t']==book['title'] for e in base['es']['4']))
+        raw=(root/'catalog.js').read_text(encoding='utf-8'); catalog,_=json.JSONDecoder().raw_decode(raw[raw.index('=')+1:].strip())
+        self.assertEqual(len([e for e in catalog['es']['5'] if e.get('id')==book['id']]),1)
+        self.assertFalse(any(e.get('id')==book['id'] for e in catalog['es']['4']))
+
 if __name__=='__main__': unittest.main()
