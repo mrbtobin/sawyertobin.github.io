@@ -182,7 +182,7 @@ const T = () => STR[P.lang];
    Each entry: [epoch ms, type, data]. Types: session, page, asr, align, miscue-accepted, jump, refocus, hop, hesitate,
    ladder, quick-say, move-along, nudge, complete, skip-next, back, pause, resume, listener, tts, quiz, profile,
    settings, error. "why" fields record the rule the app followed. */
-const APP_VERSION = "2026.11.07-g";
+const APP_VERSION = "2026.11.07-h";
 const APP_BUILT = "2026-11-07T22:30Z";   // when this version was published
 const DEV_KEY = "shellfie_devlog", DEV_DAYS = 3;
 let DEVBUF = [], devT = null;

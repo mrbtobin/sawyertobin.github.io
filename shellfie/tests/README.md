@@ -34,3 +34,5 @@ Keep cases separate from results. Record each real-device run with the date, tes
 - `microphone.js`: automated simulated microphone lifecycle checks
 - `microphone_virtual.js`: Chromium layout profiles with fake audio capture and simulated speech
 - Additional legacy simulations are listed in [tools/README.md](../tools/README.md).
+
+`layout.js` checks onboarding, Spanish browsing, and the reader at emulated phone, tablet, and desktop sizes. Run it with the local server using `CHROMIUM_PATH=/usr/bin/chromium node shellfie/tests/layout.js` (adjust the browser path as needed). It does not replace physical-device checks.

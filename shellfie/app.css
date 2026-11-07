@@ -570,3 +570,12 @@ input,select,textarea{font-size:16px}
 .gate .hold-bar{position:absolute;left:6px;right:6px;bottom:4px;height:3px;border-radius:2px;background:var(--forest);transform:scaleX(0);transform-origin:left;pointer-events:none}
 .gate.holding .hold-bar{transition:transform 1.2s linear;transform:scaleX(1)}
 .gate.holding .parents-btn{opacity:1}
+/* Keep onboarding and its permission guidance reachable on short phones. */
+#onboard{overflow-y:auto;justify-content:safe center;padding-top:max(12px,env(safe-area-inset-top));padding-bottom:max(12px,env(safe-area-inset-bottom))}
+@media (orientation:landscape) and (max-height:520px){
+  #onboard{gap:8px}
+  #onboard .hero-ring{width:min(24vh,160px);flex-shrink:0}
+  #onboard h1{font-size:30px;margin:0}
+  #onboard p{font-size:15px;line-height:1.3}
+  #onboard .btn.big{min-height:48px;font-size:19px;padding:0 28px;flex-shrink:0}
+}
