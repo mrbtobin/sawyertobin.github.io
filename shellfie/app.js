@@ -319,7 +319,8 @@ const STYLES = {
   steady:  { hes: 1,   idle: 1,   fix: 1,  wait: 1   },
   careful: { hes: 2.4, idle: 2.2, fix: 1.6, wait: 1.6 }
 };
-const CAL_WORDS = 120;
+const CAL_WORDS = 120, CAL_BY_GRADE = { K: 50, 1: 70, 2: 100, 3: 120, 4: 120, 5: 120 };
+const calTarget = () => CAL_BY_GRADE[(R && R.s && R.s.grade) || P.grade || "3"] || CAL_WORDS;
 const TSC = () => window.__SHELLFIE_TIMESCALE || 1;
 const hesitateMs = g => TUNE.hesitate[g] * STY().hes * TSC();
 const idlePause = () => TUNE.idlePause * STY().idle * TSC();
@@ -327,7 +328,7 @@ const selfFixMs = g => TUNE.selfFix[g] * STY().fix * TSC();
 const todayStr = () => new Date().toISOString().slice(0, 10);
 function prof() { return P.prof || null; }
 function styleName() { const p = prof(); return (p && p.force) || (p && p.st) || "steady"; }
-const LEARNING = { hes: 1.8, idle: 1.8, fix: 1.3, wait: 1.3 };   // gentle timing until Shellfie knows the reader
+const LEARNING = { hes: 2.2, idle: 2, fix: 1.4, wait: 1.4 };   // gentle timing until Shellfie knows the reader
 function STY() { const p = prof(); if (CAL && !(p && p.force) && !(p && p.st)) return LEARNING; return STYLES[styleName()] || STYLES.steady; }
 let CAL = null;   // calibration in progress (kept across books until ~120 words are measured)
 function patternOn(f) {
@@ -336,14 +337,14 @@ function patternOn(f) {
 }
 function needsCalibration() { const p = prof(); return !p || !!p.re || (!p.lock && p.d !== todayStr()); }
 function finishCalibration(cal, partial) {
-  if (!cal || cal.words < (partial ? 40 : CAL_WORDS)) return false;
+  if (!cal || cal.words < (partial ? 40 : calTarget())) return false;
   const mins = Math.max(cal.ms / 60000, .05), wcpm = Math.round(cal.words / mins);
-  const gaps = cal.gaps.slice().sort((a, b) => a - b), med = gaps.length ? gaps[gaps.length >> 1] : 600;
+  const gaps = cal.gaps.slice().sort((a, b) => a - b), med = Math.round(gaps.length ? gaps[gaps.length >> 1] : 600);
   const slips = Math.round((cal.subs + cal.helps) / cal.words * 1000) / 10;
   const feats = Object.entries(cal.feat).filter(([, n]) => n >= 2 && n / cal.words * 100 >= 1.2).map(([f]) => f);
   const old = prof();
   let st = wcpm >= 110 && med < 450 ? "speedy" : (wcpm < 50 || med > 1100) ? "careful" : "steady";
-  const blend = old && !old.re && old.n >= CAL_WORDS;
+  const blend = old && !old.re && old.n >= 50;
   const nw = blend ? Math.round(old.w * .7 + wcpm * .3) : wcpm, ng = blend ? Math.round(old.g * .7 + med * .3) : med;
   if (blend) st = nw >= 110 && ng < 450 ? "speedy" : (nw < 50 || ng > 1100) ? "careful" : "steady";
   P.prof = Object.assign({}, old || {}, {
@@ -1037,7 +1038,7 @@ function commit(hyps, final) {
     if (R.started) { const gap = t - R.lastProg; if (gap < idlePause()) { R.cal.ms += gap / TSC(); R.cal.gaps.push(gap / TSC() / nNew); } }
     R.cal.words += nNew;
     if (final && subs.length) R.cal.subs++;
-    if (R.cal.words >= CAL_WORDS && finishCalibration(R.cal)) { dlog("profile", { why: "calibrated", prof: P.prof }); R.cal = CAL = null; }
+    if (R.cal.words >= calTarget() && finishCalibration(R.cal)) { dlog("profile", { why: "calibrated", prof: P.prof }); R.cal = CAL = null; }
   }
   if (progressed) {
     if (R.started) { const gap = t - R.lastProg; if (gap < idlePause()) R.sess.sec += gap / 1000; }
@@ -1125,14 +1126,14 @@ function isComplete() {
   // no unread stretch of 3+ words anywhere (a skipped line must be read), and the page end reached
   let run = 0, maxRun = 0; for (const w of ws) { run = w.st ? 0 : run + 1; maxRun = Math.max(maxRun, run); }
   const endReached = ws[ws.length - 1].st || (ws.length > 1 && ws[ws.length - 2].st);
-  return miss <= allowed && maxRun < 3 && endReached;
+  return miss <= allowed && maxRun < 4 && endReached;
 }
 function checkComplete() {
   if (!R || R.completing || R.ladder || R.focusing) return;
   if (!isComplete()) {
     if (R.anchor >= R.words.length) {
       // reached the end with something missing: bring them back to the earliest unread stretch
-      let k = R.words.findIndex((w, i) => !w.st && (isReq(w) || (R.words[i + 1] && !R.words[i + 1].st && R.words[i + 2] && !R.words[i + 2].st)));
+      let k = R.words.findIndex((w, i) => !w.st && (isReq(w) || [1, 2, 3].every(d => R.words[i + d] && !R.words[i + d].st)));
       if (k >= 0 && !R.sentNotified.has("end" + k)) {
         R.sentNotified.add("end" + k);
         if (!isReq(R.words[k])) { R.jump = { from: k, at: R.words.length, since: 99, refocused: false }; refocus(); }
@@ -1182,6 +1183,14 @@ function tick() {
   if (R.jump && !R.jump.refocused && R.jump.since >= 2 && idle > 2500 * STY().wait * TSC()) { refocus(); return; }
   if (R.started && idle > 1600 * TSC()) mood($("#rAvatar"), "listening thinking");
   if (R.jump) return;
+  if (R.started && idle > 1400 * TSC()) {
+    const W = R.words, n = W.length, un = W.map((w, i) => w.st ? -1 : i).filter(i => i >= 0);
+    if (un.length && un.every(i => i >= n - 2 && !isReq(W[i])) && W[n - 3] && W[n - 3].st) {
+      un.forEach(i => { W[i].st = 1; R.sess.c++; });
+      dlog("end-of-page", { words: un.map(i => W[i].n), why: "child finished; last everyday words not heard clearly — benefit of the doubt" });
+      updateCursor(); checkComplete(); return;
+    }
+  }
   const c = cursorIndex(); if (c < 0 || !R.started) return;
   const w = R.words[c];
   if ((isReq(w) || isName(w)) && idle > hesitateMs(R.s.grade) && !w.hesitated) {
