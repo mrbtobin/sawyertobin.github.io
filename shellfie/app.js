@@ -37,7 +37,7 @@ const STR = {
     gradeLong: { K: "Kindergarten", 1: "1st grade", 2: "2nd grade", 3: "3rd grade", 4: "4th grade", 5: "5th grade" },
     shelfTitle: g => `${STR.en.gradeLong[g]} bookshelf`, genreTitle: g => STR.en.genres[g],
     holdGate: "Grown-ups: press and hold", showRead: "Show books I've read", byGrade: "Grade → Genre", byGenre: "Genre → Grade",
-    genres: { meet: "Meet the Animals", jobs: "When I Grow Up", bedtime: "Bedtime Stories", fairy: "Fairy and Folk Tales", fables: "Fables", animal: "Animal Stories", everyday: "Everyday Life", adventure: "Adventure and Fantasy", poetry: "Poetry and Rhymes", nonfiction: "Nonfiction", seasons: "Seasons and Holidays" },
+    genres: { mckinley: "McKinley Bulldogs", meet: "Meet the Animals", jobs: "When I Grow Up", bedtime: "Bedtime Stories", fairy: "Fairy and Folk Tales", fables: "Fables", animal: "Animal Stories", everyday: "Everyday Life", adventure: "Adventure and Fantasy", poetry: "Poetry and Rhymes", nonfiction: "Nonfiction", seasons: "Seasons and Holidays" },
     soon: "Soon", soonToast: "Coming soon! Shellfie is still learning this book.", allRead: "You read them all!", books: n => `${n} books`,
     yourGrade: "Your grade", picks: "Shellfie picks", picksGo: "Read", resume: "Keep going", page: (a, b) => `Page ${a} of ${b}`,
     ready: "Ready when you are", keepReading: "Keep reading", waitThis: "Wait, this one!", yourTurn: "Your turn!",
@@ -88,7 +88,7 @@ const STR = {
     gradeLong: { K: "Kínder", 1: "1.er grado", 2: "2.º grado", 3: "3.er grado", 4: "4.º grado", 5: "5.º grado" },
     shelfTitle: g => `Librero de ${STR.es.gradeLong[g]}`, genreTitle: g => STR.es.genres[g],
     holdGate: "Adultos: mantengan presionado", showRead: "Mostrar libros leídos", byGrade: "Grado → Género", byGenre: "Género → Grado",
-    genres: { meet: "Conoce a los animales", jobs: "Cuando sea grande", bedtime: "Cuentos para dormir", fairy: "Cuentos de hadas y folclor", fables: "Fábulas", animal: "Historias de animales", everyday: "La vida diaria", adventure: "Aventura y fantasía", poetry: "Poesía y rimas", nonfiction: "No ficción", seasons: "Temporadas y fiestas" },
+    genres: { mckinley: "Bulldogs de McKinley", meet: "Conoce a los animales", jobs: "Cuando sea grande", bedtime: "Cuentos para dormir", fairy: "Cuentos de hadas y folclor", fables: "Fábulas", animal: "Historias de animales", everyday: "La vida diaria", adventure: "Aventura y fantasía", poetry: "Poesía y rimas", nonfiction: "No ficción", seasons: "Temporadas y fiestas" },
     soon: "Pronto", soonToast: "¡Muy pronto! Shellfie todavía está aprendiendo este libro.", allRead: "¡Los leíste todos!", books: n => `${n} libros`,
     yourGrade: "Tu grado", picks: "Shellfie te recomienda", picksGo: "Leer", resume: "Seguir", page: (a, b) => `Página ${a} de ${b}`,
     ready: "Cuando quieras", keepReading: "Seguir leyendo", waitThis: "¡Espera, esta!", yourTurn: "¡Ahora tú!",
@@ -129,9 +129,9 @@ const STR = {
     }
   }
 };
-const GENRE_ORDER = ["meet", "jobs", "bedtime", "fairy", "fables", "animal", "everyday", "adventure", "poetry", "nonfiction", "seasons"];
+const GENRE_ORDER = ["mckinley", "meet", "jobs", "bedtime", "fairy", "fables", "animal", "everyday", "adventure", "poetry", "nonfiction", "seasons"];
 const GENRE_STYLE = {
-  meet: ["#8be3cf", "#0f766e", "🔎"], jobs: ["#ffd36e", "#c2410c", "🧑‍🚒"], bedtime: ["#b4bcff", "#312e81", "🌙"],
+  mckinley: ["#8fb8ff", "#1d3f9e", "🐶"], meet: ["#8be3cf", "#0f766e", "🔎"], jobs: ["#ffd36e", "#c2410c", "🧑‍🚒"], bedtime: ["#b4bcff", "#312e81", "🌙"],
   fairy: ["#c3a2ff", "#5b3fc9", "🧚"], fables: ["#ffd27a", "#d9731f", "🦊"], animal: ["#86e8bd", "#1e7a45", "🐾"], everyday: ["#9ddcff", "#2470c9", "🏡"],
   adventure: ["#ffab98", "#c2410c", "🧭"], poetry: ["#ffb3dc", "#c2337a", "🎵"], nonfiction: ["#c4ec7c", "#4b7d18", "🔬"], seasons: ["#ffc387", "#b8452b", "🍂"]
 };
