@@ -454,3 +454,6 @@ body.reading.calm .leaf.slide-f,body.reading.calm .leaf.slide-b{animation-durati
   #grades .scroll{gap:12px}
   .greet h1{font-size:28px}
 }
+.saybubble{position:fixed;z-index:30;max-width:min(320px,70vw);padding:10px 14px;border-radius:16px;background:#fff;border:3px solid var(--ink);box-shadow:0 4px 0 var(--ink);
+  font:700 18px var(--ui);color:var(--ink);opacity:0;transform:translateY(-6px);transition:opacity .2s,transform .2s;pointer-events:none}
+.saybubble.on{opacity:1;transform:none}

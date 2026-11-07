@@ -17,7 +17,7 @@ const BOOKS = ["en-2-uncle-wiggily", "en-3-mother-west-wind", "en-3-velveteen", 
   const p = await ctx.newPage(); const errs = [];
   p.on("pageerror", e => errs.push(e.message));
   await p.addInitScript(() => {
-    window.__SHELLFIE_TEST = 1;
+    window.__SHELLFIE_TEST = 1; window.__SHELLFIE_TIMESCALE = 0.1;
     class F { start() { setTimeout(() => this.onstart && this.onstart(), 5); } abort() { } stop() { } }
     window.webkitSpeechRecognition = F; window.SpeechRecognition = F;
     localStorage.setItem("shellfie_v1", JSON.stringify({ v: 1, lang: "en", grade: "3", onb: 1, b: {}, showRead: 1, under: 1, browse: "grade" }));
