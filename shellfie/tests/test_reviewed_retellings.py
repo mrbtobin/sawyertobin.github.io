@@ -66,4 +66,20 @@ class ReviewedRetellingsTests(unittest.TestCase):
         self.assertEqual(len([e for e in catalog['es']['5'] if e.get('id')==book['id']]),1)
         self.assertFalse(any(e.get('id')==book['id'] for e in catalog['es']['4']))
 
+    def test_spanish_education_edits_match_sources(self):
+        wanted={'es-k-conoce-buho','es-3-max-simulacros','es-2-cempasuchil'}
+        js='global.window={SHELLFIE_STORIES:[]};for(const p of process.argv.slice(1))require(p);process.stdout.write(JSON.stringify(window.SHELLFIE_STORIES));'
+        sources=[root/'tools/authored'/f for f in ('meet.js','mckinley_es.js','retellings.js')]
+        books=json.loads(subprocess.check_output(['node','-e',js,*map(str,sources)],text=True))
+        found=set()
+        for b in books:
+            if b['id'] not in wanted: continue
+            found.add(b['id'])
+            built=json.loads((root/'books'/f"{b['id']}.json").read_text(encoding='utf-8'))
+            self.assertEqual(built,dict(b,human=False))
+            for q in b['chapters'][0]['quiz']:
+                self.assertIn(q['ev'],' '.join(b['chapters'][0]['pages']))
+                self.assertIn(q['a'],range(len(q['o'])))
+        self.assertEqual(found,wanted)
+
 if __name__=='__main__': unittest.main()
