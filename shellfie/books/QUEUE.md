@@ -35,7 +35,7 @@
 Status values: `queued` (free to take) · `claimed` (someone is writing it) · `done` (book file exists) · `blocked: <why>`.
 
 <!-- queue:start -->
-**Queue summary:** 172 queued · 2 claimed · 2 done (176 rows). Regenerate with `python3 shellfie/tools/make_queue.py`.
+**Queue summary:** 172 queued · 0 claimed · 4 done (176 rows). Regenerate with `python3 shellfie/tools/make_queue.py`.
 
 ### English
 
@@ -83,7 +83,7 @@ Status values: `queued` (free to take) · `claimed` (someone is writing it) · `
 | `en-2-snow-white-rose-red` | Snow White and Rose-Red | bedtime | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Brothers Grimm | 30–70 words/page | queued |  |  |
 | `en-2-twelve-dancing-princesses` | The Twelve Dancing Princesses | bedtime | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Brothers Grimm / Andrew Lang | 30–70 words/page | queued |  |  |
 
-#### English · Grade 3 (10 to write)
+#### English · Grade 3 (9 to write)
 
 | Book id | Title | Genre | Source / how | Pages | Status | Claimed by | Notes |
 |---|---|---|---|---|---|---|---|
@@ -96,7 +96,6 @@ Status values: `queued` (free to take) · `claimed` (someone is writing it) · `
 | `en-3-pomegranate-seeds` | The Pomegranate Seeds (why we have seasons) | seasons | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Nathaniel Hawthorne, Tanglewood Tales (1853) · [link](https://www.gutenberg.org/ebooks/search/?query=tanglewood+tales) | 60–130 words/page | queued |  |  |
 | `en-3-rama-sita` | Rama and Sita (Diwali) | seasons | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Ramayana, retelling · [link](https://www.gutenberg.org/ebooks/search/?query=ramayana) | 60–130 words/page | queued |  |  |
 | `en-3-happy-prince` | The Happy Prince | bedtime | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Oscar Wilde (1888) | 60–130 words/page | queued |  |  |
-| `en-3-selfish-giant` | The Selfish Giant | bedtime | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Oscar Wilde (1888) | 60–130 words/page | claimed | Codex 2026-11-07 |  |
 
 #### English · Grade 4 (10 to write)
 
@@ -113,7 +112,7 @@ Status values: `queued` (free to take) · `claimed` (someone is writing it) · `
 | `en-4-nutcracker-mouse-king` | The Nutcracker and the Mouse King | seasons | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. E. T. A. Hoffmann (1816) | 110–200 words/page | queued |  |  |
 | `en-4-wild-swans` | The Wild Swans | bedtime | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Hans Christian Andersen | 110–200 words/page | queued |  |  |
 
-#### English · Grade 5 (5 to write)
+#### English · Grade 5 (4 to write)
 
 | Book id | Title | Genre | Source / how | Pages | Status | Claimed by | Notes |
 |---|---|---|---|---|---|---|---|
@@ -121,7 +120,6 @@ Status values: `queued` (free to take) · `claimed` (someone is writing it) · `
 | `en-5-swiss-family-robinson` | The Swiss Family Robinson (chapters) | adventure | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Johann David Wyss, PD translation · [link](https://www.gutenberg.org/ebooks/search/?query=swiss+family+robinson) | 170–300 words/page | queued |  |  |
 | `en-5-around-world-in-eighty` | Around the World in Eighty Days (chapters) | adventure | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Jules Verne, PD translation · [link](https://www.gutenberg.org/ebooks/search/?query=around+the+world+in+eighty+days) | 170–300 words/page | queued |  |  |
 | `en-5-wonderful-adventures-nils` | The Wonderful Adventures of Nils (chapters) | adventure | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Selma Lagerlöf, tr. Velma Swanston Howard (1907) · [link](https://www.gutenberg.org/ebooks/search/?query=wonderful+adventures+of+nils) | 170–300 words/page | queued |  |  |
-| `en-5-casey-at-bat` | Casey at the Bat | poetry | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Ernest Lawrence Thayer (1888) · [link](https://en.wikisource.org/w/index.php?search=casey+at+the+bat) | 170–300 words/page | claimed | Codex 2026-11-07 |  |
 
 ### Español (México)
 
@@ -281,6 +279,8 @@ Status values: `queued` (free to take) · `claimed` (someone is writing it) · `
 
 | Book id | Title | Genre | Source / how | Pages | Status | Claimed by | Notes |
 |---|---|---|---|---|---|---|---|
+| `en-3-selfish-giant` | The Selfish Giant | bedtime | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Oscar Wilde (1888) | 60–130 words/page | done | Codex 2026-11-07 |  |
+| `en-5-casey-at-bat` | Casey at the Bat | poetry | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Ernest Lawrence Thayer (1888) · [link](https://en.wikisource.org/w/index.php?search=casey+at+the+bat) | 170–300 words/page | done | Codex 2026-11-07 |  |
 | `en-k-three-billy-goats-gruff` | The Three Billy Goats Gruff | fairy | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. Asbjørnsen and Moe, tr. Dasent, retelling · [link](https://www.gutenberg.org/ebooks/search/?query=popular+tales+from+the+norse) | 5–14 words/page, ~8–14 pages | done | Codex 2026-11-07 |  |
 | `en-1-stone-soup` | Stone Soup | fairy | Public domain: retell in your own words, or fetch via tools/build_library.py recipe. European folk tale, retelling · [link](https://en.wikisource.org/w/index.php?search=stone+soup) | 12–35 words/page | done | Codex 2026-11-07 |  |
 
