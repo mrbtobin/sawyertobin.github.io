@@ -1728,13 +1728,6 @@
 "u": "https://www.gutenberg.org/ebooks/search/?query=jungle+book+kipling"
 },
 {
-"t": "La muñeca negra",
-"a": "José Martí (1889)",
-"l": "Dominio público",
-"g": "everyday",
-"u": "https://www.gutenberg.org/ebooks/19898"
-},
-{
 "t": "Heidi (capítulos)",
 "a": "Johanna Spyri, traducción propia",
 "l": "Fuente de dominio público",
@@ -1968,6 +1961,13 @@
 "l": "Fuente de dominio público",
 "g": "seasons",
 "u": "https://www.gutenberg.org/ebooks/search/?query=legend+of+sleepy+hollow"
+},
+{
+"t": "La muñeca negra",
+"a": "José Martí (1889)",
+"l": "Dominio público",
+"g": "everyday",
+"u": "https://www.gutenberg.org/ebooks/19898"
 }
 ]
 }
